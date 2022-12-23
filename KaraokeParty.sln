@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32414.318
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KaraokeParty", "KaraokeParty\KaraokeParty.csproj", "{2A0091B7-2130-4DD8-9233-E1297AAF40B8}"
+EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "KPFrontend", "KPFrontend\KPFrontend.esproj", "{76A3FACD-FADB-48B7-93F9-65DB9C6F642C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2A0091B7-2130-4DD8-9233-E1297AAF40B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A0091B7-2130-4DD8-9233-E1297AAF40B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A0091B7-2130-4DD8-9233-E1297AAF40B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A0091B7-2130-4DD8-9233-E1297AAF40B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76A3FACD-FADB-48B7-93F9-65DB9C6F642C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76A3FACD-FADB-48B7-93F9-65DB9C6F642C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76A3FACD-FADB-48B7-93F9-65DB9C6F642C}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{76A3FACD-FADB-48B7-93F9-65DB9C6F642C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76A3FACD-FADB-48B7-93F9-65DB9C6F642C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76A3FACD-FADB-48B7-93F9-65DB9C6F642C}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CD2F2D96-356A-4249-9C2B-B248C0F8283D}
+	EndGlobalSection
+EndGlobal
