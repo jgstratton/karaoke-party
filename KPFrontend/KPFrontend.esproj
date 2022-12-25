@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/0.5.7-alpha">
+<Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/0.5.66-alpha">
   <PropertyGroup Label="Globals">
     <ProjectGuid>76a3facd-fadb-48b7-93f9-65db9c6f642c</ProjectGuid>
   </PropertyGroup>
@@ -6,10 +6,11 @@
     <StartupCommand>set BROWSER=none&amp;&amp;npm start</StartupCommand>
     <JavaScriptTestRoot>src\</JavaScriptTestRoot>
     <JavaScriptTestFramework>Jest</JavaScriptTestFramework>
+	<TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
   </PropertyGroup>
   <ItemGroup>
-    <Script Include="**" Exclude="*.esproj;**\node_modules\**" />
-  </ItemGroup>
+	<Script Include="**" Exclude="*.esproj;node_modules\**" />
+	</ItemGroup>
   <!-- This target is copied from the ASP.NET SPA template in order to ensure node_modules are in place. -->
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
     <!-- Ensure Node.js is installed -->
