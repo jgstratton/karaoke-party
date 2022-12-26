@@ -1,4 +1,6 @@
+using KaraokeParty.ApiModels;
 using KaraokeParty.DataStore;
+using KaraokeParty.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -10,21 +12,29 @@ namespace KaraokeParty.Controllers {
 		private readonly ILogger<PartyController> _logger;
 		private readonly KPContext context;
 
-		public PartyController(ILogger<PartyController> logger, KPContext context) {
+		public PartyController(ILogger<PartyController> logger) {
 			_logger = logger;
-			this.context = context;
+			this.context = new KPContext();
 		}
 
 		[HttpGet]
-		public Party Get(
-			[FromQuery] string djKey ="",
-			string partyKey = ""
-		) {
-			Party? party = context.Parties.Where(p => p.DJKey == djKey || p.PartyKey == partyKey).FirstOrDefault();
+		public ActionResult<Party> Get([FromQuery] PartyQuery query) {
+			Party? party = context.Parties.Where(p =>
+				!p.IsExpired && 
+				(p.DJKey == query.DJKey || p.PartyKey == query.PartyKey)
+			).FirstOrDefault();
 			if (party == null) {
-				throw new System.Web.Http.HttpResponseException(HttpStatusCode.NotFound);
+				return NotFound();
 			}
 			return party;
+		}
+
+		[HttpPost]
+		public Party Post(PartyPost postParty) {
+			Party newParty = postParty.ToDb();
+			context.Parties.Add(newParty);
+			context.SaveChanges();
+			return newParty;
 		}
 	}
 }

@@ -19,7 +19,7 @@ namespace KaraokeParty.DataStore {
 		public string PartyKey { get; set; } = "";
 
 		[Required]
-		public DateTime DateTimeCreated { get; set; }
+		public DateTime DateTimeCreated { get; set; } = DateTime.Now;
 
 		public bool IsExpired { get; set; } = false;
 
