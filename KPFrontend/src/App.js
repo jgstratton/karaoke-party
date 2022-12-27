@@ -1,23 +1,32 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import Home from './Home';
-import Menu from './Menu';
+import { Routes, Route, useNavigate } from "react-router-dom";
+import RequireSession from './components/RequireSession';
+import SingerDashboard from './pages/SingerDashboard';
 import NoParty from './NoParty';
+import DJDashboard from './pages/DJDashboard';
 import StorageService from './services/StorageService';
+import DevTools from './components/DevTools';
 
 const App = () => {
 	const [party, setParty] = useState({});
-	const [loading, setLoading] = useState(true);
-	const [user, setUser] = useState({});
+	const [user, setUser] = useState({
+		singerId: 0,
+		name: '',
+		isDj: false
+	});
+	const navigate = useNavigate();
 
 	function updateParty(party) {
-		StorageService.storeParty(party);
-		setParty(party);
+		let newParty = {...party};
+		StorageService.storeParty(newParty);
+		setParty(newParty);
 	}
 
 	function updateUser(user) {
-		StorageService.storeUser(user);
-		setUser(user);
+		let newUser = {...user};
+		StorageService.storeUser(newUser);
+		setUser(newUser);
 	}
 
 	function leaveParty(){
@@ -25,6 +34,7 @@ const App = () => {
 		StorageService.forgetUser();
 		setParty({});
 		setUser({});
+		navigate('/NoParty');
 	}
 
 	useEffect(() => {
@@ -33,24 +43,27 @@ const App = () => {
 			let user = await StorageService.loadUser();
 			setParty(party);
 			setUser(user);
-			setLoading(false);
 		}
 		load();
 	}, []);
-
-	let contents = loading
-		? <div>Loading...</div>
-		: !(party.partyKey)
-		? <NoParty updateParty={updateParty} setUser={updateUser}/>
-		: <Home party={party}/>;
 	
-	// give more space for the DJ view
-	let containerStyle = user.isDj ? {} : {padding: "5px",maxWidth: "900px"};
-	let containerClass = user.isDj ? "" : "container";
 	return (
-		<div className={containerClass} style={containerStyle}>
-			{party.partyKey && <Menu user={user} leaveParty={leaveParty}/>}
-			{contents}
+		<div>
+			{console.log("re-render")}
+			{console.log(user.isDj)}
+			<DevTools user={user} setUser={updateUser}/>
+			<Routes>
+				<Route path="/" element={ <NoParty updateParty={updateParty} setUser={updateUser}/> } />
+				<Route path="/NoParty" element={ <NoParty updateParty={updateParty} setUser={updateUser}/> } />
+				<Route path="home" element={
+					<RequireSession party={party} user={user} updateParty={updateParty} setUser={updateUser}>
+						{user.isDj
+							? <DJDashboard user={user} leaveParty={leaveParty} party={party}/>
+							: <SingerDashboard user={user} leaveParty={leaveParty} party={party}/>
+						}
+					</RequireSession>
+				} />
+			</Routes>
 		</div>
 	);
 }

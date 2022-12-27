@@ -6,23 +6,18 @@ import Col from 'react-bootstrap/Col';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMicrophone } from '@fortawesome/free-solid-svg-icons'
 import SingerList from './components/SingerList'
+import NowPlaying from './components/NowPlaying'
+import Menu from './components/Menu';
 
 const Home = (props) => {
 
 	return (
 		<div>
+			<Menu user={props.user} leaveParty={props.leaveParty}/>
 			<h3 className="text-center">{props.party.title} ({props.party.partyKey})</h3>
 			<Row>
 				<Col xs={10}>
-					<Card>
-						<Card.Body>
-							<Card.Title>Now Playing</Card.Title>
-							<Card.Text className="text-warning">
-								Nothing is playing right now
-							</Card.Text>
-							<Button variant="primary">Go somewhere</Button>
-						</Card.Body>
-					</Card>
+					<NowPlaying/>
 					<Card>
 						<Card.Body>
 							<Card.Title>Next Song</Card.Title>

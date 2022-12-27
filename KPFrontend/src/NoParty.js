@@ -6,6 +6,7 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card'
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import { useNavigate } from "react-router-dom";
 
 const NoParty = (props) => {
 	const [form, setForm] = useState({
@@ -14,6 +15,7 @@ const NoParty = (props) => {
 		djName: '',
 		singerName: ''
 	});
+	const navigate = useNavigate()
 
 	function handleInputChange(e) {
 		const { name, value } = e.target;
@@ -27,6 +29,7 @@ const NoParty = (props) => {
 		let party = await PartyService.createParty(form.partyName, form.djName);
 		props.updateParty(party);
 		props.setUser(party.singers[0]);
+		navigate('/home');
 	}
 
 	async function handleJoin(e) {
@@ -34,6 +37,7 @@ const NoParty = (props) => {
 		let singer = await PartyService.joinParty(form.joinCode, form.singerName);
 		props.updateParty(party);
 		props.setUser(singer);
+		navigate('/home');
 	}
 
 	return (
