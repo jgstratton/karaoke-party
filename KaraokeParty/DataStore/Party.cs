@@ -12,10 +12,6 @@ namespace KaraokeParty.DataStore {
 
 		[Required]
 		[MaxLength(10)]
-		public string DJKey { get; set; } = "";
-
-		[Required]
-		[MaxLength(10)]
 		public string PartyKey { get; set; } = "";
 
 		[Required]
@@ -23,5 +19,6 @@ namespace KaraokeParty.DataStore {
 
 		public bool IsExpired { get; set; } = false;
 
+		public List<Singer> Singers { get; set; } = new List<Singer>();
 	}
 }

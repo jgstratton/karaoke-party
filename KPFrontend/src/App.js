@@ -1,49 +1,44 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { useState, useEffect } from 'react';
 import Home from './Home';
 import Menu from './Menu';
 import NoParty from './NoParty';
 import PartyService from './services/PartyService';
 
-export default class App extends Component {
-	static displayName = App.name;
+const App = () => {
+	const [party, setParty] = useState({});
+	const [loading, setLoading] = useState(true);
+	const [user, setUser] = useState({});
 
-	constructor(props) {
-		super(props);
-		this.state = { party: {}, loading: true };
-	}
-
-	setParty = (party) => {
+	function updateParty(party) {
 		PartyService.storeParty(party);
-		this.setState({
-			party: party,
-			loading: false
-		});
+		setParty(party);
 	}
 
-	leaveParty = () => {
-		this.setState({
-			party: {},
-			loading: false
-		});
+	function leaveParty(){
+		setParty({});
 	}
 
-	async componentDidMount() {
-		let party = await PartyService.loadStored();
-		this.setState({ party: party, loading: false });
-	}
+	useEffect(() => {
+		async function load() {
+			let party = await PartyService.loadStored();
+			setParty(party);
+			setLoading(false);
+		}
+		load();
+	}, []);
 
-	render() {
-		let contents = this.state.loading
-			? <div>Loading...</div>
-			: !(this.state.party.partyKey)
-			? <NoParty setParty={this.setParty}/>
-			: <Home party={this.state.party}/>;
-		
-		return (
-			<div className="container" style={{padding: "5px",maxWidth: "900px"}}>
-				{this.state.party.partyKey && <Menu user="Need to add users" leaveParty={this.leaveParty}/>}
-				{contents}
-			</div>
-		);
-	}
+	let contents = loading
+		? <div>Loading...</div>
+		: !(party.partyKey)
+		? <NoParty updateParty={updateParty} setUser={setUser}/>
+		: <Home party={party}/>;
+	
+	return (
+		<div className="container" style={{padding: "5px",maxWidth: "900px"}}>
+			{party.partyKey && <Menu user={user} leaveParty={leaveParty}/>}
+			{contents}
+		</div>
+	);
 }
+export default App;

@@ -8,7 +8,7 @@ const Home = (props) => {
 
 	return (
 		<div>
-			<h3 className="text-center">{props.party.title}</h3>
+			<h3 className="text-center">{props.party.title} ({props.party.partyKey})</h3>
 			<Card>
 				<Card.Body>
 					<Card.Title>Now Playing</Card.Title>

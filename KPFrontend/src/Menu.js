@@ -20,7 +20,7 @@ const Menu = (props) => {
 				<FontAwesomeIcon icon={faFolderOpen} fixedWidth/> Browse
 			</Nav.Link>
 			<Nav.Link href="/browse" style={{marginLeft: "auto"}}>
-				<FontAwesomeIcon icon={faMicrophone} fixedWidth/> {props.user}
+				<FontAwesomeIcon icon={faMicrophone} fixedWidth/> {props.user.name}
 			</Nav.Link>
 			<Nav.Link onClick={props.leaveParty}>
 				Leave Party

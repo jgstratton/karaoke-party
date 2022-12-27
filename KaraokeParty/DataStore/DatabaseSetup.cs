@@ -14,12 +14,10 @@ namespace KaraokeParty.DataStore {
 					{
 						new Party{
 							Title="Family Game Night",
-							DJKey="EFGH",
 							PartyKey="ABCD"
 						},
 						new Party{
 							Title="Smith's Karaoke Night",
-							DJKey="IJKL",
 							PartyKey="EFGH"
 						}
 					});

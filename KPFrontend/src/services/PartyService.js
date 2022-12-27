@@ -18,10 +18,21 @@ async function fetchParty(partyKey) {
 	if (party.partyKey) {
 		return party;
 	}
+	alert('error fetching party');
+}
+
+async function joinParty(partyKey, singerName) {
+	const response = await fetch(`party/join/${partyKey}?` + new URLSearchParams({
+		name: singerName,
+	}));
+	let singer = await response.json();
+	if (singer.singerId) {
+		return singer;
+	}
 	alert('error joining party');
 }
 
-async function createParty(title) {
+async function createParty(title, djName) {
 	let response = await fetch("party", {
 		method: "POST",
 		headers: {
@@ -29,7 +40,8 @@ async function createParty(title) {
 			'Content-Type': 'application/json'
 		}, 
 		body: JSON.stringify({
-			title: title
+			title: title,
+			djName: djName
 		})
 	});
 	let party = await response.json();
@@ -46,7 +58,8 @@ const PartyService = {
 	loadStored,
 	storeParty,
 	createParty,
-	fetchParty
+	fetchParty,
+	joinParty
 }
 
 export default PartyService;
