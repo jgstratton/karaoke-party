@@ -15,6 +15,15 @@ namespace KaraokeParty.Controllers {
 			this.context = new KPContext();
 		}
 
+		[HttpGet]
+		public ActionResult<Singer> Get(int singerId) {
+			Singer? singer = context.Singers.Find(singerId);
+			if (singer is null) {
+				return NotFound();
+			}
+			return singer;
+		}
+
 		[HttpPost]
 		public ActionResult<Singer> Post(SingerDTO singerPost) {
 			if (singerPost.SingerId is null) {

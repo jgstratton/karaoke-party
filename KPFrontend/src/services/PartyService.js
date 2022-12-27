@@ -1,15 +1,3 @@
-
-async function loadStored() {
-	const partyKey = localStorage.getItem('partyKey');
-	if (partyKey) {
-		const response = await fetch('party?' + new URLSearchParams({
-			partyKey: partyKey,
-		}));
-		return await response.json();
-	}
-	return {};
-}
-
 async function fetchParty(partyKey) {
 	const response = await fetch('party?' + new URLSearchParams({
 		partyKey: partyKey,
@@ -51,12 +39,7 @@ async function createParty(title, djName) {
 	alert('error creating party');
 }
 
-function storeParty(party) {
-	localStorage.setItem('partyKey', party.partyKey);
-}
 const PartyService = {
-	loadStored,
-	storeParty,
 	createParty,
 	fetchParty,
 	joinParty

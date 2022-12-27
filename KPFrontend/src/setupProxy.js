@@ -2,6 +2,7 @@
 
 const context = [
     "/party",
+	"/singer"
 ];
 
 module.exports = function (app) {

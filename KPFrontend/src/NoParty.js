@@ -30,7 +30,6 @@ const NoParty = (props) => {
 	}
 
 	async function handleJoin(e) {
-		debugger;
 		let party = await PartyService.fetchParty(form.joinCode);
 		let singer = await PartyService.joinParty(form.joinCode, form.singerName);
 		props.updateParty(party);
