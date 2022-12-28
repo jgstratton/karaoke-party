@@ -3,14 +3,25 @@ import { useState } from 'react';
 import Menu from './common/Menu';
 import Title from './common/Title';
 import LocalResults from './search/LocalResults';
+import YoutubeResults from './search/YoutubeResults';
 import SearchCard from './search/SearchCard';
+import SearchService from '../services/YouTubeService';
 
 const Search = (props) => {
 	const [localResults, setLocalResults] = useState([]);
-	const [youTubeResults, setYoutubeResults] = useState([]);
+	const [youtubeResults, setYoutubeResults] = useState([]);
+	const [searchSubmitted, setSearchSubmitted] = useState(false);
+	const [localLoading, setLocalLoading] = useState(false);
+	const [youtubeLoading, setYoutubeLoading] = useState(false);
 
-	function submitSearch(searchString) {
+	async function submitSearch(searchString) {
+		setSearchSubmitted(true);
+		setLocalLoading(true);
 		setLocalResults(['File 1', 'File 2']);
+		setLocalLoading(false);
+		setYoutubeLoading(true);
+		setYoutubeResults(await SearchService.searchYoutube(searchString));
+		setYoutubeLoading(false);
 	}
 
 	return (
@@ -24,7 +35,13 @@ const Search = (props) => {
 				setUser={props.updateUser}
 				submitSearch={submitSearch}
 			/>
-			<LocalResults results={localResults} />
+			{searchSubmitted && (
+				<div>
+					<LocalResults results={localResults} loading={localLoading} />
+					<YoutubeResults results={youtubeResults} loading={youtubeLoading} />
+				</div>
+			)}
+
 			<div>
 				<hr />
 

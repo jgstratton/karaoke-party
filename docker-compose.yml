@@ -10,3 +10,10 @@ services:
       - POSTGRES_PASSWORD
     ports:
       - ${POSTGRES_DEV_PORT}:5432
+  yt_dlp:
+    build: ./YoutubeDownload
+    ports:
+      - 5000:5000
+    volumes:
+      - "./Songs:/usr/lib/songs"
+      - "./YoutubeDownload:/app"

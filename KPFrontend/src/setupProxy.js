@@ -1,15 +1,19 @@
 ﻿const { createProxyMiddleware } = require('http-proxy-middleware');
 
-const context = [
-    "/party",
-	"/singer"
-];
-
 module.exports = function (app) {
-    const appProxy = createProxyMiddleware(context, {
-        target: 'https://localhost:7049',
-        secure: false
-    });
+	app.use(
+		createProxyMiddleware(['/party', '/singer'], {
+			target: 'https://localhost:7049',
+			secure: false,
+		})
+	);
 
-    app.use(appProxy); 
+	app.use(
+		'/yt-dlp',
+		createProxyMiddleware({
+			target: 'http://127.0.0.1:5000',
+			pathRewrite: { '^/yt-dlp': '' },
+			secure: false,
+		})
+	);
 };
