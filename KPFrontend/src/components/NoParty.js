@@ -1,6 +1,6 @@
 import React from 'react';
-import { useState } from 'react';
-import PartyService from './services/PartyService';
+import { useState, useEffect } from 'react';
+import PartyService from '../services/PartyService';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card'
@@ -9,6 +9,7 @@ import Col from 'react-bootstrap/Col';
 import { useNavigate } from "react-router-dom";
 
 const NoParty = (props) => {
+	const [loading, setLoading] = useState(true);
 	const [form, setForm] = useState({
 		partyName: '',
 		joinCode: '',
@@ -40,9 +41,18 @@ const NoParty = (props) => {
 		navigate('/home');
 	}
 
+	useEffect(() => {
+		if (props.user && props.user.singerId && props.party && props.party.partyKey){
+			navigate('/home');
+		}
+		setLoading(false);
+	}, [props.user, props.party, navigate]);
+
 	return (
-		<div>
-			<h3 className="text-center">Welcome to Karaoke Party</h3>
+		loading
+			? <div>Loading...</div>
+			: <div className="container" style={{padding: "5px",maxWidth: "900px"}}>
+				<h3 className="text-center">Welcome to Karaoke Party</h3>
 				<Row>
 					<Col xs={12} md={5}>
 						<Card>
@@ -100,7 +110,7 @@ const NoParty = (props) => {
 						</Card>
 					</Col>
 				</Row>
-		</div>
+			</div>
 	)
 }
 export default NoParty;

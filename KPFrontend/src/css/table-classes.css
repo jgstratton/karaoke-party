@@ -1,0 +1,4 @@
+tbody.condensed > tr > td,
+tbody.condensed > tr > th {
+	padding:2px;
+}
