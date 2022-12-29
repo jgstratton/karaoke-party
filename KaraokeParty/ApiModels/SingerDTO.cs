@@ -3,6 +3,7 @@
 namespace KaraokeParty.ApiModels {
 	public class SingerDTO {
 		public int? SingerId { get; set; }
+		public string? FileName { get; set; }
 		public string Name { get; set; } = "";
 		public bool IsDj { get; set; } = false;
 

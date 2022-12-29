@@ -30,7 +30,7 @@ namespace KaraokeParty.Controllers {
 		}
 
 		[HttpGet]
-		[Route("join/{partyKey}")]
+		[Route("{partyKey}/join")]
 		public ActionResult<Singer> Join(string partyKey, [FromQuery] SingerDTO singer) {
 			Party? party = partyService.GetPartyByKey(partyKey);
 			if (party == null) {
@@ -40,6 +40,62 @@ namespace KaraokeParty.Controllers {
 			party.Singers.Add(newSinger);
 			context.SaveChanges();
 			return newSinger;
+		}
+
+		[HttpPost]
+		[Route("{partyKey}/performance")]
+		public ActionResult<Performance> PostPerformance(string partyKey, [FromBody] PerformanceDTO dto) {
+			if (dto.PerformanceId != null) {
+				return BadRequest("Wrong verb, use PUT to update an existing performance");
+			}
+			Party? party = partyService.GetPartyByKey(partyKey);
+			Singer? singer = context.Singers.Find(dto.SingerId);
+			Song? song = context.Songs.Find(dto.FileName);
+
+			if (party == null || singer == null || song == null) {
+				return NotFound();
+			}
+			Performance performance = new Performance {
+				Party = party,
+				Singer = singer,
+				Song = song
+			};
+			context.Performances.Add(performance);
+			context.SaveChanges();
+			return performance;
+		}
+
+		[HttpPut]
+		[Route("{partyKey}/performance")]
+		public ActionResult<Performance> UpdatePerformance(string partyKey, [FromBody] PerformanceDTO dto) {
+			if (dto.PerformanceId == null) {
+				return BadRequest("Wrong verb or missing id, use POST to update an existing performance, or provide a performance id");
+			}
+			Performance? performance = context.Performances.Find(dto.PerformanceId);
+			if (performance == null) {
+				return NotFound($"No performance was found with id {dto.PerformanceId}");
+			}
+			if (partyKey != performance.Party?.PartyKey) {
+				return BadRequest("Performance partyKey mismatch");
+			}
+			dto.UpdateDb(context, performance);
+			context.SaveChanges();
+			return performance;
+		}
+
+		[HttpDelete]
+		[Route("{partyKey}/performance/{performanceId}")]
+		public ActionResult<Performance> DeletePerformance(string partyKey, int performanceId) {
+			Performance? performance = context.Performances.Find(performanceId);
+			if (performance == null) {
+				return NotFound($"No performance was found with id {performanceId}");
+			}
+			if (partyKey != performance.Party?.PartyKey) {
+				return BadRequest("Performance partyKey mismatch");
+			}
+			context.Performances.Remove(performance);
+			context.SaveChanges();
+			return performance;
 		}
 
 		[HttpPost]

@@ -1,7 +1,10 @@
 async function fetchParty(partyKey) {
-	const response = await fetch('party?' + new URLSearchParams({
-		partyKey: partyKey,
-	}));
+	const response = await fetch(
+		'party?' +
+			new URLSearchParams({
+				partyKey: partyKey,
+			})
+	);
 	let party = await response.json();
 	if (party.partyKey) {
 		return party;
@@ -10,9 +13,12 @@ async function fetchParty(partyKey) {
 }
 
 async function joinParty(partyKey, singerName) {
-	const response = await fetch(`party/join/${partyKey}?` + new URLSearchParams({
-		name: singerName,
-	}));
+	const response = await fetch(
+		`party/${partyKey}/join?` +
+			new URLSearchParams({
+				name: singerName,
+			})
+	);
 	let singer = await response.json();
 	if (singer.singerId) {
 		return singer;
@@ -21,16 +27,16 @@ async function joinParty(partyKey, singerName) {
 }
 
 async function createParty(title, djName) {
-	let response = await fetch("party", {
-		method: "POST",
+	let response = await fetch('party', {
+		method: 'POST',
 		headers: {
-			'Accept': 'application/json',
-			'Content-Type': 'application/json'
-		}, 
+			Accept: 'application/json',
+			'Content-Type': 'application/json',
+		},
 		body: JSON.stringify({
 			title: title,
-			djName: djName
-		})
+			djName: djName,
+		}),
 	});
 	let party = await response.json();
 	if (party.partyKey) {
@@ -42,7 +48,7 @@ async function createParty(title, djName) {
 const PartyService = {
 	createParty,
 	fetchParty,
-	joinParty
-}
+	joinParty,
+};
 
 export default PartyService;

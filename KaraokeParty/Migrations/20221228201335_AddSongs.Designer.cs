@@ -3,6 +3,7 @@ using System;
 using KaraokeParty.DataStore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KaraokeParty.Migrations
 {
     [DbContext(typeof(KPContext))]
-    partial class KPContextModelSnapshot : ModelSnapshot
+    [Migration("20221228201335_AddSongs")]
+    partial class AddSongs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,13 +54,13 @@ namespace KaraokeParty.Migrations
                     b.ToTable("Parties");
                 });
 
-            modelBuilder.Entity("KaraokeParty.DataStore.Performance", b =>
+            modelBuilder.Entity("KaraokeParty.DataStore.Queue", b =>
                 {
-                    b.Property<int>("PerformanceID")
+                    b.Property<int>("QueueId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PerformanceID"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("QueueId"));
 
                     b.Property<int?>("Order")
                         .HasColumnType("integer");
@@ -74,7 +77,7 @@ namespace KaraokeParty.Migrations
                     b.Property<string>("SongFileName")
                         .HasColumnType("text");
 
-                    b.HasKey("PerformanceID");
+                    b.HasKey("QueueId");
 
                     b.HasIndex("PartyId");
 
@@ -82,7 +85,7 @@ namespace KaraokeParty.Migrations
 
                     b.HasIndex("SongFileName");
 
-                    b.ToTable("Performances");
+                    b.ToTable("Queue");
                 });
 
             modelBuilder.Entity("KaraokeParty.DataStore.Singer", b =>
@@ -129,7 +132,7 @@ namespace KaraokeParty.Migrations
                     b.ToTable("Songs");
                 });
 
-            modelBuilder.Entity("KaraokeParty.DataStore.Performance", b =>
+            modelBuilder.Entity("KaraokeParty.DataStore.Queue", b =>
                 {
                     b.HasOne("KaraokeParty.DataStore.Party", "Party")
                         .WithMany("Queue")
