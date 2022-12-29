@@ -22,6 +22,16 @@ namespace KaraokeParty.Controllers {
 			return song;
 		}
 
+		[HttpGet]
+		[Route("search")]
+		public ActionResult<List<Song>> Search(string searchString) {
+			var filteredSongs = context.Songs.ToList();
+			foreach(var keyword in searchString.ToUpper().Split()) {
+				filteredSongs = filteredSongs.Where(s => s.Title.ToUpper().Contains(keyword)).ToList();
+			}
+			return filteredSongs;
+		}
+
 		[HttpPost]
 		public ActionResult<Song> Post(SongDTO songDto) {
 			if (songDto.FileName is null) {

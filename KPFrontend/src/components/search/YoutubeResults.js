@@ -7,16 +7,22 @@ import Loading from '../common/Loading';
 import VideoPreview from './VideoPreview';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload } from '@fortawesome/free-solid-svg-icons';
-import YoutubeService from '../../services/YouTubeService';
+import YTService from '../../services/YTService';
+import ApiService from '../../services/ApiService';
 
 const YouTubeResults = (props) => {
 	const [downloadInProgress, setDownloadInProgress] = useState(false);
 
-	async function downloadVideo(url) {
+	async function downloadVideo(title, url) {
 		setDownloadInProgress(true);
-		let fileName = await YoutubeService.downloadYoutube(url);
+		let fileName = await YTService.downloadYoutube(url);
+		await ApiService.addSong({
+			fileName: fileName,
+			title: title,
+			url: url,
+		});
 		setDownloadInProgress(false);
-		console.log(fileName);
+		props.addToQueue(fileName);
 	}
 	return (
 		<div>
@@ -25,24 +31,24 @@ const YouTubeResults = (props) => {
 			)}
 			<Card className="mt-3">
 				<Card.Body>
-					<Card.Text>
-						<span className="text-warning mb-5">Songs found in youtube (top 10 results)</span>
+					<Card.Title>Songs found on youtube</Card.Title>
+					<Card.Text className="text-warning">
 						{props.loading ? (
 							<Loading />
 						) : (
-							<div>
+							<>
 								{props.results.map((r) => (
-									<div>
-										<Button className="float-right" onClick={() => downloadVideo(r.url)}>
+									<div key={r.id}>
+										<Button className="float-right" onClick={() => downloadVideo(r.title, r.url)}>
 											<FontAwesomeIcon icon={faDownload} /> Download and add to queue
 										</Button>
-										<span>{r.title}</span>
 										<VideoPreview id={r.id} />
+										<div>{r.title}</div>
 										<a href={r.url}>{r.url}</a>
 										<hr />
 									</div>
 								))}
-							</div>
+							</>
 						)}
 					</Card.Text>
 				</Card.Body>

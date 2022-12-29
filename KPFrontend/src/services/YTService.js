@@ -15,12 +15,13 @@ async function downloadYoutube(url) {
 				url: url,
 			})
 	);
-	return await response.body;
+	const data = await response.json();
+	return data.file;
 }
 
-const PartyService = {
+const YTService = {
 	searchYoutube,
 	downloadYoutube,
 };
 
-export default PartyService;
+export default YTService;

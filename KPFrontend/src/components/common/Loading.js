@@ -16,9 +16,10 @@ const Loading = (props) => {
 						background: 'rgba(0,0,0,0.9)',
 						fontSize: '30px',
 						zIndex: '9999',
+						lineHeight: '100%',
 					}}
 				>
-					<div className="text-center">
+					<div className="text-center" style={{ position: 'relative', top: '40%' }}>
 						<FontAwesomeIcon icon={faSpinner} className="fa-spin" />
 						<span>{props.message || 'Loading...'}</span>
 					</div>

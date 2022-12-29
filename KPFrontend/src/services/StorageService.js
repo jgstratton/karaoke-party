@@ -1,9 +1,9 @@
-import PartyService from './PartyService'
+import ApiService from './ApiService';
 
 async function loadParty() {
 	const partyKey = localStorage.getItem('partyKey');
 	if (partyKey) {
-		return await PartyService.fetchParty(partyKey);
+		return await ApiService.fetchParty(partyKey);
 	}
 	return {};
 }
@@ -19,9 +19,12 @@ function forgetParty() {
 async function loadUser() {
 	const id = localStorage.getItem('singerId');
 	if (id) {
-		const response = await fetch('singer?' + new URLSearchParams({
-			singerId: id,
-		}));
+		const response = await fetch(
+			'singer?' +
+				new URLSearchParams({
+					singerId: id,
+				})
+		);
 		return await response.json();
 	}
 	return {};
@@ -41,7 +44,7 @@ const StorageService = {
 	forgetParty,
 	loadUser,
 	storeUser,
-	forgetUser
-}
+	forgetUser,
+};
 
 export default StorageService;

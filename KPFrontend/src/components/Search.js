@@ -5,7 +5,8 @@ import Title from './common/Title';
 import LocalResults from './search/LocalResults';
 import YoutubeResults from './search/YoutubeResults';
 import SearchCard from './search/SearchCard';
-import SearchService from '../services/YouTubeService';
+import YTService from '../services/YTService';
+import ApiService from '../services/ApiService';
 
 const Search = (props) => {
 	const [localResults, setLocalResults] = useState([]);
@@ -17,11 +18,19 @@ const Search = (props) => {
 	async function submitSearch(searchString) {
 		setSearchSubmitted(true);
 		setLocalLoading(true);
-		setLocalResults(['File 1', 'File 2']);
+		setLocalResults(await ApiService.searchSongs(searchString));
 		setLocalLoading(false);
 		setYoutubeLoading(true);
-		setYoutubeResults(await SearchService.searchYoutube(searchString));
+		const tempYoutubeResults = await YTService.searchYoutube(searchString);
+		setYoutubeResults(tempYoutubeResults.filter((x) => !localResults.map((lr) => lr.url).includes(x.url)));
 		setYoutubeLoading(false);
+	}
+
+	async function addToQueue(filename) {
+		ApiService.addPerformance(props.party.partyKey, {
+			fileName: filename,
+			singerId: props.user.singerId,
+		});
 	}
 
 	return (
@@ -36,81 +45,11 @@ const Search = (props) => {
 				submitSearch={submitSearch}
 			/>
 			{searchSubmitted && (
-				<div>
-					<LocalResults results={localResults} loading={localLoading} />
-					<YoutubeResults results={youtubeResults} loading={youtubeLoading} />
-				</div>
+				<>
+					<LocalResults results={localResults} loading={localLoading} addToQueue={addToQueue} />
+					<YoutubeResults results={youtubeResults} loading={youtubeLoading} addToQueue={addToQueue} />
+				</>
 			)}
-
-			<div>
-				<hr />
-
-				<div class="field is-hidden" id="container_search_form">
-					<form action="/search" method="get">
-						<input id="search_string" type="text" name="search_string" />
-						<input type="text" id="non_karaoke" name="non_karaoke" />
-					</form>
-				</div>
-
-				<div id="searching_loader" class="control is-loading is-hidden">
-					Searching YouTube for{' '}
-					<small>
-						<i>
-							'<span id="search_term"></span>'
-						</i>
-					</small>
-				</div>
-
-				<div class="field" id="container_search_result">
-					<form action="/download" method="post">
-						<label class="label">
-							Search results for{' '}
-							<small>
-								<i>'smith'</i>
-							</small>
-						</label>
-						<div class="field select">
-							<select id="search_result_selector" name="song-url">
-								&gt;
-								<option data-ytid="Uq9gPaIzbe8" value="https://www.youtube.com/watch?v=Uq9gPaIzbe8">
-									Sam Smith, Kim Petras - Unholy (Official Music Video)
-								</option>
-							</select>
-						</div>
-						<input class="song-added-by" type="hidden" name="song-added-by" value="Jesse" />
-						<p class="help">Click dropdown to show more results</p>
-						<p>
-							Link:{' '}
-							<a
-								// target="_blank"
-								id="youtube-link"
-								href="https://www.youtube.com/watch?v=5_P2CW9mlYo"
-							>
-								https://www.youtube.com/watch?v=5_P2CW9mlYo
-							</a>
-						</p>
-						<p class="has-text-centered-mobile">
-							{' '}
-							<img
-								id="youtube-thumb"
-								src="https://img.youtube.com/vi/5_P2CW9mlYo/mqdefault.jpg"
-								alt="thumbnail"
-							/>{' '}
-						</p>
-						<div class="field">
-							<label class="checkbox">
-								<input type="checkbox" checked="" name="queue" />
-								Add to queue once downloaded
-							</label>
-						</div>
-						<div class="field">
-							<button class="button is-success is-rounded" id="download-button" type="submit">
-								Download
-							</button>
-						</div>
-					</form>
-				</div>
-			</div>
 		</div>
 	);
 };
