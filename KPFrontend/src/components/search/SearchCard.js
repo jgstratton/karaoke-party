@@ -1,24 +1,15 @@
 import React from 'react';
-import { useState } from 'react';
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
 const SearchCard = (props) => {
-	const [form, setForm] = useState({
-		searchString: '',
-	});
-
-	function handleInputChange(e) {
-		const { name, value } = e.target;
-		setForm({
-			...form,
-			[name]: value,
-		});
+	function handleSearchChange(e) {
+		props.setSearchString(e.target.value);
 	}
 
 	function handleSubmit(e) {
-		props.submitSearch(form.searchString);
+		props.submitSearch();
 		e.preventDefault();
 	}
 
@@ -33,8 +24,8 @@ const SearchCard = (props) => {
 								type="text"
 								placeholder="Search for song"
 								name="searchString"
-								value={form.searchString}
-								onChange={handleInputChange}
+								value={props.searchString}
+								onChange={handleSearchChange}
 							/>
 							<Form.Text className="text-muted">Search for a song by title/artist</Form.Text>
 						</Form.Group>

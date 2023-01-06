@@ -1,3 +1,5 @@
 .vs/
 obj/
 /Songs/*
+*/bin/*
+_old/*

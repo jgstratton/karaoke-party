@@ -4,6 +4,7 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import '../../css/table-classes.css';
 import Loading from '../common/Loading';
+import Overlay from '../common/Overlay';
 import VideoPreview from './VideoPreview';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload } from '@fortawesome/free-solid-svg-icons';
@@ -27,7 +28,9 @@ const YouTubeResults = (props) => {
 	return (
 		<div>
 			{downloadInProgress && (
-				<Loading overlay={true} message="Download in progress... this may take a minute..." />
+				<Overlay>
+					<Loading>Download in progress... this may take a minute...</Loading>
+				</Overlay>
 			)}
 			<Card className="mt-3">
 				<Card.Body>

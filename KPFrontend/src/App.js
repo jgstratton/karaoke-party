@@ -39,6 +39,12 @@ const App = () => {
 		navigate('/NoParty');
 	}
 
+	function updateQueue(queue) {
+		let newParty = { ...party };
+		newParty.queue = queue.sort((a, b) => a.order - b.order);
+		setParty(newParty);
+	}
+
 	useEffect(() => {
 		async function load() {
 			let party = await StorageService.loadParty();
@@ -49,6 +55,10 @@ const App = () => {
 		}
 		load();
 	}, []);
+
+	useEffect(() => {
+		console.log(party);
+	}, [party]);
 
 	return (
 		<div>
@@ -80,7 +90,12 @@ const App = () => {
 									setUser={updateUser}
 								>
 									{user.isDj ? (
-										<DJDashboard user={user} leaveParty={leaveParty} party={party} />
+										<DJDashboard
+											updateQueue={updateQueue}
+											user={user}
+											leaveParty={leaveParty}
+											party={party}
+										/>
 									) : (
 										<SingerDashboard user={user} leaveParty={leaveParty} party={party} />
 									)}

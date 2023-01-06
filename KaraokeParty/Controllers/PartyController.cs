@@ -20,7 +20,14 @@ namespace KaraokeParty.Controllers {
 
 		[HttpGet]
 		public ActionResult<Party> Get(string partyKey) {
-			Party? party = context.Parties.Include(p => p.Singers).Where(p =>
+			// Load up the whole party at once, because... why not? just get it all working
+			Party? party = context.Parties
+				.Include(p => p.Singers)
+				.Include(p => p.Queue)
+					.ThenInclude(q => q.Singer)
+				.Include(p => p.Queue)
+					.ThenInclude(q => q.Song)
+				.Where(p =>
 				!p.IsExpired && p.PartyKey == partyKey
 			).OrderByDescending(p => p.DateTimeCreated).FirstOrDefault();
 			if (party == null) {
