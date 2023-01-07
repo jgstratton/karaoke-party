@@ -31,6 +31,7 @@ namespace KPPlayer
         /// </summary>
         private void InitializeComponent()
         {
+			this.components = new System.ComponentModel.Container();
 			this.videoView1 = new LibVLCSharp.WinForms.VideoView();
 			this.btnCheckConnection = new System.Windows.Forms.Button();
 			this.txtCheckConnection = new System.Windows.Forms.TextBox();
@@ -39,17 +40,20 @@ namespace KPPlayer
 			this.txtServerUrl = new System.Windows.Forms.TextBox();
 			this.txtPartyKey = new System.Windows.Forms.TextBox();
 			this.lblConnectionStatus = new System.Windows.Forms.Label();
+			this.playerTimer = new System.Windows.Forms.Timer(this.components);
+			this.btnTogglePlayer = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.videoView1)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// videoView1
 			// 
 			this.videoView1.BackColor = System.Drawing.Color.Black;
-			this.videoView1.Location = new System.Drawing.Point(13, 12);
+			this.videoView1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.videoView1.Location = new System.Drawing.Point(0, 0);
 			this.videoView1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
 			this.videoView1.MediaPlayer = null;
 			this.videoView1.Name = "videoView1";
-			this.videoView1.Size = new System.Drawing.Size(697, 360);
+			this.videoView1.Size = new System.Drawing.Size(1010, 561);
 			this.videoView1.TabIndex = 0;
 			// 
 			// btnCheckConnection
@@ -112,11 +116,28 @@ namespace KPPlayer
 			this.lblConnectionStatus.TabIndex = 7;
 			this.lblConnectionStatus.Text = "(Status Unknown)";
 			// 
+			// playerTimer
+			// 
+			this.playerTimer.Enabled = true;
+			this.playerTimer.Interval = 2000;
+			this.playerTimer.Tick += new System.EventHandler(this.playerTimer_Tick);
+			// 
+			// btnTogglePlayer
+			// 
+			this.btnTogglePlayer.Location = new System.Drawing.Point(638, 381);
+			this.btnTogglePlayer.Name = "btnTogglePlayer";
+			this.btnTogglePlayer.Size = new System.Drawing.Size(72, 58);
+			this.btnTogglePlayer.TabIndex = 8;
+			this.btnTogglePlayer.Text = "Toggle Player";
+			this.btnTogglePlayer.UseVisualStyleBackColor = true;
+			this.btnTogglePlayer.Click += new System.EventHandler(this.btnTogglePlayer_Click);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1010, 561);
+			this.Controls.Add(this.btnTogglePlayer);
 			this.Controls.Add(this.lblConnectionStatus);
 			this.Controls.Add(this.txtPartyKey);
 			this.Controls.Add(this.txtServerUrl);
@@ -125,6 +146,7 @@ namespace KPPlayer
 			this.Controls.Add(this.txtCheckConnection);
 			this.Controls.Add(this.btnCheckConnection);
 			this.Controls.Add(this.videoView1);
+			this.KeyPreview = true;
 			this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
 			this.Name = "MainForm";
 			this.Text = "LibVLCSharp.WinForms";
@@ -144,5 +166,7 @@ namespace KPPlayer
 		private System.Windows.Forms.TextBox txtServerUrl;
 		private System.Windows.Forms.TextBox txtPartyKey;
 		private System.Windows.Forms.Label lblConnectionStatus;
+		private System.Windows.Forms.Timer playerTimer;
+		private System.Windows.Forms.Button btnTogglePlayer;
 	}
 }

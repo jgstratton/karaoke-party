@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using System.Windows.Forms;
 using KPPlayer.Services;
 using KPPlayer.Types;
 using LibVLCSharp.Shared;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace KPPlayer {
 	public partial class MainForm : Form {
@@ -60,6 +62,7 @@ namespace KPPlayer {
 				settings.PartyKey = txtPartyKey.Text;
 				settings.WriteSettigns();
 				lblConnectionStatus.Text = ConnectionStatus.Connected.ToString();
+				Status = ConnectionStatus.Connected;
 			} catch (Exception ex) {
 				txtCheckConnection.Text = ex.Message;
 				lblConnectionStatus.Text = ConnectionStatus.Failed.ToString();
@@ -70,6 +73,55 @@ namespace KPPlayer {
 			btnCheckConnection.Enabled = false;
 			await checkConnection();
 			btnCheckConnection.Enabled = true;
+		}
+
+		private async void playerTimer_Tick(object sender, EventArgs e) {
+			txtCheckConnection.Text = $"Try ping...{Status.ToString()}";
+			if (Status == ConnectionStatus.Connected) {
+				var response = await client.GetAsync($"party/{txtPartyKey.Text}/player");
+				var data = await response.Content.ReadAsStringAsync();
+				txtCheckConnection.Text = $"{DateTime.Now.ToLongTimeString()} {data}";
+			}
+		}
+
+		private void btnTogglePlayer_Click(object sender, EventArgs e) {
+			this.TopMost = true;
+			this.FormBorderStyle = FormBorderStyle.None;
+			this.WindowState = FormWindowState.Maximized;
+		}
+
+		protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
+			if (keyData == (Keys.F11)) {
+				if (WindowState == FormWindowState.Maximized) {
+					this.TopMost = false;
+					this.FormBorderStyle = FormBorderStyle.Fixed3D;
+					this.WindowState = FormWindowState.Normal;
+					foreach (var lbl in Controls.OfType<Label>()) {
+						lbl.Show();
+					}
+					foreach (var btn in Controls.OfType<Button>()) {
+						btn.Show();
+					}
+					foreach (var txt in Controls.OfType<TextBox>()) {
+						txt.Show();
+					}
+				} else {
+					this.TopMost = true;
+					this.FormBorderStyle = FormBorderStyle.None;
+					this.WindowState = FormWindowState.Maximized;
+					foreach (var lbl in Controls.OfType<Label>()) {
+						lbl.Hide();
+					}
+					foreach (var btn in Controls.OfType<Button>()) {
+						btn.Hide();
+					}
+					foreach (var txt in Controls.OfType<TextBox>()) {
+						txt.Hide();
+					}
+				}
+				return true;
+			}
+			return base.ProcessCmdKey(ref msg, keyData);
 		}
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace KaraokeParty.DataStore {
 	public class Party {
@@ -22,5 +23,7 @@ namespace KaraokeParty.DataStore {
 		public List<Singer> Singers { get; set; } = new List<Singer>();
 
 		public List<Performance> Queue { get; set; } = new List<Performance>();
+
+		public PlayerState PlayerState { get; set; } = PlayerState.Stopped;
 	}
 }
