@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import Menu from './common/Menu';
 import Title from './common/Title';
 import LocalResults from './search/LocalResults';
@@ -10,6 +11,7 @@ import ApiService from '../services/ApiService';
 import { useNavigate } from 'react-router-dom';
 import Overlay from './common/Overlay';
 import Button from 'react-bootstrap/Button';
+import { addRequest } from '../slices/performancesSlice';
 
 const Search = (props) => {
 	const navigate = useNavigate();
@@ -20,6 +22,9 @@ const Search = (props) => {
 	const [localLoading, setLocalLoading] = useState(false);
 	const [youtubeLoading, setYoutubeLoading] = useState(false);
 	const [addedToQueue, setAddedToQueue] = useState(false);
+	const party = useSelector((state) => state.party);
+	const user = useSelector((state) => state.user);
+	const dispatch = useDispatch();
 
 	async function submitSearch() {
 		setSearchSubmitted(true);
@@ -39,10 +44,11 @@ const Search = (props) => {
 	}
 
 	async function addToQueue(filename) {
-		ApiService.addPerformance(props.party.partyKey, {
+		const newPerforamance = await ApiService.addPerformance(party.partyKey, {
 			fileName: filename,
-			singerId: props.user.singerId,
+			singerId: user.singerId,
 		});
+		dispatch(addRequest(newPerforamance));
 		setAddedToQueue(true);
 	}
 
@@ -62,17 +68,9 @@ const Search = (props) => {
 			) : (
 				''
 			)}
-			<Menu user={props.user} leaveParty={props.leaveParty} />
-			<Title party={props.party} />
-			<SearchCard
-				party={props.party}
-				user={props.user}
-				updateParty={props.updateParty}
-				setUser={props.updateUser}
-				submitSearch={submitSearch}
-				searchString={searchString}
-				setSearchString={setSearchString}
-			/>
+			<Menu />
+			<Title />
+			<SearchCard submitSearch={submitSearch} searchString={searchString} setSearchString={setSearchString} />
 			{searchSubmitted && (
 				<>
 					<LocalResults results={localResults} loading={localLoading} addToQueue={addToQueue} />

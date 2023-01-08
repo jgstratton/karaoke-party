@@ -7,8 +7,8 @@ import Title from './common/Title';
 const SingerDashboard = (props) => {
 	return (
 		<div className="container" style={{ padding: '5px', maxWidth: '900px' }}>
-			<Menu user={props.user} leaveParty={props.leaveParty} />
-			<Title party={props.party} />
+			<Menu />
+			<Title />
 			<NowPlaying />
 			<NextSong />
 		</div>

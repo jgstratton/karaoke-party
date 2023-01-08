@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import ApiService from '../services/ApiService';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -7,8 +8,16 @@ import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { useNavigate } from 'react-router-dom';
+import { populate as populateUser } from '../slices/userSlice';
+import { populate as populateParty } from '../slices/partySlice';
+import { populate as poulatePerformances } from '../slices/partySlice';
+import StorageService from '../services/StorageService';
 
-const NoParty = (props) => {
+const NoParty = () => {
+	const dispatch = useDispatch();
+	const user = useSelector((state) => state.user);
+	const party = useSelector((state) => state.party);
+
 	const [loading, setLoading] = useState(true);
 	const [form, setForm] = useState({
 		partyName: '',
@@ -27,26 +36,32 @@ const NoParty = (props) => {
 	}
 
 	async function handleCreate(e) {
-		let party = await ApiService.createParty(form.partyName, form.djName);
-		props.updateParty(party);
-		props.setUser(party.singers[0]);
+		let newParty = await ApiService.createParty(form.partyName, form.djName);
+		const newUser = newParty.singers[0];
+		dispatch(populateUser(newUser));
+		dispatch(populateParty(newParty));
+		StorageService.storeUser(newUser);
+		StorageService.storeParty(newParty);
 		navigate('/home');
 	}
 
 	async function handleJoin(e) {
-		let party = await ApiService.fetchParty(form.joinCode);
-		let singer = await ApiService.joinParty(form.joinCode, form.singerName);
-		props.updateParty(party);
-		props.setUser(singer);
+		let curParty = await ApiService.fetchParty(form.joinCode);
+		let newUser = await ApiService.joinParty(form.joinCode, form.singerName);
+		dispatch(populateParty(curParty));
+		dispatch(populateUser(newUser));
+		dispatch(poulatePerformances(curParty.queue));
+		StorageService.storeUser(newUser);
+		StorageService.storeParty(curParty);
 		navigate('/home');
 	}
 
 	useEffect(() => {
-		if (props.user && props.user.singerId && props.party && props.party.partyKey) {
+		if (user && user.singerId && party && party.partyKey) {
 			navigate('/home');
 		}
 		setLoading(false);
-	}, [props.user, props.party, navigate]);
+	}, [user, party, navigate]);
 
 	return loading ? (
 		<div>Loading...</div>
