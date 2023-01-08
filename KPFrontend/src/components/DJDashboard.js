@@ -1,7 +1,7 @@
 import React from 'react';
+import { useState } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import SingerList from './common/SingerList';
 import Menu from './common/Menu';
 import Title from './common/Title';
 import Card from 'react-bootstrap/Card';
@@ -11,18 +11,20 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 const DJDashboard = (props) => {
 	const onDragEnd = (result) => {
 		if (result.reason === 'DROP') {
+			console.log(result);
 			if (result.destination.droppableId === 'queue') {
-				let newQueue = props.party.queue;
 				let targetId = Number(result.draggableId);
 				let targetLocation = result.destination.index + 1;
-				for (var i = 0; i < newQueue.length; i++) {
-					if (newQueue[i].performanceID === targetId) {
-						newQueue[i].order = targetLocation;
-					} else if (newQueue[i].order >= targetLocation) {
-						newQueue[i].order += 1;
+				for (var i = 0; i < props.party.queue.length; i++) {
+					let newPerformance = { ...props.party.queue[i] };
+					if (newPerformance.performanceID === targetId) {
+						newPerformance.order = targetLocation;
+						props.updatePerformance(newPerformance);
+					} else if (newPerformance.order >= targetLocation) {
+						newPerformance.order += 1;
+						props.updatePerformance(newPerformance);
 					}
 				}
-				props.updateQueue(newQueue);
 			}
 		}
 	};
@@ -128,7 +130,23 @@ const DJDashboard = (props) => {
 				</DragDropContext>
 
 				<Col xs={4}>
-					<SingerList singers={props.party.singers} />
+					<Card>
+						<Card.Body>
+							<Card.Title>Completed Songs (Most Recent First)</Card.Title>
+							<Card.Text className="text-warning">
+								<ListGroup>
+									{props.party.queue
+										.filter((s) => s.songCompleted)
+										.map((s, i) => (
+											<ListGroup.Item key={s.performanceID}>
+												<div className="text-warning">{s.singer?.name}</div>
+												{s.song?.title}
+											</ListGroup.Item>
+										))}
+								</ListGroup>
+							</Card.Text>
+						</Card.Body>
+					</Card>
 				</Col>
 			</Row>
 		</div>

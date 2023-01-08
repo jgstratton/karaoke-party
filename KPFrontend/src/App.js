@@ -8,6 +8,7 @@ import DJDashboard from './components/DJDashboard';
 import StorageService from './services/StorageService';
 import DevTools from './components/common/DevTools';
 import Search from './components/Search';
+import ApiService from './services/ApiService';
 
 const App = () => {
 	const [loading, setLoading] = useState(true);
@@ -20,7 +21,10 @@ const App = () => {
 	const navigate = useNavigate();
 
 	function updateParty(party) {
-		let newParty = { ...party };
+		let newParty = {
+			...party,
+			queue: [...party.queue.sort((a, b) => a.order - b.order)],
+		};
 		StorageService.storeParty(newParty);
 		setParty(newParty);
 	}
@@ -39,9 +43,17 @@ const App = () => {
 		navigate('/NoParty');
 	}
 
-	function updateQueue(queue) {
-		let newParty = { ...party };
-		newParty.queue = queue.sort((a, b) => a.order - b.order);
+	async function updatePerformance(performance) {
+		let newPerformance = { ...performance };
+		await ApiService.updatePerformance(party.partyKey, newPerformance);
+		let newParty = {
+			...party,
+			queue: [
+				...party.queue
+					.map((p) => (p.performanceID === newPerformance.performanceID ? newPerformance : { ...p }))
+					.sort((a, b) => a.order - b.order),
+			],
+		};
 		setParty(newParty);
 	}
 
@@ -91,7 +103,7 @@ const App = () => {
 								>
 									{user.isDj ? (
 										<DJDashboard
-											updateQueue={updateQueue}
+											updatePerformance={updatePerformance}
 											user={user}
 											leaveParty={leaveParty}
 											party={party}

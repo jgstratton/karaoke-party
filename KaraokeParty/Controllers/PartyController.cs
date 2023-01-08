@@ -75,19 +75,26 @@ namespace KaraokeParty.Controllers {
 		[HttpPut]
 		[Route("{partyKey}/performance")]
 		public ActionResult<Performance> UpdatePerformance(string partyKey, [FromBody] PerformanceDTO dto) {
-			if (dto.PerformanceId == null) {
-				return BadRequest("Wrong verb or missing id, use POST to update an existing performance, or provide a performance id");
+			try {
+				if (dto.PerformanceId == null) {
+					return BadRequest("Wrong verb or missing id, use POST to update an existing performance, or provide a performance id");
+				}
+				Performance? performance = context.Performances
+					.Include(p => p.Party)
+					.Include(p => p.Singer)
+					.Where(p => p.PerformanceID == dto.PerformanceId).FirstOrDefault();
+				if (performance == null) {
+					return NotFound($"No performance was found with id {dto.PerformanceId}");
+				}
+				if (partyKey != performance.Party?.PartyKey) {
+					return BadRequest("Performance partyKey mismatch");
+				}
+				dto.UpdateDb(context, performance);
+				context.SaveChanges();
+				return performance;
+			} catch (Exception ex) {
+				return BadRequest($"An unexpected error occured: {ex.Message}");
 			}
-			Performance? performance = context.Performances.Find(dto.PerformanceId);
-			if (performance == null) {
-				return NotFound($"No performance was found with id {dto.PerformanceId}");
-			}
-			if (partyKey != performance.Party?.PartyKey) {
-				return BadRequest("Performance partyKey mismatch");
-			}
-			dto.UpdateDb(context, performance);
-			context.SaveChanges();
-			return performance;
 		}
 
 		[HttpDelete]
