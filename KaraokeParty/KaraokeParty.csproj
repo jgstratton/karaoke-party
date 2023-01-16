@@ -13,11 +13,13 @@
     </PackageReference>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
   </ItemGroup>
   <ItemGroup>
     <None Include="./.editorconfig" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Controllers\Party\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 

@@ -3,6 +3,7 @@ using KaraokeParty.DataStore;
 using KaraokeParty.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Data.SqlClient;
 
 namespace KaraokeParty.Controllers {
 	[ApiController]
@@ -70,6 +71,41 @@ namespace KaraokeParty.Controllers {
 			context.Performances.Add(performance);
 			context.SaveChanges();
 			return performance;
+		}
+
+		[HttpPost]
+		[Route("{partyKey}/performance/{performanceId}/move")]
+		public ActionResult MovePerformance(string partyKey, string performanceId, [FromBody] MovePerformanceBody body) {
+			Party? party = partyService.GetPartyByKey(partyKey);
+			if (party == null) {
+				return NotFound();
+			}
+			int targetRow = body.TargetIndex + 1;
+			// increase the order by value of all records after the target index
+			context.Database.ExecuteSqlRaw($@"
+					WITH cte AS (
+						SELECT {nameof(Performance.PerformanceID)}, row_number() OVER (ORDER BY {nameof(Performance.Order)}) as row_num
+						FROM performances
+						WHERE status = @targetStatus
+							and perfcomance.partyId = @partyId
+					)
+					UPDATE performances 
+					SET {nameof(Performance.Order)} =
+						CASE
+							WHEN performanceId = @performanceId THEN @targetRow
+							WHEN cte.row_num < @targetRow THEN cte.row_num
+							ELSE cte.row_num + 1
+						END
+					FROM cte
+					WHERE performances.performanceId = cte.id;
+				",
+				new SqlParameter("@targetStatus", body.TargetStatus),
+				new SqlParameter("@targetRow", targetRow),
+				new SqlParameter("@performanceId", performanceId),
+				new SqlParameter("@PartyId", party.PartyId)
+			);
+
+			return Ok();
 		}
 
 		[HttpPut]

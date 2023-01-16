@@ -11,7 +11,7 @@ namespace KaraokeParty.DataStore {
 
 		public Song? Song { get; set; }
 
-		public bool SongCompleted { get; set; } = false;
+		public PerformanceStatus Status { get; set; } = PerformanceStatus.Requested;
 
 		public int? Order { get; set; }
 	}

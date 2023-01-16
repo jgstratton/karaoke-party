@@ -23,7 +23,7 @@ namespace KaraokeParty.Controllers {
 			if (party == null) {
 				return NotFound();
 			}
-			List<Performance> queue = party.Queue.Where(q => !q.SongCompleted).OrderBy(q => q.Order).ToList();
+			List<Performance> queue = party.Queue.Where(q => q.Status == PerformanceStatus.Queued).OrderBy(q => q.Order).ToList();
 			return new PlayerDTO {
 				PlayerState = party.PlayerState,
 				Performance = queue.FirstOrDefault(),
@@ -40,7 +40,7 @@ namespace KaraokeParty.Controllers {
 			if (performance == null) {
 				return NotFound();
 			}
-			performance.SongCompleted = true;
+			performance.Status = PerformanceStatus.Completed;
 			context.SaveChanges();
 			return true;
 		}

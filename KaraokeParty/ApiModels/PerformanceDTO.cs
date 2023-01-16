@@ -5,7 +5,7 @@ namespace KaraokeParty.ApiModels {
 		public int? PerformanceId { get; set; }
 		public int? SingerId { get; set; }
 		public string? FileName { get; set; }
-		public bool? SongCompleted { get; set; }
+		public PerformanceStatus Status { get; set; }
 		public int? Order { get; set; }
 
 		public void UpdateDb(KPContext context, Performance performance) {
@@ -25,9 +25,7 @@ namespace KaraokeParty.ApiModels {
 				}
 			}
 
-			if (SongCompleted != null) {
-				performance.SongCompleted = (bool)SongCompleted;
-			}
+			performance.Status = Status;
 
 			if (Order != null) {
 				performance.Order = Order;
