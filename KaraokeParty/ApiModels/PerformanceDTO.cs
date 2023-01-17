@@ -28,7 +28,7 @@ namespace KaraokeParty.ApiModels {
 			performance.Status = Status;
 
 			if (Order != null) {
-				performance.Order = Order;
+				performance.Sort_Order = Order;
 			}
 		}
 	}

@@ -3,6 +3,7 @@ using KaraokeParty.DataStore;
 using KaraokeParty.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using System.Data.SqlClient;
 
 namespace KaraokeParty.Controllers {
@@ -75,34 +76,34 @@ namespace KaraokeParty.Controllers {
 
 		[HttpPost]
 		[Route("{partyKey}/performance/{performanceId}/move")]
-		public ActionResult MovePerformance(string partyKey, string performanceId, [FromBody] MovePerformanceBody body) {
+		public ActionResult MovePerformance(string partyKey, int performanceId, [FromBody] MovePerformanceBody body) {
 			Party? party = partyService.GetPartyByKey(partyKey);
 			if (party == null) {
 				return NotFound();
 			}
 			int targetRow = body.TargetIndex + 1;
 			// increase the order by value of all records after the target index
-			context.Database.ExecuteSqlRaw($@"
+			context.Database.ExecuteSql($@"
 					WITH cte AS (
-						SELECT {nameof(Performance.PerformanceID)}, row_number() OVER (ORDER BY {nameof(Performance.Order)}) as row_num
+						SELECT performance_id as id, row_number() OVER (ORDER BY sort_order) as row_num
 						FROM performances
-						WHERE status = @targetStatus
-							and perfcomance.partyId = @partyId
+						WHERE performances.party_id = {party.PartyId}
+							and (
+								status = {(int)body.TargetStatus}
+								or performance_id = {performanceId}
+							)
 					)
 					UPDATE performances 
-					SET {nameof(Performance.Order)} =
+					SET sort_order =
 						CASE
-							WHEN performanceId = @performanceId THEN @targetRow
-							WHEN cte.row_num < @targetRow THEN cte.row_num
+							WHEN performance_id = {performanceId} THEN {targetRow}
+							WHEN cte.row_num < {targetRow} THEN cte.row_num
 							ELSE cte.row_num + 1
-						END
+						END,
+						status = {(int)body.TargetStatus}
 					FROM cte
-					WHERE performances.performanceId = cte.id;
-				",
-				new SqlParameter("@targetStatus", body.TargetStatus),
-				new SqlParameter("@targetRow", targetRow),
-				new SqlParameter("@performanceId", performanceId),
-				new SqlParameter("@PartyId", party.PartyId)
+					WHERE performances.performance_id = cte.id
+				"
 			);
 
 			return Ok();

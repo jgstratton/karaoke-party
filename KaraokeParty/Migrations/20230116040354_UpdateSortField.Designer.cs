@@ -12,15 +12,15 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KaraokeParty.Migrations
 {
     [DbContext(typeof(KPContext))]
-    [Migration("20230107064720_AddPlayer")]
-    partial class AddPlayer
+    [Migration("20230116040354_UpdateSortField")]
+    partial class UpdateSortField
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.1")
+                .HasAnnotation("ProductVersion", "7.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -29,125 +29,155 @@ namespace KaraokeParty.Migrations
                 {
                     b.Property<int>("PartyId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("party_id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PartyId"));
 
                     b.Property<DateTime>("DateTimeCreated")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("date_time_created");
 
                     b.Property<bool>("IsExpired")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_expired");
 
                     b.Property<string>("PartyKey")
                         .IsRequired()
                         .HasMaxLength(10)
-                        .HasColumnType("character varying(10)");
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("party_key");
 
                     b.Property<int>("PlayerState")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("player_state");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(128)
-                        .HasColumnType("character varying(128)");
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("title");
 
-                    b.HasKey("PartyId");
+                    b.HasKey("PartyId")
+                        .HasName("pk_parties");
 
-                    b.ToTable("Parties");
+                    b.ToTable("parties", (string)null);
                 });
 
             modelBuilder.Entity("KaraokeParty.DataStore.Performance", b =>
                 {
                     b.Property<int>("PerformanceID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("performance_id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PerformanceID"));
 
-                    b.Property<int?>("Order")
-                        .HasColumnType("integer");
-
                     b.Property<int?>("PartyId")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("party_id");
 
                     b.Property<int?>("SingerId")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("SongCompleted")
-                        .HasColumnType("boolean");
+                        .HasColumnType("integer")
+                        .HasColumnName("singer_id");
 
                     b.Property<string>("SongFileName")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("song_file_name");
 
-                    b.HasKey("PerformanceID");
+                    b.Property<int?>("Sort_Order")
+                        .HasColumnType("integer")
+                        .HasColumnName("sort_order");
 
-                    b.HasIndex("PartyId");
+                    b.Property<int>("Status")
+                        .HasColumnType("integer")
+                        .HasColumnName("status");
 
-                    b.HasIndex("SingerId");
+                    b.HasKey("PerformanceID")
+                        .HasName("pk_performances");
 
-                    b.HasIndex("SongFileName");
+                    b.HasIndex("PartyId")
+                        .HasDatabaseName("ix_performances_party_id");
 
-                    b.ToTable("Performances");
+                    b.HasIndex("SingerId")
+                        .HasDatabaseName("ix_performances_singer_id");
+
+                    b.HasIndex("SongFileName")
+                        .HasDatabaseName("ix_performances_song_file_name");
+
+                    b.ToTable("performances", (string)null);
                 });
 
             modelBuilder.Entity("KaraokeParty.DataStore.Singer", b =>
                 {
                     b.Property<int>("SingerId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("singer_id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("SingerId"));
 
                     b.Property<bool>("IsDj")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_dj");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(128)
-                        .HasColumnType("character varying(128)");
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("name");
 
                     b.Property<int?>("PartyId")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("party_id");
 
-                    b.HasKey("SingerId");
+                    b.HasKey("SingerId")
+                        .HasName("pk_singers");
 
-                    b.HasIndex("PartyId");
+                    b.HasIndex("PartyId")
+                        .HasDatabaseName("ix_singers_party_id");
 
-                    b.ToTable("Singers");
+                    b.ToTable("singers", (string)null);
                 });
 
             modelBuilder.Entity("KaraokeParty.DataStore.Song", b =>
                 {
                     b.Property<string>("FileName")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("file_name");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("title");
 
                     b.Property<string>("Url")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("url");
 
-                    b.HasKey("FileName");
+                    b.HasKey("FileName")
+                        .HasName("pk_songs");
 
-                    b.ToTable("Songs");
+                    b.ToTable("songs", (string)null);
                 });
 
             modelBuilder.Entity("KaraokeParty.DataStore.Performance", b =>
                 {
                     b.HasOne("KaraokeParty.DataStore.Party", "Party")
                         .WithMany("Queue")
-                        .HasForeignKey("PartyId");
+                        .HasForeignKey("PartyId")
+                        .HasConstraintName("fk_performances_parties_party_id");
 
                     b.HasOne("KaraokeParty.DataStore.Singer", "Singer")
                         .WithMany()
-                        .HasForeignKey("SingerId");
+                        .HasForeignKey("SingerId")
+                        .HasConstraintName("fk_performances_singers_singer_id");
 
                     b.HasOne("KaraokeParty.DataStore.Song", "Song")
                         .WithMany()
-                        .HasForeignKey("SongFileName");
+                        .HasForeignKey("SongFileName")
+                        .HasConstraintName("fk_performances_songs_song_temp_id");
 
                     b.Navigation("Party");
 
@@ -160,7 +190,8 @@ namespace KaraokeParty.Migrations
                 {
                     b.HasOne("KaraokeParty.DataStore.Party", null)
                         .WithMany("Singers")
-                        .HasForeignKey("PartyId");
+                        .HasForeignKey("PartyId")
+                        .HasConstraintName("fk_singers_parties_party_id");
                 });
 
             modelBuilder.Entity("KaraokeParty.DataStore.Party", b =>

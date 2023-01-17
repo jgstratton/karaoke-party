@@ -23,7 +23,7 @@ namespace KaraokeParty.Controllers {
 			if (party == null) {
 				return NotFound();
 			}
-			List<Performance> queue = party.Queue.Where(q => q.Status == PerformanceStatus.Queued).OrderBy(q => q.Order).ToList();
+			List<Performance> queue = party.Queue.Where(q => q.Status == PerformanceStatus.Queued).OrderBy(q => q.Sort_Order).ToList();
 			return new PlayerDTO {
 				PlayerState = party.PlayerState,
 				Performance = queue.FirstOrDefault(),

@@ -8,7 +8,8 @@ namespace KaraokeParty.DataStore {
 		public DbSet<Performance> Performances { get; set; }
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
-			optionsBuilder.UseNpgsql("Host=localhost;Database=KaraokeParty;Username=admin;Password=password");
+			optionsBuilder.UseNpgsql("Host=localhost;Database=KaraokeParty;Username=admin;Password=password")
+				.UseSnakeCaseNamingConvention();
 			base.OnConfiguring(optionsBuilder);
 		}
 
