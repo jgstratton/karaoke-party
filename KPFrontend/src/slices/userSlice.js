@@ -20,9 +20,7 @@ export const userSlice = createSlice({
 			state.isDj = !state.isDj;
 		},
 
-		reset: (state) => {
-			state = initialState;
-		},
+		reset: () => initialState,
 	},
 });
 

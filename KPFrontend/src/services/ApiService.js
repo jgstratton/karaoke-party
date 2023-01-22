@@ -110,6 +110,25 @@ async function updatePerformance(partyKey, performance) {
 	alert('error adding performance');
 }
 
+async function movePerformance(party, performance, targetIndex, targetStatus) {
+	let response = await fetch(`party/${party.partyKey}/performance/${performance.performanceID}/move`, {
+		method: 'POST',
+		headers: {
+			Accept: 'application/json',
+			'Content-Type': 'application/json',
+		},
+
+		body: JSON.stringify({
+			targetStatus: targetStatus,
+			targetIndex: targetIndex,
+		}),
+	});
+	if (response.status === 200) {
+		return;
+	}
+	alert('error moving performance');
+}
+
 const ApiService = {
 	createParty,
 	fetchParty,
@@ -118,6 +137,7 @@ const ApiService = {
 	searchSongs,
 	addPerformance,
 	updatePerformance,
+	movePerformance,
 };
 
 export default ApiService;

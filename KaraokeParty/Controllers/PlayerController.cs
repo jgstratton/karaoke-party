@@ -23,12 +23,44 @@ namespace KaraokeParty.Controllers {
 			if (party == null) {
 				return NotFound();
 			}
-			List<Performance> queue = party.Queue.Where(q => q.Status == PerformanceStatus.Queued).OrderBy(q => q.Sort_Order).ToList();
+			List<PerformanceDTO> queue = party.Queue
+				.Where(q => q.Status == PerformanceStatus.Queued)
+				.Select(a => new PerformanceDTO {
+					FileName = a.Song?.FileName,
+					Sort_Order = a.Sort_Order,
+					PerformanceId = a.PerformanceID,
+					SingerId = a.Singer?.SingerId,
+					SingerName = a.Singer?.Name,
+					Status = a.Status
+				}).OrderBy(q => q.Sort_Order).ToList();
 			return new PlayerDTO {
 				PlayerState = party.PlayerState,
 				Performance = queue.FirstOrDefault(),
 				UpcomingPerformances = queue.Skip(1).ToList()
 			};
+		}
+
+		[HttpGet]
+		[Route("Next")]
+		public ActionResult<PerformanceDTO> Next(string partyKey) {
+			Party? party = partyService.GetPartyByKey(partyKey);
+			if (party == null) {
+				return NotFound();
+			}
+			party.Queue
+				.Where(p => p.Status == PerformanceStatus.Live)
+				.ToList()
+				.ForEach(p => p.Status = PerformanceStatus.Completed);
+
+			Performance? nextPerformance = party.Queue
+				.Where(q => q.Status == PerformanceStatus.Queued)
+				.OrderBy(p => p.Sort_Order).FirstOrDefault();
+
+			if (nextPerformance != null) {
+				nextPerformance.Status = PerformanceStatus.Live;
+			}
+			context.SaveChanges();
+			return nextPerformance is null ? new PerformanceDTO() : PerformanceDTO.FromDb(nextPerformance);
 		}
 
 		[HttpPost]
@@ -44,5 +76,24 @@ namespace KaraokeParty.Controllers {
 			context.SaveChanges();
 			return true;
 		}
+
+		[HttpGet]
+		[Route("GetQueuedList")]
+		public ActionResult<GetQueuedListResponse> GetQueuedList(string partyKey) {
+			Party? party = partyService.GetPartyByKey(partyKey);
+			if (party == null) {
+				return NotFound();
+			}
+			return new GetQueuedListResponse {
+				Performances = party.Queue.Where(p => p.Status == PerformanceStatus.Queued).Select(p => new GetQueuedListResponse.Performance {
+					FileName = p.Song?.FileName ?? "",
+					Sort_Order = p.Sort_Order,
+					PerformanceId = p.PerformanceID,
+					SingerName = p.Singer?.Name ?? ""
+				}).ToList()
+			};
+		}
+
+
 	}
 }

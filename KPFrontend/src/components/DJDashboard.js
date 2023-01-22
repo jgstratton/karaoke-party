@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Menu from './common/Menu';
@@ -7,32 +7,35 @@ import Title from './common/Title';
 import Card from 'react-bootstrap/Card';
 import ListGroup from 'react-bootstrap/ListGroup';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import ApiService from '../services/ApiService';
+import StatusService from '../services/StatusService';
+import { moveRequest } from '../slices/performancesSlice';
+import Player from './dj/Player';
 
 const DJDashboard = (props) => {
-	// const dispatch = useDispatch();
-	const party = useSelector((state) => state.party);
+	const dispatch = useDispatch();
 	const performances = useSelector((state) => state.performances);
+	const party = useSelector((state) => state.party);
 
 	const onDragEnd = (result) => {
 		if (result.reason === 'DROP') {
-			console.log(result);
-			if (result.destination.droppableId === 'queue') {
-				let targetId = Number(result.draggableId);
-				let targetLocation = result.destination.index + 1;
-				for (var i = 0; i < party.queue.length; i++) {
-					let newPerformance = { ...party.party.queue[i] };
-					if (newPerformance.performanceID === targetId) {
-						newPerformance.order = targetLocation;
-						//props.updatePerformance(newPerformance);
-					} else if (newPerformance.order >= targetLocation) {
-						newPerformance.order += 1;
-						//props.updatePerformance(newPerformance);
-					}
-				}
-			}
+			const targetStatus = StatusService.getStatusId(result.destination.droppableId);
+			const targetId = Number(result.draggableId);
+			const targetPerformance = performances[result.source.droppableId].filter(
+				(q) => q.performanceID === targetId
+			)[0];
+			const targetIndex = result.destination.index;
+			dispatch(
+				moveRequest({
+					targetStatus: targetStatus,
+					targetIndex: targetIndex,
+					targetPerformance: targetPerformance,
+				})
+			);
+			ApiService.movePerformance(party, targetPerformance, targetIndex, targetStatus);
 		}
 	};
-	console.log(performances);
+
 	return (
 		<div>
 			<Menu />
@@ -84,11 +87,12 @@ const DJDashboard = (props) => {
 						</Card>
 					</Col>
 					<Col xs={4}>
+						<Player />
 						<Card>
 							<Card.Body>
 								<Card.Title>Song Queue</Card.Title>
 								<Card.Text className="text-warning">
-									<Droppable droppableId="queue" type="performanceItem">
+									<Droppable droppableId="queued" type="performanceItem">
 										{(provided) => (
 											<div
 												ref={provided.innerRef}

@@ -17,7 +17,7 @@ namespace KPPlayer
             if (disposing && (components != null))
             {
                 components.Dispose();
-                this._mp?.Dispose();
+                this._player?.Dispose();
                 this._libVLC?.Dispose();
             }
             base.Dispose(disposing);
@@ -41,7 +41,8 @@ namespace KPPlayer
 			this.txtPartyKey = new System.Windows.Forms.TextBox();
 			this.lblConnectionStatus = new System.Windows.Forms.Label();
 			this.playerTimer = new System.Windows.Forms.Timer(this.components);
-			this.btnTogglePlayer = new System.Windows.Forms.Button();
+			this.btnNextSong = new System.Windows.Forms.Button();
+			this.txtMessages = new System.Windows.Forms.TextBox();
 			((System.ComponentModel.ISupportInitialize)(this.videoView1)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -122,22 +123,39 @@ namespace KPPlayer
 			this.playerTimer.Interval = 2000;
 			this.playerTimer.Tick += new System.EventHandler(this.playerTimer_Tick);
 			// 
-			// btnTogglePlayer
+			// btnNextSong
 			// 
-			this.btnTogglePlayer.Location = new System.Drawing.Point(638, 381);
-			this.btnTogglePlayer.Name = "btnTogglePlayer";
-			this.btnTogglePlayer.Size = new System.Drawing.Size(72, 58);
-			this.btnTogglePlayer.TabIndex = 8;
-			this.btnTogglePlayer.Text = "Toggle Player";
-			this.btnTogglePlayer.UseVisualStyleBackColor = true;
-			this.btnTogglePlayer.Click += new System.EventHandler(this.btnTogglePlayer_Click);
+			this.btnNextSong.Location = new System.Drawing.Point(448, 446);
+			this.btnNextSong.Name = "btnNextSong";
+			this.btnNextSong.Size = new System.Drawing.Size(75, 23);
+			this.btnNextSong.TabIndex = 9;
+			this.btnNextSong.Text = "Next Song";
+			this.btnNextSong.UseVisualStyleBackColor = true;
+			this.btnNextSong.Click += new System.EventHandler(this.btnNextSong_Click);
+			// 
+			// txtMessages
+			// 
+			this.txtMessages.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.txtMessages.BackColor = System.Drawing.Color.Black;
+			this.txtMessages.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			this.txtMessages.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			this.txtMessages.ForeColor = System.Drawing.SystemColors.Menu;
+			this.txtMessages.Location = new System.Drawing.Point(214, 136);
+			this.txtMessages.Multiline = true;
+			this.txtMessages.Name = "txtMessages";
+			this.txtMessages.Size = new System.Drawing.Size(554, 209);
+			this.txtMessages.TabIndex = 10;
+			this.txtMessages.Text = "Global Mesages";
+			this.txtMessages.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+			this.txtMessages.Visible = false;
 			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1010, 561);
-			this.Controls.Add(this.btnTogglePlayer);
+			this.Controls.Add(this.txtMessages);
+			this.Controls.Add(this.btnNextSong);
 			this.Controls.Add(this.lblConnectionStatus);
 			this.Controls.Add(this.txtPartyKey);
 			this.Controls.Add(this.txtServerUrl);
@@ -167,6 +185,7 @@ namespace KPPlayer
 		private System.Windows.Forms.TextBox txtPartyKey;
 		private System.Windows.Forms.Label lblConnectionStatus;
 		private System.Windows.Forms.Timer playerTimer;
-		private System.Windows.Forms.Button btnTogglePlayer;
+		private System.Windows.Forms.Button btnNextSong;
+		private System.Windows.Forms.TextBox txtMessages;
 	}
 }

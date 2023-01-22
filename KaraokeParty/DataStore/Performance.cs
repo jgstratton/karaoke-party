@@ -5,11 +5,11 @@ namespace KaraokeParty.DataStore {
 		[Key]
 		public int PerformanceID { get; set; }
 
-		public Party? Party { get; set; }
+		public virtual Party? Party { get; set; }
 
-		public Singer? Singer { get; set; }
+		public virtual Singer? Singer { get; set; }
 
-		public Song? Song { get; set; }
+		public virtual Song? Song { get; set; }
 
 		public PerformanceStatus Status { get; set; } = PerformanceStatus.Requested;
 

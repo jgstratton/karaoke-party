@@ -45,7 +45,7 @@ const YouTubeResults = (props) => {
 										<Button className="float-right" onClick={() => downloadVideo(r.title, r.url)}>
 											<FontAwesomeIcon icon={faDownload} /> Download and add to queue
 										</Button>
-										<VideoPreview id={r.id} />
+										<VideoPreview url={r.url} />
 										<div>{r.title}</div>
 										<a href={r.url}>{r.url}</a>
 										<hr />

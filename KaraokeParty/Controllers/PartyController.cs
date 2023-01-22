@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using System.Data.SqlClient;
+using System.Reflection.Metadata;
 
 namespace KaraokeParty.Controllers {
 	[ApiController]
@@ -88,17 +89,20 @@ namespace KaraokeParty.Controllers {
 						SELECT performance_id as id, row_number() OVER (ORDER BY sort_order) as row_num
 						FROM performances
 						WHERE performances.party_id = {party.PartyId}
-							and (
-								status = {(int)body.TargetStatus}
-								or performance_id = {performanceId}
-							)
+							and status = {(int)body.TargetStatus}
+							and performance_id != {performanceId}
+						UNION
+						SELECT performance_id as id, 0 as row_num
+						FROM performances
+						WHERE performance_id = {performanceId}
 					)
 					UPDATE performances 
 					SET sort_order =
 						CASE
 							WHEN performance_id = {performanceId} THEN {targetRow}
 							WHEN cte.row_num < {targetRow} THEN cte.row_num
-							ELSE cte.row_num + 1
+							WHEN cte.row_num >= {targetRow} THEN cte.row_num + 1
+							ELSE 999
 						END,
 						status = {(int)body.TargetStatus}
 					FROM cte

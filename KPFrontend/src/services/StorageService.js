@@ -8,6 +8,10 @@ async function loadParty() {
 	return {};
 }
 
+function getPartyKey() {
+	return localStorage.getItem('partyKey');
+}
+
 function storeParty(party) {
 	localStorage.setItem('partyKey', party.partyKey);
 }
@@ -45,6 +49,7 @@ const StorageService = {
 	loadUser,
 	storeUser,
 	forgetUser,
+	getPartyKey,
 };
 
 export default StorageService;

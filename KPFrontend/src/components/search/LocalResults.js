@@ -8,14 +8,6 @@ import { faDownload } from '@fortawesome/free-solid-svg-icons';
 import VideoPreview from './VideoPreview';
 
 const LocalResults = (props) => {
-	function GetIdFromUrl(url) {
-		const splitStr = url.split('?v=');
-		if (splitStr.length === 2) {
-			return splitStr[1];
-		}
-		return '';
-	}
-
 	return (
 		<Card className="mt-3">
 			<Card.Body>
@@ -35,7 +27,7 @@ const LocalResults = (props) => {
 											>
 												<FontAwesomeIcon icon={faDownload} /> Add to queue
 											</Button>
-											<VideoPreview id={GetIdFromUrl(r.url)} />
+											<VideoPreview url={r.url} />
 											<div>{r.title}</div>
 											<a href={r.url}>{r.url}</a>
 											<hr />

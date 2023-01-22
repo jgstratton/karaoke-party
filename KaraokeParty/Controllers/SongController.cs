@@ -8,13 +8,20 @@ namespace KaraokeParty.Controllers {
 	public class SongController : ControllerBase {
 
 		private readonly KPContext context;
+		private readonly string VideoStoragePath;
 
 		public SongController() {
 			this.context = new KPContext();
+			DirectoryInfo? dir = new DirectoryInfo(Directory.GetCurrentDirectory());
+			while(dir != null && dir.Name !="KaraokeParty") {
+				dir = dir.Parent;
+			}
+			this.VideoStoragePath = $"{dir?.Parent?.FullName}\\Songs";
+
 		}
 
 		[HttpGet]
-		public ActionResult<Song> Get(string fileName) {
+		public ActionResult<Song> Get([FromQuery] string fileName) {
 			Song? song = context.Songs.Find(fileName);
 			if (song is null) {
 				return NotFound();
@@ -24,7 +31,7 @@ namespace KaraokeParty.Controllers {
 
 		[HttpGet]
 		[Route("search")]
-		public ActionResult<List<Song>> Search(string searchString) {
+		public ActionResult<List<Song>> Search([FromQuery] string searchString) {
 			var filteredSongs = context.Songs.ToList();
 			foreach(var keyword in searchString.ToUpper().Split()) {
 				filteredSongs = filteredSongs.Where(s => s.Title.ToUpper().Contains(keyword)).ToList();
@@ -46,6 +53,13 @@ namespace KaraokeParty.Controllers {
 			}
 			context.SaveChanges();
 			return song;
+		}
+
+		[HttpGet]
+		[Route("download/{fileName}")]
+		public ActionResult DownloadVideoToPlayer(string fileName) {
+			string videoPath = $"{VideoStoragePath}/{fileName}";
+			return File(System.IO.File.ReadAllBytes(videoPath), "application/octet-stream");
 		}
 	}
 }

@@ -5,6 +5,14 @@ const VideoPreview = (props) => {
 	const [imageNum, setImageNum] = useState(0);
 	const imageList = ['mq1.jpg', 'mq2.jpg', 'mq3.jpg'];
 
+	function GetIdFromUrl(url) {
+		const splitStr = url.split('?v=');
+		if (splitStr.length === 2) {
+			return splitStr[1];
+		}
+		return '';
+	}
+
 	useEffect(() => {
 		const timer = setInterval(() => setImageNum(imageNum === 2 ? 0 : imageNum + 1), 1000);
 		return () => clearInterval(timer);
@@ -14,7 +22,7 @@ const VideoPreview = (props) => {
 		<div>
 			<img
 				id="youtube-thumb"
-				src={`https://img.youtube.com/vi/${props.id}/${imageList[imageNum]}`}
+				src={`https://img.youtube.com/vi/${GetIdFromUrl(props.url)}/${imageList[imageNum]}`}
 				alt="video-thumbnail"
 			/>
 		</div>

@@ -9,10 +9,9 @@ const RequireSession = (props) => {
 	const [valid, setValid] = useState(false);
 
 	useEffect(() => {
-		const sessionValid = typeof party.partyKey !== 'undefined' && typeof user.singerId !== 'undefined';
+		const sessionValid = party.partyKey && user.singerId;
 		setLoading(false);
 		setValid(sessionValid);
-		console.log('is session valid?', party, sessionValid);
 	}, [party, user]);
 
 	return loading ? <div>...Loading</div> : valid ? props.children : <NoParty />;

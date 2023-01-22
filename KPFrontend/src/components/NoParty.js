@@ -10,7 +10,7 @@ import Col from 'react-bootstrap/Col';
 import { useNavigate } from 'react-router-dom';
 import { populate as populateUser } from '../slices/userSlice';
 import { populate as populateParty } from '../slices/partySlice';
-import { populate as poulatePerformances } from '../slices/partySlice';
+import { populate as poulatePerformances } from '../slices/performancesSlice';
 import StorageService from '../services/StorageService';
 
 const NoParty = () => {
@@ -42,7 +42,7 @@ const NoParty = () => {
 		dispatch(populateParty(newParty));
 		StorageService.storeUser(newUser);
 		StorageService.storeParty(newParty);
-		navigate('/home');
+		navigate('/redirectHome');
 	}
 
 	async function handleJoin(e) {
@@ -53,7 +53,7 @@ const NoParty = () => {
 		dispatch(poulatePerformances(curParty.queue));
 		StorageService.storeUser(newUser);
 		StorageService.storeParty(curParty);
-		navigate('/home');
+		//navigate('/home');
 	}
 
 	useEffect(() => {

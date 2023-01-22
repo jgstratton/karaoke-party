@@ -1,10 +1,10 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { populate as populateParty } from './slices/partySlice';
-import { populate as populateUser } from './slices/userSlice';
-import { populate as populatePerformances } from './slices/performancesSlice';
-import { Routes, Route } from 'react-router-dom';
+import { populate as populateParty, reset as resetParty } from './slices/partySlice';
+import { populate as populateUser, reset as resetUser } from './slices/userSlice';
+import { populate as populatePerformances, reset as resetPerformances } from './slices/performancesSlice';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import RequireSession from './components/common/RequireSession';
 import SingerDashboard from './components/SingerDashboard';
 import NoParty from './components/NoParty';
@@ -22,13 +22,25 @@ const App = () => {
 		async function load() {
 			let loadedParty = await StorageService.loadParty();
 			let loadedUser = await StorageService.loadUser();
-			console.log('loaded Party', loadedParty);
-			console.log('Loaded User', loadedUser);
-			dispatch(populateParty(loadedParty));
-			dispatch(populateUser(loadedUser));
-			dispatch(populatePerformances(loadedParty.queue));
+
+			if (loadedParty) {
+				dispatch(populateParty(loadedParty));
+			} else {
+				dispatch(resetParty(loadedParty));
+			}
+
+			if (loadedUser) {
+				dispatch(populateUser(loadedUser));
+			} else {
+				dispatch(resetUser(loadedUser));
+			}
+
+			if (loadedParty.queue) {
+				dispatch(populatePerformances(loadedParty.queue));
+			} else {
+				dispatch(resetPerformances());
+			}
 			setLoading(false);
-			console.log('loaded');
 		}
 		load();
 	}, [dispatch]);
@@ -57,6 +69,7 @@ const App = () => {
 								</RequireSession>
 							}
 						/>
+						<Route path="/redirectHome" element={<Navigate to="/home" />} />
 					</Routes>
 				</div>
 			)}

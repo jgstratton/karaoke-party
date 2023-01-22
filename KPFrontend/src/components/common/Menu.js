@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { reset as resetUser } from '../../slices/userSlice';
 import { reset as resetParty } from '../../slices/partySlice';
+import { reset as resetPerformances } from '../../slices/performancesSlice';
 import StorageService from '../../services/StorageService';
 
 const Menu = () => {
@@ -16,9 +17,9 @@ const Menu = () => {
 	function leaveParty() {
 		StorageService.forgetParty();
 		StorageService.forgetUser();
-		dispatch(resetUser);
-		dispatch(resetParty);
-		navigate('/NoParty');
+		dispatch(resetUser());
+		dispatch(resetParty());
+		dispatch(resetPerformances());
 	}
 
 	return (

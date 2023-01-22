@@ -16,9 +16,7 @@ export const partySlice = createSlice({
 			state.partyKey = action.payload.partyKey;
 		},
 
-		reset: (state) => {
-			state = initialState;
-		},
+		reset: () => initialState,
 	},
 });
 

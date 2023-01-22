@@ -1,21 +1,21 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Forms;
+using KaraokeParty.Controllers;
 using KPPlayer.Services;
 using KPPlayer.Types;
 using LibVLCSharp.Shared;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace KPPlayer {
 	public partial class MainForm : Form {
-		static HttpClient client;
+		private SongDownloader songDownloader { get; set; }
 		public LibVLC _libVLC;
-		public MediaPlayer _mp;
-		public ConnectionStatus Status { get; set; } = ConnectionStatus.Unknown;
+		internal VideoPlayer _player { get; set; }
 
 		public MainForm() {
 			if (!DesignMode)
@@ -24,28 +24,30 @@ namespace KPPlayer {
 			}
 
 			InitializeComponent();
-			_libVLC = new LibVLC();
-			_mp = new MediaPlayer(_libVLC);
-			videoView1.MediaPlayer = _mp;
+			_player = new VideoPlayer();
+			_player.SetGlobalText(txtMessages);
+			videoView1.MediaPlayer = _player.GetMediaPlayerObject();
 			Load += MainForm_Load;
 
 			System.Net.ServicePointManager.Expect100Continue = false;
 			System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
+			songDownloader = new SongDownloader();
 		}
 
 		private void initializeHttpClient() {
-			client = new HttpClient();
-			client.BaseAddress = new Uri(txtServerUrl.Text.ToString());
-			client.DefaultRequestHeaders.Accept.Clear();
-			client.DefaultRequestHeaders.Accept.Add(
-				new MediaTypeWithQualityHeaderValue("application/json"));
+			AppState.client = new HttpClient();
+			AppState.client.BaseAddress = new Uri(txtServerUrl.Text.ToString());
+			AppState.client.DefaultRequestHeaders.Accept.Clear();
+			AppState.client.DefaultRequestHeaders.Accept.Add(
+				new MediaTypeWithQualityHeaderValue("application/json")
+			);
 		}
 
 		private async void MainForm_Load(object sender, EventArgs e) {
-			_mp.Play(new Media(_libVLC, "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", FromType.FromLocation));
-			ApplicationSettings settings = await ApplicationSettings.ReadStoredSettings();
-			txtServerUrl.Text = settings.ServerUrl;
-			txtPartyKey.Text = settings.PartyKey;
+			_player.PlayUrl("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4");
+			await AppState.ReadStoredSettings();
+			txtServerUrl.Text = AppState.ServerUrl;
+			txtPartyKey.Text = AppState.PartyKey;
 		}
 
 		private async Task checkConnection() {
@@ -54,15 +56,14 @@ namespace KPPlayer {
 				var query = HttpUtility.ParseQueryString(string.Empty);
 				query["partyKey"] = txtPartyKey.Text;
 
-				var response = await client.GetAsync($"party?{query}");
+				var response = await AppState.client.GetAsync($"party?{query}");
 				var data = await response.Content.ReadAsStringAsync();
 				txtCheckConnection.Text = data;
-				ApplicationSettings settings = await ApplicationSettings.ReadStoredSettings();
-				settings.ServerUrl = txtServerUrl.Text;
-				settings.PartyKey = txtPartyKey.Text;
-				settings.WriteSettigns();
+				AppState.ServerUrl = txtServerUrl.Text;
+				AppState.PartyKey = txtPartyKey.Text;
+				AppState.WriteSettigns();
 				lblConnectionStatus.Text = ConnectionStatus.Connected.ToString();
-				Status = ConnectionStatus.Connected;
+				AppState.Status = ConnectionStatus.Connected;
 			} catch (Exception ex) {
 				txtCheckConnection.Text = ex.Message;
 				lblConnectionStatus.Text = ConnectionStatus.Failed.ToString();
@@ -76,12 +77,15 @@ namespace KPPlayer {
 		}
 
 		private async void playerTimer_Tick(object sender, EventArgs e) {
-			txtCheckConnection.Text = $"Try ping...{Status.ToString()}";
-			if (Status == ConnectionStatus.Connected) {
-				var response = await client.GetAsync($"party/{txtPartyKey.Text}/player");
-				var data = await response.Content.ReadAsStringAsync();
-				txtCheckConnection.Text = $"{DateTime.Now.ToLongTimeString()} {data}";
+			playerTimer.Stop();
+			txtCheckConnection.Text = $"Try ping...{AppState.Status}";
+			if (AppState.Status == ConnectionStatus.Connected) {
+				GetQueuedListResponse response = await AppState.client.FetchObject<GetQueuedListResponse>($"party/{txtPartyKey.Text}/player/GetQueuedList");
+				foreach(var performance in response.Performances) {
+					songDownloader.PrepareVideo(performance.FileName);
+				}
 			}
+			playerTimer.Start();
 		}
 
 		private void btnTogglePlayer_Click(object sender, EventArgs e) {
@@ -116,12 +120,19 @@ namespace KPPlayer {
 						btn.Hide();
 					}
 					foreach (var txt in Controls.OfType<TextBox>()) {
+						if (txt.Name == txtMessages.Name) {
+							continue;
+						}
 						txt.Hide();
 					}
 				}
 				return true;
 			}
 			return base.ProcessCmdKey(ref msg, keyData);
+		}
+
+		private void btnNextSong_Click(object sender, EventArgs e) {
+			_ = _player.StartNextSong();
 		}
 	}
 }
