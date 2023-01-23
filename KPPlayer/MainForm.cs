@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -10,6 +9,7 @@ using KaraokeParty.Controllers;
 using KPPlayer.Services;
 using KPPlayer.Types;
 using LibVLCSharp.Shared;
+using Microsoft.AspNetCore.SignalR.Client;
 
 namespace KPPlayer {
 	public partial class MainForm : Form {
@@ -26,21 +26,33 @@ namespace KPPlayer {
 			InitializeComponent();
 			_player = new VideoPlayer();
 			_player.SetGlobalText(txtMessages);
+			_player.SetDurationText(txtMessageDuration);
 			videoView1.MediaPlayer = _player.GetMediaPlayerObject();
 			Load += MainForm_Load;
 
 			System.Net.ServicePointManager.Expect100Continue = false;
 			System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
 			songDownloader = new SongDownloader();
+			AppState.Logger = new TxtLogger(txtLogger);
 		}
 
-		private void initializeHttpClient() {
+		private async Task<bool> initializeHttpClient() {
 			AppState.client = new HttpClient();
-			AppState.client.BaseAddress = new Uri(txtServerUrl.Text.ToString());
+			string url = txtServerUrl.Text.ToString();
+			AppState.client.BaseAddress = new Uri(url);
 			AppState.client.DefaultRequestHeaders.Accept.Clear();
 			AppState.client.DefaultRequestHeaders.Accept.Add(
 				new MediaTypeWithQualityHeaderValue("application/json")
 			);
+
+			AppState.PlayerHub = new HubConnectionBuilder()
+				.WithUrl($"{url}/hubs/player")
+				.WithAutomaticReconnect()
+				.Build();
+
+			_player.InitializeHubListeners();
+			await AppState.PlayerHub.StartAsync();
+			return true;
 		}
 
 		private async void MainForm_Load(object sender, EventArgs e) {
@@ -48,24 +60,27 @@ namespace KPPlayer {
 			await AppState.ReadStoredSettings();
 			txtServerUrl.Text = AppState.ServerUrl;
 			txtPartyKey.Text = AppState.PartyKey;
+			txtMessageDuration.Text = AppState.MessageDuration;
 		}
 
 		private async Task checkConnection() {
 			try {
-				initializeHttpClient();
+				bool initStatus = await initializeHttpClient();
 				var query = HttpUtility.ParseQueryString(string.Empty);
 				query["partyKey"] = txtPartyKey.Text;
 
 				var response = await AppState.client.GetAsync($"party?{query}");
 				var data = await response.Content.ReadAsStringAsync();
-				txtCheckConnection.Text = data;
 				AppState.ServerUrl = txtServerUrl.Text;
 				AppState.PartyKey = txtPartyKey.Text;
+				AppState.MessageDuration = txtMessageDuration.Text;
 				AppState.WriteSettigns();
 				lblConnectionStatus.Text = ConnectionStatus.Connected.ToString();
 				AppState.Status = ConnectionStatus.Connected;
+				AppState.Logger.LogInfo("Connection Started");
+
 			} catch (Exception ex) {
-				txtCheckConnection.Text = ex.Message;
+				AppState.Logger.LogInfo(ex.Message);
 				lblConnectionStatus.Text = ConnectionStatus.Failed.ToString();
 			}
 		}
@@ -78,10 +93,10 @@ namespace KPPlayer {
 
 		private async void playerTimer_Tick(object sender, EventArgs e) {
 			playerTimer.Stop();
-			txtCheckConnection.Text = $"Try ping...{AppState.Status}";
 			if (AppState.Status == ConnectionStatus.Connected) {
 				GetQueuedListResponse response = await AppState.client.FetchObject<GetQueuedListResponse>($"party/{txtPartyKey.Text}/player/GetQueuedList");
-				foreach(var performance in response.Performances) {
+				AppState.Logger.LogInfo($"Check queued list completed: {response.Performances.Count()} performances queued");
+				foreach (var performance in response.Performances) {
 					songDownloader.PrepareVideo(performance.FileName);
 				}
 			}

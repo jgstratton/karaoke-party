@@ -42,7 +42,7 @@ const DJDashboard = (props) => {
 			<Title />
 			<Row>
 				<DragDropContext onDragEnd={onDragEnd}>
-					<Col xs={4}>
+					<Col md={4}>
 						<Card>
 							<Card.Body>
 								<Card.Title>Requests</Card.Title>
@@ -86,7 +86,7 @@ const DJDashboard = (props) => {
 							</Card.Body>
 						</Card>
 					</Col>
-					<Col xs={4}>
+					<Col md={4}>
 						<Player />
 						<Card>
 							<Card.Body>
@@ -134,7 +134,7 @@ const DJDashboard = (props) => {
 					</Col>
 				</DragDropContext>
 
-				<Col xs={4}>
+				<Col md={4}>
 					<Card>
 						<Card.Body>
 							<Card.Title>Completed Songs (Most Recent First)</Card.Title>

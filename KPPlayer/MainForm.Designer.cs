@@ -34,7 +34,7 @@ namespace KPPlayer
 			this.components = new System.ComponentModel.Container();
 			this.videoView1 = new LibVLCSharp.WinForms.VideoView();
 			this.btnCheckConnection = new System.Windows.Forms.Button();
-			this.txtCheckConnection = new System.Windows.Forms.TextBox();
+			this.txtLogger = new System.Windows.Forms.TextBox();
 			this.lblServerUrl = new System.Windows.Forms.Label();
 			this.lblPartyKey = new System.Windows.Forms.Label();
 			this.txtServerUrl = new System.Windows.Forms.TextBox();
@@ -43,6 +43,8 @@ namespace KPPlayer
 			this.playerTimer = new System.Windows.Forms.Timer(this.components);
 			this.btnNextSong = new System.Windows.Forms.Button();
 			this.txtMessages = new System.Windows.Forms.TextBox();
+			this.lblVideoMessageDuration = new System.Windows.Forms.Label();
+			this.txtMessageDuration = new System.Windows.Forms.TextBox();
 			((System.ComponentModel.ISupportInitialize)(this.videoView1)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -59,7 +61,7 @@ namespace KPPlayer
 			// 
 			// btnCheckConnection
 			// 
-			this.btnCheckConnection.Location = new System.Drawing.Point(12, 512);
+			this.btnCheckConnection.Location = new System.Drawing.Point(13, 215);
 			this.btnCheckConnection.Name = "btnCheckConnection";
 			this.btnCheckConnection.Size = new System.Drawing.Size(141, 23);
 			this.btnCheckConnection.TabIndex = 1;
@@ -67,19 +69,19 @@ namespace KPPlayer
 			this.btnCheckConnection.UseVisualStyleBackColor = true;
 			this.btnCheckConnection.Click += new System.EventHandler(this.btnCheckConnection_Click);
 			// 
-			// txtCheckConnection
+			// txtLogger
 			// 
-			this.txtCheckConnection.Dock = System.Windows.Forms.DockStyle.Right;
-			this.txtCheckConnection.Location = new System.Drawing.Point(717, 0);
-			this.txtCheckConnection.Multiline = true;
-			this.txtCheckConnection.Name = "txtCheckConnection";
-			this.txtCheckConnection.Size = new System.Drawing.Size(293, 561);
-			this.txtCheckConnection.TabIndex = 2;
+			this.txtLogger.Dock = System.Windows.Forms.DockStyle.Right;
+			this.txtLogger.Location = new System.Drawing.Point(462, 0);
+			this.txtLogger.Multiline = true;
+			this.txtLogger.Name = "txtLogger";
+			this.txtLogger.Size = new System.Drawing.Size(548, 561);
+			this.txtLogger.TabIndex = 2;
 			// 
 			// lblServerUrl
 			// 
 			this.lblServerUrl.AutoSize = true;
-			this.lblServerUrl.Location = new System.Drawing.Point(13, 398);
+			this.lblServerUrl.Location = new System.Drawing.Point(13, 25);
 			this.lblServerUrl.Name = "lblServerUrl";
 			this.lblServerUrl.Size = new System.Drawing.Size(63, 15);
 			this.lblServerUrl.TabIndex = 3;
@@ -88,7 +90,7 @@ namespace KPPlayer
 			// lblPartyKey
 			// 
 			this.lblPartyKey.AutoSize = true;
-			this.lblPartyKey.Location = new System.Drawing.Point(13, 454);
+			this.lblPartyKey.Location = new System.Drawing.Point(12, 87);
 			this.lblPartyKey.Name = "lblPartyKey";
 			this.lblPartyKey.Size = new System.Drawing.Size(56, 15);
 			this.lblPartyKey.TabIndex = 4;
@@ -96,14 +98,14 @@ namespace KPPlayer
 			// 
 			// txtServerUrl
 			// 
-			this.txtServerUrl.Location = new System.Drawing.Point(13, 416);
+			this.txtServerUrl.Location = new System.Drawing.Point(13, 43);
 			this.txtServerUrl.Name = "txtServerUrl";
 			this.txtServerUrl.Size = new System.Drawing.Size(292, 23);
 			this.txtServerUrl.TabIndex = 5;
 			// 
 			// txtPartyKey
 			// 
-			this.txtPartyKey.Location = new System.Drawing.Point(13, 472);
+			this.txtPartyKey.Location = new System.Drawing.Point(12, 107);
 			this.txtPartyKey.Name = "txtPartyKey";
 			this.txtPartyKey.Size = new System.Drawing.Size(292, 23);
 			this.txtPartyKey.TabIndex = 6;
@@ -111,7 +113,7 @@ namespace KPPlayer
 			// lblConnectionStatus
 			// 
 			this.lblConnectionStatus.AutoSize = true;
-			this.lblConnectionStatus.Location = new System.Drawing.Point(159, 516);
+			this.lblConnectionStatus.Location = new System.Drawing.Point(160, 215);
 			this.lblConnectionStatus.Name = "lblConnectionStatus";
 			this.lblConnectionStatus.Size = new System.Drawing.Size(101, 15);
 			this.lblConnectionStatus.TabIndex = 7;
@@ -125,7 +127,7 @@ namespace KPPlayer
 			// 
 			// btnNextSong
 			// 
-			this.btnNextSong.Location = new System.Drawing.Point(448, 446);
+			this.btnNextSong.Location = new System.Drawing.Point(13, 305);
 			this.btnNextSong.Name = "btnNextSong";
 			this.btnNextSong.Size = new System.Drawing.Size(75, 23);
 			this.btnNextSong.TabIndex = 9;
@@ -149,11 +151,29 @@ namespace KPPlayer
 			this.txtMessages.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
 			this.txtMessages.Visible = false;
 			// 
+			// lblVideoMessageDuration
+			// 
+			this.lblVideoMessageDuration.AutoSize = true;
+			this.lblVideoMessageDuration.Location = new System.Drawing.Point(12, 146);
+			this.lblVideoMessageDuration.Name = "lblVideoMessageDuration";
+			this.lblVideoMessageDuration.Size = new System.Drawing.Size(189, 15);
+			this.lblVideoMessageDuration.TabIndex = 11;
+			this.lblVideoMessageDuration.Text = "Video Message Duration (seconds)";
+			// 
+			// txtMessageDuration
+			// 
+			this.txtMessageDuration.Location = new System.Drawing.Point(12, 164);
+			this.txtMessageDuration.Name = "txtMessageDuration";
+			this.txtMessageDuration.Size = new System.Drawing.Size(292, 23);
+			this.txtMessageDuration.TabIndex = 12;
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1010, 561);
+			this.Controls.Add(this.txtMessageDuration);
+			this.Controls.Add(this.lblVideoMessageDuration);
 			this.Controls.Add(this.txtMessages);
 			this.Controls.Add(this.btnNextSong);
 			this.Controls.Add(this.lblConnectionStatus);
@@ -161,7 +181,7 @@ namespace KPPlayer
 			this.Controls.Add(this.txtServerUrl);
 			this.Controls.Add(this.lblPartyKey);
 			this.Controls.Add(this.lblServerUrl);
-			this.Controls.Add(this.txtCheckConnection);
+			this.Controls.Add(this.txtLogger);
 			this.Controls.Add(this.btnCheckConnection);
 			this.Controls.Add(this.videoView1);
 			this.KeyPreview = true;
@@ -178,7 +198,7 @@ namespace KPPlayer
 
         private VideoView videoView1;
 		private System.Windows.Forms.Button btnCheckConnection;
-		private System.Windows.Forms.TextBox txtCheckConnection;
+		private System.Windows.Forms.TextBox txtLogger;
 		private System.Windows.Forms.Label lblServerUrl;
 		private System.Windows.Forms.Label lblPartyKey;
 		private System.Windows.Forms.TextBox txtServerUrl;
@@ -187,5 +207,7 @@ namespace KPPlayer
 		private System.Windows.Forms.Timer playerTimer;
 		private System.Windows.Forms.Button btnNextSong;
 		private System.Windows.Forms.TextBox txtMessages;
+		private System.Windows.Forms.Label lblVideoMessageDuration;
+		private System.Windows.Forms.TextBox txtMessageDuration;
 	}
 }

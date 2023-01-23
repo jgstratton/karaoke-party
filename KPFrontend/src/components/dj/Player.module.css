@@ -12,5 +12,10 @@
 	display: grid;
 	padding:6px;
 	border-radius:3px;
-	grid-template-columns: [first] 35px [line2] 35px [line3] 50px [line4] auto [col4-start] 35px [five] 75px [end];
+	grid-template-columns: [first] 35px [line2] 35px [line3] auto [end];
+}
+
+.controlsLine2 {
+	display: grid;
+	grid-template-columns: [first] 33% [line2] auto [col3-start] 33% [end];
 }

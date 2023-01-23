@@ -1,5 +1,5 @@
-﻿using KaraokeParty.DataStore;
-using KPPlayer.Types;
+﻿using KPPlayer.Types;
+using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using System.IO;
 using System.Net.Http;
@@ -11,14 +11,18 @@ namespace KPPlayer.Services {
 		private readonly static string SettingsPath = $"{AppDomain.CurrentDomain.BaseDirectory}/data/";
 		private readonly static string SettingsFile = $"ApplicationSettings.json";
 		public static HttpClient client;
+		public static HubConnection PlayerHub;
 		public static ConnectionStatus Status { get; set; } = ConnectionStatus.Unknown;
 		public static string ServerUrl { get; set; }
 		public static string PartyKey { get; set; }
+		public static string MessageDuration { get; set; }
 		public static VideoPlayer Player { get; set; }
+		public static TxtLogger Logger { get; set; }
 
 		private class PersistedSettings {
 			public string ServerUrl { get; set; }
 			public string PartyKey { get; set; }
+			public string MessageDuration { get; set; }
 		}
 
 
@@ -32,6 +36,7 @@ namespace KPPlayer.Services {
 			PersistedSettings settings = JsonSerializer.Deserialize<PersistedSettings>(settingsJson);
 			ServerUrl = settings.ServerUrl;
 			PartyKey = settings.PartyKey;
+			MessageDuration = settings.MessageDuration;
 			return true;
 		}
 
@@ -39,7 +44,8 @@ namespace KPPlayer.Services {
 			CreateSettingsFolder();
 			PersistedSettings settings = new PersistedSettings {
 				ServerUrl = ServerUrl,
-				PartyKey = PartyKey
+				PartyKey = PartyKey,
+				MessageDuration = MessageDuration
 			};
 			await File.WriteAllTextAsync($"{SettingsPath}/{SettingsFile}",JsonSerializer.Serialize(settings));
 		}

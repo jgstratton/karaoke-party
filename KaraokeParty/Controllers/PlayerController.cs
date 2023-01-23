@@ -1,17 +1,21 @@
 using KaraokeParty.ApiModels;
 using KaraokeParty.DataStore;
+using KaraokeParty.Hubs;
 using KaraokeParty.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace KaraokeParty.Controllers {
 	[ApiController]
 	[Route("party/{partyKey}/[controller]")]
 	public class PlayerController : ControllerBase {
+		private readonly IHubContext<PlayerHub> playerHubContext;
 		private readonly IPartyService partyService;
 		private readonly ILogger<PartyController> _logger;
 		private readonly KPContext context;
 
-		public PlayerController(IPartyService partyService, ILogger<PartyController> logger, KPContext context) {
+		public PlayerController(IHubContext<PlayerHub> playerHubContext, IPartyService partyService, ILogger<PartyController> logger, KPContext context) {
+			this.playerHubContext = playerHubContext;
 			this.partyService = partyService;
 			_logger = logger;
 			this.context = context;
@@ -56,11 +60,14 @@ namespace KaraokeParty.Controllers {
 				.Where(q => q.Status == PerformanceStatus.Queued)
 				.OrderBy(p => p.Sort_Order).FirstOrDefault();
 
+			PerformanceDTO dto = new PerformanceDTO();
 			if (nextPerformance != null) {
 				nextPerformance.Status = PerformanceStatus.Live;
+				dto = PerformanceDTO.FromDb(nextPerformance);
+				_ = playerHubContext.Clients.All.SendAsync("ReceiveCurrentPerformance", dto);
 			}
 			context.SaveChanges();
-			return nextPerformance is null ? new PerformanceDTO() : PerformanceDTO.FromDb(nextPerformance);
+			return dto;
 		}
 
 		[HttpPost]
