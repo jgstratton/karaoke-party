@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { populate as populateParty, reset as resetParty } from './slices/partySlice';
 import { populate as populateUser, reset as resetUser } from './slices/userSlice';
-import { populate as populatePerformances, reset as resetPerformances } from './slices/performancesSlice';
+import { populatePerformances, resetPerformances } from './slices/performancesSlice';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import RequireSession from './components/common/RequireSession';
 import SingerDashboard from './components/SingerDashboard';

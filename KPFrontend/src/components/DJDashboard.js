@@ -9,7 +9,7 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import ApiService from '../services/ApiService';
 import StatusService from '../services/StatusService';
-import { moveRequest } from '../slices/performancesSlice';
+import { movePerformance } from '../slices/performancesSlice';
 import Player from './dj/Player';
 
 const DJDashboard = (props) => {
@@ -26,7 +26,7 @@ const DJDashboard = (props) => {
 			)[0];
 			const targetIndex = result.destination.index;
 			dispatch(
-				moveRequest({
+				movePerformance({
 					targetStatus: targetStatus,
 					targetIndex: targetIndex,
 					targetPerformance: targetPerformance,

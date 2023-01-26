@@ -1,10 +1,12 @@
 async function fetchParty(partyKey) {
+	console.log('fetching party');
 	const response = await fetch(
 		'party?' +
 			new URLSearchParams({
 				partyKey: partyKey,
 			})
 	);
+	console.log('fetched', response);
 	let party = await response.json();
 	if (party.partyKey) {
 		return party;

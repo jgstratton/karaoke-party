@@ -1,5 +1,7 @@
 ﻿using KaraokeParty.ApiModels;
 using KaraokeParty.DataStore;
+using KaraokeParty.Hubs;
+using KaraokeParty.Hubs.Clients;
 using KPPlayer.ExtensionMethods;
 using KPPlayer.Types;
 using LibVLCSharp.Shared;
@@ -23,6 +25,7 @@ namespace KPPlayer.Services {
 		private string _newline = System.Environment.NewLine;
 		private int defaultMessageDisplayTime = 15;
 		private Timer _timer;
+		private double previousPosition { get; set; } = 0;
 
 		public VideoPlayer() {
 			_libVLC = new LibVLC();
@@ -35,8 +38,47 @@ namespace KPPlayer.Services {
 		}
 
 		public void InitializeHubListeners() {
-			AppState.PlayerHub.On<decimal>("ReceivePosition", (position) => {
+			AppState.PlayerHub.On<decimal>(nameof(IPlayerClient.ReceivePosition), (position) => {
 				_mp.Time = (long)(_mp.Length * position);
+			});
+
+			AppState.PlayerHub.On(nameof(IPlayerClient.ReceivePause), () => {
+				_mp.Pause();
+			});
+
+			AppState.PlayerHub.On(nameof(IPlayerClient.ReceivePlay), () => {
+				_mp.Play();
+			});
+
+			AppState.PlayerHub.On<PerformanceDTO>(nameof(IPlayerClient.ReceiveNewPerformanceStarted), async (dto) => {
+				// safely stop the player without causing a deadlock
+				AppState.Logger.LogInfo($"Stopping video player.");
+				System.Threading.ThreadPool.QueueUserWorkItem(_ => _mp.Stop());
+				AppState.Logger.LogInfo($"Video player stopped.");
+
+				_setMessage($"Now Performing{_newline}{dto.SingerName}{_newline}{_newline}{dto.SongTitle}");
+				_showMessage();
+				await Task.Delay(GetMessageDurationTime());
+				_hideMessage();
+				bool playNewSongResult = _mp.Play(new Media(_libVLC, SongDownloader.GetFilePath(dto.FileName), FromType.FromPath));
+				if (!playNewSongResult) {
+					_setMessage($"Error playing new song");
+					_showMessage();
+					return;
+				}
+				await _mp.Media.Parse();
+				await AppState.PlayerHub.InvokeAsync(nameof(PlayerHub.SendVideoLength), _mp.Media.Duration);
+				AppState.Logger.LogInfo($"Send Video Length completed: {_mp.Media.Duration}");
+			});
+
+			AppState.PlayerHub.On(nameof(IPlayerClient.ReceiveEndOfQueue), () => {
+				// safely stop the player without causing a deadlock
+				AppState.Logger.LogInfo($"Stopping video player.");
+				System.Threading.ThreadPool.QueueUserWorkItem(_ => _mp.Stop());
+				AppState.Logger.LogInfo($"Video player stopped.");
+
+				_setMessage($"No performances in queue{_newline}Get your requests in!");
+				_showMessage();
 			});
 		}
 
@@ -65,44 +107,27 @@ namespace KPPlayer.Services {
 			return true;
 		}
 
-		public async Task<bool> StartNextSong() {
-			PerformanceDTO response = await AppState.client.FetchObject<PerformanceDTO>($"party/{AppState.PartyKey}/player/next");
-			_mp.Stop();
-			if (response != null) {
-				_setMessage($"Now Performing{_newline}{response.SingerName}{_newline}");
-				_showMessage();
-				await Task.Delay(GetMessageDurationTime());
-				_hideMessage();
-				bool playNewSongResult = _mp.Play(new Media(_libVLC, SongDownloader.GetFilePath(response.FileName), FromType.FromPath));
-				if (!playNewSongResult) {
-					_setMessage($"Error playing new song");
-					_showMessage();
-					return false;
-				}
-				await _mp.Media.Parse();
-				await AppState.PlayerHub.InvokeAsync("SendVideoLength", _mp.Media.Duration);
-				AppState.Logger.LogInfo($"Send Video Length completed: {_mp.Media.Duration}");
-				return true;
-			}
-			
-			_globalText.Text = $"No performances in queue{_newline}Get your requests in!";
-			_showMessage();
-			return false;
+		public async Task StartNextSong() {
+			await AppState.PlayerHub.InvokeAsync(nameof(PlayerHub.StartNewPerformance), AppState.PartyKey);
 		}
 
 		async void onPlayerEndReached(object sender, EventArgs e) {
-			_ = await StartNextSong();
+			await StartNextSong();
 		}
 
 		async void onPlayerTick(object sender, EventArgs e) {
 			_timer.Stop();
 			if (AppState.Status == ConnectionStatus.Connected) {
-				var position = (_mp.Time * 1.00) / (_mp.Length * 1.00);
+				double position = (_mp.Time * 1.00) / (_mp.Length * 1.00);
 				if (position < 0) {
 					position = 0;
 				}
-				await AppState.PlayerHub.InvokeAsync("SendPosition", position);
-				AppState.Logger.LogInfo($"Send position completed: {position}");
+				if (position != previousPosition) {
+					await AppState.PlayerHub.InvokeAsync(nameof(PlayerHub.SendPosition), position);
+					AppState.Logger.LogInfo($"Send position completed: {position}");
+					previousPosition = position;
+				}
+				
 			}
 			_timer.Start();
 		}

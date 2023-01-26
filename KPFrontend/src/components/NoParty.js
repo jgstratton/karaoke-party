@@ -10,7 +10,7 @@ import Col from 'react-bootstrap/Col';
 import { useNavigate } from 'react-router-dom';
 import { populate as populateUser } from '../slices/userSlice';
 import { populate as populateParty } from '../slices/partySlice';
-import { populate as poulatePerformances } from '../slices/performancesSlice';
+import { populatePerformances } from '../slices/performancesSlice';
 import StorageService from '../services/StorageService';
 
 const NoParty = () => {
@@ -50,7 +50,7 @@ const NoParty = () => {
 		let newUser = await ApiService.joinParty(form.joinCode, form.singerName);
 		dispatch(populateParty(curParty));
 		dispatch(populateUser(newUser));
-		dispatch(poulatePerformances(curParty.queue));
+		dispatch(populatePerformances(curParty.queue));
 		StorageService.storeUser(newUser);
 		StorageService.storeParty(curParty);
 		//navigate('/home');

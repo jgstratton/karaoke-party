@@ -44,32 +44,6 @@ namespace KaraokeParty.Controllers {
 			};
 		}
 
-		[HttpGet]
-		[Route("Next")]
-		public ActionResult<PerformanceDTO> Next(string partyKey) {
-			Party? party = partyService.GetPartyByKey(partyKey);
-			if (party == null) {
-				return NotFound();
-			}
-			party.Queue
-				.Where(p => p.Status == PerformanceStatus.Live)
-				.ToList()
-				.ForEach(p => p.Status = PerformanceStatus.Completed);
-
-			Performance? nextPerformance = party.Queue
-				.Where(q => q.Status == PerformanceStatus.Queued)
-				.OrderBy(p => p.Sort_Order).FirstOrDefault();
-
-			PerformanceDTO dto = new PerformanceDTO();
-			if (nextPerformance != null) {
-				nextPerformance.Status = PerformanceStatus.Live;
-				dto = PerformanceDTO.FromDb(nextPerformance);
-				_ = playerHubContext.Clients.All.SendAsync("ReceiveCurrentPerformance", dto);
-			}
-			context.SaveChanges();
-			return dto;
-		}
-
 		[HttpPost]
 		[Route("EndPerformance")]
 		public ActionResult<bool> EndSong(string partyKey, [FromQuery] int performanceId) {

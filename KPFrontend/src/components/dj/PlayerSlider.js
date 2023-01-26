@@ -1,6 +1,8 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import Slider from '../../lib/react-player-controls/Slide';
+import { setPosition } from '../../slices/playerSlice';
 
 const SliderBar = ({ value, style }) => (
 	<div
@@ -20,10 +22,12 @@ const SliderBar = ({ value, style }) => (
 );
 
 const PlayerSlider = (props) => {
+	const dispatch = useDispatch();
 	const target = useRef(null);
 	const [value, setValue] = useState(0);
 	const [lastIntent] = useState(0);
 	const direction = 'HORIZONTAL';
+	const storePlayer = useSelector((state) => state.player);
 
 	useEffect(() => {
 		setValue(props.playerSlidePosition);
@@ -63,26 +67,26 @@ const PlayerSlider = (props) => {
 	return (
 		<>
 			<Slider
-				isEnabled={props.isEnabled}
+				isEnabled={storePlayer.enabled}
 				direction={direction}
 				onChange={(value) => {
-					if (props.isEnabled) {
+					if (storePlayer.enabled) {
 						setValue(value);
 					}
 				}}
-				onChangeEnd={props.onSlidePositionUpdate}
+				onChangeEnd={(position) => dispatch(setPosition(position))}
 				style={{
 					width: '100%',
 					height: 24,
 					transition: 'width 0.1s',
-					cursor: props.isEnabled === true ? 'pointer' : 'default',
+					cursor: storePlayer.enabled === true ? 'pointer' : 'default',
 				}}
 			>
 				<SliderBar direction={direction} value={1} style={{ background: '#fff' }} />
 				<SliderBar
 					direction={direction}
 					value={value}
-					style={{ background: props.isEnabled ? '#CC273D' : '#878C88' }}
+					style={{ background: storePlayer.enabled ? '#CC273D' : '#878C88' }}
 				/>
 
 				<SliderBar direction={direction} value={lastIntent} style={{ background: 'rgba(0, 0, 0, 0.05)' }} />
@@ -90,7 +94,7 @@ const PlayerSlider = (props) => {
 				<SliderHandle
 					direction={direction}
 					value={value}
-					style={{ background: props.isEnabled ? '#CC273D' : '#878C88' }}
+					style={{ background: storePlayer.enabled ? '#CC273D' : '#878C88' }}
 				></SliderHandle>
 				<div style={{ display: 'none' }}>{props.slidePosition}</div>
 			</Slider>

@@ -14,19 +14,20 @@ export const performancesSlice = createSlice({
 	name: 'performances',
 	initialState: initialState,
 	reducers: {
-		populate: (state, action) => {
+		populatePerformances: (state, action) => {
 			StatusServices.getStatuses().forEach((s) => {
 				state[s.name] = action.payload
 					.filter((q) => q.status === s.id)
 					.sort((a, b) => cmp(a.sort_Order, b.sort_Order) || cmp(a.performanceID, b.performanceID));
 			});
+			state.completed = state.completed.reverse();
 		},
 
 		addRequest: (state, action) => {
 			state.requests.push(action.payload);
 		},
 
-		moveRequest: (state, action) => {
+		movePerformance: (state, action) => {
 			const { targetPerformance, targetIndex, targetStatus } = action.payload;
 			const sourceStatusName = StatusService.getStatusName(targetPerformance.status);
 			const targetStatusName = StatusService.getStatusName(targetStatus);
@@ -39,10 +40,12 @@ export const performancesSlice = createSlice({
 			state[targetStatusName].splice(targetIndex, 0, targetPerformance);
 		},
 
-		reset: () => initialState,
+		startNextPerformance: (state, action) => {},
+		resetPerformances: () => initialState,
 	},
 });
 
-export const { populate, addRequest, moveRequest, reset } = performancesSlice.actions;
+export const { populatePerformances, addRequest, movePerformance, resetPerformances, startNextPerformance } =
+	performancesSlice.actions;
 
 export default performancesSlice.reducer;

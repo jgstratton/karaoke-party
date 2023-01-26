@@ -1,9 +1,16 @@
-.player .icon{
-	color:white;
+.player .icon,
+.player .iconEnabled{
 	font-size:22px;
 }
 
-.player.enabled .icon:hover{
+.player .icon {
+	color:grey;
+}
+.player .iconEnabled {
+	color: white;
+}
+
+.player.enabled .iconEnabled:hover{
 	color:lightblue;
 	cursor:pointer;
 }
