@@ -8,7 +8,7 @@ import styles from './Player.module.css';
 import DateTimeUtilities from '../../utilities/dateTimeUtilities';
 import ListGroup from 'react-bootstrap/ListGroup';
 import { play, pause } from '../../slices/playerSlice';
-import { startNextPerformance } from '../../slices/performancesSlice';
+import { startNextPerformance, startPreviousPerformance } from '../../slices/performancesSlice';
 
 const Player = () => {
 	const dispatch = useDispatch();
@@ -58,7 +58,7 @@ const Player = () => {
 					</div>
 					<hr />
 					<div className={`${styles.controlsLine2}`}>
-						<button className="btn btn-primary">
+						<button className="btn btn-primary" onClick={() => dispatch(startPreviousPerformance())}>
 							<FontAwesomeIcon icon={faBackwardStep} /> Previous Song
 						</button>
 						<div className="text-center">

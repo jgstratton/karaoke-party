@@ -34,6 +34,11 @@ const signalRMiddleware = (store) => {
 		store.dispatch(signalActionCreator(populatePerformances(curParty.queue)));
 	});
 
+	connection.on('ReceivePreviousSong', async (value) => {
+		let curParty = await ApiService.fetchParty(store.getState().party.partyKey);
+		store.dispatch(signalActionCreator(populatePerformances(curParty.queue)));
+	});
+
 	return (next) => (action) => {
 		if (!action.signalR) {
 			console.log(action, 'non-signalr');
@@ -49,6 +54,10 @@ const signalRMiddleware = (store) => {
 					break;
 				case 'performances/startNextPerformance':
 					connection.invoke('StartNewPerformance', store.getState().party.partyKey);
+					store.dispatch(resetPlayer());
+					break;
+				case 'performances/startPreviousPerformance':
+					connection.invoke('startPreviousPerformance', store.getState().party.partyKey);
 					store.dispatch(resetPlayer());
 					break;
 				default:

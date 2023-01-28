@@ -27,7 +27,7 @@ namespace KaraokeParty.Services {
 				.ToList()
 				.ForEach(p => {
 					p.Status = PerformanceStatus.Completed;
-					p.Sort_Order = lastCompleted++;
+					p.Sort_Order = ++lastCompleted;
 				});
 
 			Performance? nextPerformance = party.Queue
@@ -42,10 +42,39 @@ namespace KaraokeParty.Services {
 			context.SaveChanges();
 			return dto;
 		}
+
+		public PerformanceDTO? StartPreviousSong(string partyKey) {
+			Party? party = GetPartyByKey(partyKey);
+			if (party == null) {
+				return null;
+			}
+
+			List<Performance> allCompletedDb = party.Queue.Where(p => p.Status == PerformanceStatus.Completed).ToList();
+			Performance? lastCompleted = allCompletedDb
+				.Where(p => p.Sort_Order == allCompletedDb.Max(p => p.Sort_Order))
+				.FirstOrDefault();
+
+			if (lastCompleted is null) {
+				return null;
+			}
+			int minQueuedIndex = party.Queue.Where(p => p.Status == PerformanceStatus.Queued).Min(p => p.Sort_Order) ?? 0;
+
+			party.Queue.Where(p => p.Status == PerformanceStatus.Live)
+				.ToList().
+				ForEach(p => {
+					p.Status = PerformanceStatus.Queued;
+					p.Sort_Order = --minQueuedIndex;
+				});
+
+			lastCompleted.Status = PerformanceStatus.Live;
+			context.SaveChanges();
+			return PerformanceDTO.FromDb(lastCompleted);
+		}
 	}
 
 	public interface IPartyService {
 		Party? GetPartyByKey(string partyKey);
 		PerformanceDTO? StartNextSong(string partyKey);
+		PerformanceDTO? StartPreviousSong(string partyKey);
 	}
 }

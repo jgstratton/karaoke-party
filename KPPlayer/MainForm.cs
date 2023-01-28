@@ -56,7 +56,6 @@ namespace KPPlayer {
 		}
 
 		private async void MainForm_Load(object sender, EventArgs e) {
-			_player.PlayUrl("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4");
 			await AppState.ReadStoredSettings();
 			txtServerUrl.Text = AppState.ServerUrl;
 			txtPartyKey.Text = AppState.PartyKey;
@@ -122,6 +121,9 @@ namespace KPPlayer {
 						btn.Show();
 					}
 					foreach (var txt in Controls.OfType<TextBox>()) {
+						if (txt.Name == txtMessages.Name) {
+							continue;
+						}
 						txt.Show();
 					}
 				} else {

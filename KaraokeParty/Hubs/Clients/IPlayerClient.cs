@@ -5,6 +5,7 @@ namespace KaraokeParty.Hubs.Clients {
 		Task ReceivePosition(decimal position);
 		Task ReceiveVideoLength(int timeInMs);
 		Task ReceiveCurrentPerformance(PerformanceDTO performance);
+		Task ReceivePreviousSong(PerformanceDTO performance);
 		Task ReceivePause();
 		Task ReceivePlay();
 		Task ReceiveNewPerformanceStarted(PerformanceDTO performance);

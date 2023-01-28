@@ -40,12 +40,23 @@ export const performancesSlice = createSlice({
 			state[targetStatusName].splice(targetIndex, 0, targetPerformance);
 		},
 
-		startNextPerformance: (state, action) => {},
+		startNextPerformance: (state, action) => {
+			console.log('previous performance started');
+		},
+		startPreviousPerformance: (state, action) => {
+			console.log('previous performance started');
+		},
 		resetPerformances: () => initialState,
 	},
 });
 
-export const { populatePerformances, addRequest, movePerformance, resetPerformances, startNextPerformance } =
-	performancesSlice.actions;
+export const {
+	populatePerformances,
+	addRequest,
+	movePerformance,
+	resetPerformances,
+	startNextPerformance,
+	startPreviousPerformance,
+} = performancesSlice.actions;
 
 export default performancesSlice.reducer;

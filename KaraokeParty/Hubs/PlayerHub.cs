@@ -31,6 +31,14 @@ namespace KaraokeParty.Hubs {
 				await Clients.All.ReceiveEndOfQueue();
 			}
 		}
+
+		public async Task StartPreviousPerformance(string partyKey) {
+			PerformanceDTO? dto = partyService.StartPreviousSong(partyKey);
+			if (dto != null) {
+				await Clients.All.ReceivePreviousSong(dto);
+			}
+		}
+
 		public async Task SendVideoLength(int timeInMs) {
 			await Clients.Others.ReceiveVideoLength(timeInMs);
 		}

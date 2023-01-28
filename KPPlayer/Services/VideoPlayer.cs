@@ -71,6 +71,23 @@ namespace KPPlayer.Services {
 				AppState.Logger.LogInfo($"Send Video Length completed: {_mp.Media.Duration}");
 			});
 
+			AppState.PlayerHub.On<PerformanceDTO>(nameof(IPlayerClient.ReceivePreviousSong), async (dto) => {
+				// safely stop the player without causing a deadlock
+				AppState.Logger.LogInfo($"Stopping video player.");
+				System.Threading.ThreadPool.QueueUserWorkItem(_ => _mp.Stop());
+				AppState.Logger.LogInfo($"Video player stopped.");
+
+				bool playNewSongResult = _mp.Play(new Media(_libVLC, SongDownloader.GetFilePath(dto.FileName), FromType.FromPath));
+				if (!playNewSongResult) {
+					_setMessage($"Error playing new song");
+					_showMessage();
+					return;
+				}
+				await _mp.Media.Parse();
+				await AppState.PlayerHub.InvokeAsync(nameof(PlayerHub.SendVideoLength), _mp.Media.Duration);
+				AppState.Logger.LogInfo($"Send Video Length completed: {_mp.Media.Duration}");
+			});
+
 			AppState.PlayerHub.On(nameof(IPlayerClient.ReceiveEndOfQueue), () => {
 				// safely stop the player without causing a deadlock
 				AppState.Logger.LogInfo($"Stopping video player.");
