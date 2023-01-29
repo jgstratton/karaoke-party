@@ -8,8 +8,8 @@ import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { useNavigate } from 'react-router-dom';
-import { populate as populateUser } from '../slices/userSlice';
-import { populate as populateParty } from '../slices/partySlice';
+import { populateUser } from '../slices/userSlice';
+import { populateParty } from '../slices/partySlice';
 import { populatePerformances } from '../slices/performancesSlice';
 import StorageService from '../services/StorageService';
 

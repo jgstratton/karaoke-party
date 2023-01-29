@@ -10,7 +10,7 @@ export const partySlice = createSlice({
 	name: 'party',
 	initialState: initialState,
 	reducers: {
-		populate: (state, action) => {
+		populateParty: (state, action) => {
 			state.partyId = action.payload.partyId;
 			state.title = action.payload.title;
 			state.partyKey = action.payload.partyKey;
@@ -20,6 +20,6 @@ export const partySlice = createSlice({
 	},
 });
 
-export const { populate, reset } = partySlice.actions;
+export const { populateParty, reset } = partySlice.actions;
 
 export default partySlice.reducer;

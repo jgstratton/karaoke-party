@@ -41,25 +41,38 @@ const signalRMiddleware = (store) => {
 
 	return (next) => (action) => {
 		if (!action.signalR) {
-			console.log(action, 'non-signalr');
+			const currentStorePartyKey = store.getState().party.partyKey;
+			console.log(action);
 			switch (action.type) {
 				case 'player/setPosition':
 					connection.invoke('SendPosition', action.payload);
 					break;
 				case 'player/pause':
-					connection.invoke('Pause');
+					connection.invoke('Pause', currentStorePartyKey);
 					break;
 				case 'player/play':
-					connection.invoke('Play');
+					connection.invoke('Play', currentStorePartyKey);
 					break;
 				case 'performances/startNextPerformance':
-					connection.invoke('StartNewPerformance', store.getState().party.partyKey);
+					connection.invoke('StartNewPerformance', currentStorePartyKey);
 					store.dispatch(resetPlayer());
 					break;
 				case 'performances/startPreviousPerformance':
-					connection.invoke('startPreviousPerformance', store.getState().party.partyKey);
+					connection.invoke('startPreviousPerformance', currentStorePartyKey);
 					store.dispatch(resetPlayer());
 					break;
+				case 'party/resetParty': {
+					if (currentStorePartyKey.length > 0) {
+						connection.invoke('LeaveParty', currentStorePartyKey);
+					}
+					break;
+				}
+				case 'party/populateParty': {
+					console.log('getting party details');
+					console.log('joining party', action.payload.partyKey);
+					connection.invoke('JoinParty', action.payload.partyKey);
+					break;
+				}
 				default:
 					break;
 			}

@@ -1,8 +1,8 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { populate as populateParty, reset as resetParty } from './slices/partySlice';
-import { populate as populateUser, reset as resetUser } from './slices/userSlice';
+import { populateParty, reset as resetParty } from './slices/partySlice';
+import { populateUser, reset as resetUser } from './slices/userSlice';
 import { populatePerformances, resetPerformances } from './slices/performancesSlice';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import RequireSession from './components/common/RequireSession';

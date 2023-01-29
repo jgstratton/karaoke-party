@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Forms;
 using KaraokeParty.Controllers;
+using KaraokeParty.Hubs;
 using KPPlayer.Services;
 using KPPlayer.Types;
 using LibVLCSharp.Shared;
@@ -70,10 +71,12 @@ namespace KPPlayer {
 
 				var response = await AppState.client.GetAsync($"party?{query}");
 				var data = await response.Content.ReadAsStringAsync();
+				
 				AppState.ServerUrl = txtServerUrl.Text;
 				AppState.PartyKey = txtPartyKey.Text;
 				AppState.MessageDuration = txtMessageDuration.Text;
 				AppState.WriteSettigns();
+				await AppState.PlayerHub.InvokeAsync(nameof(PlayerHub.JoinParty), AppState.PartyKey);
 				lblConnectionStatus.Text = ConnectionStatus.Connected.ToString();
 				AppState.Status = ConnectionStatus.Connected;
 				AppState.Logger.LogInfo("Connection Started");

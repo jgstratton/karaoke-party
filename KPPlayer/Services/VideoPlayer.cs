@@ -67,7 +67,7 @@ namespace KPPlayer.Services {
 					return;
 				}
 				await _mp.Media.Parse();
-				await AppState.PlayerHub.InvokeAsync(nameof(PlayerHub.SendVideoLength), _mp.Media.Duration);
+				await AppState.PlayerHub.InvokeAsync(nameof(PlayerHub.SendVideoLength), AppState.PartyKey, _mp.Media.Duration);
 				AppState.Logger.LogInfo($"Send Video Length completed: {_mp.Media.Duration}");
 			});
 
@@ -84,7 +84,7 @@ namespace KPPlayer.Services {
 					return;
 				}
 				await _mp.Media.Parse();
-				await AppState.PlayerHub.InvokeAsync(nameof(PlayerHub.SendVideoLength), _mp.Media.Duration);
+				await AppState.PlayerHub.InvokeAsync(nameof(PlayerHub.SendVideoLength), AppState.PartyKey, _mp.Media.Duration);
 				AppState.Logger.LogInfo($"Send Video Length completed: {_mp.Media.Duration}");
 			});
 
@@ -140,7 +140,7 @@ namespace KPPlayer.Services {
 					position = 0;
 				}
 				if (position != previousPosition) {
-					await AppState.PlayerHub.InvokeAsync(nameof(PlayerHub.SendPosition), position);
+					await AppState.PlayerHub.InvokeAsync(nameof(PlayerHub.SendPosition), AppState.PartyKey, position);
 					AppState.Logger.LogInfo($"Send position completed: {position}");
 					previousPosition = position;
 				}

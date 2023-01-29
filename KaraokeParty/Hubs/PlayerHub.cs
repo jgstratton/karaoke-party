@@ -19,40 +19,36 @@ namespace KaraokeParty.Hubs {
 			await Groups.AddToGroupAsync(Context.ConnectionId, partyKey);
 		}
 
-		public async Task SendPosition(decimal position) {
-			await Clients.Others.ReceivePosition(position);
+		public async Task SendPosition(string partyKey, decimal position) {
+			await Clients.OthersInGroup(partyKey).ReceivePosition(position);
 		}
 
 		public async Task StartNewPerformance(string partyKey) {
 			PerformanceDTO? dto = partyService.StartNextSong(partyKey);
 			if (dto != null) {
-				await Clients.All.ReceiveNewPerformanceStarted(dto);
+				await Clients.Group(partyKey).ReceiveNewPerformanceStarted(dto);
 			} else {
-				await Clients.All.ReceiveEndOfQueue();
+				await Clients.Group(partyKey).ReceiveEndOfQueue();
 			}
 		}
 
 		public async Task StartPreviousPerformance(string partyKey) {
 			PerformanceDTO? dto = partyService.StartPreviousSong(partyKey);
 			if (dto != null) {
-				await Clients.All.ReceivePreviousSong(dto);
+				await Clients.Group(partyKey).ReceivePreviousSong(dto);
 			}
 		}
 
-		public async Task SendVideoLength(int timeInMs) {
-			await Clients.Others.ReceiveVideoLength(timeInMs);
+		public async Task SendVideoLength(string partyKey, int timeInMs) {
+			await Clients.OthersInGroup(partyKey).ReceiveVideoLength(timeInMs);
 		}
 
-		public async Task SendCurrentPerformance(PerformanceDTO performance) {
-			await Clients.All.ReceiveCurrentPerformance(performance);
+		public async Task Pause(string partyKey) {
+			await Clients.OthersInGroup(partyKey).ReceivePause();
 		}
 
-		public async Task Pause() {
-			await Clients.Others.ReceivePause();
-		}
-
-		public async Task Play() {
-			await Clients.Others.ReceivePlay();
+		public async Task Play(string partyKey) {
+			await Clients.OthersInGroup(partyKey).ReceivePlay();
 		}
 	}
 }
