@@ -21,7 +21,7 @@ export const playerSlice = createSlice({
 			state.position = action.payload;
 		},
 		setLength: (state, action) => {
-			state.length = action.payload;
+			state.length = Math.floor(action.payload / 1000);
 		},
 		pause: (state) => {
 			state.playing = false;
@@ -30,9 +30,10 @@ export const playerSlice = createSlice({
 			state.playing = true;
 		},
 		resetPlayer: () => initialState,
+		sendPosition: () => {},
 	},
 });
 
-export const { populatePlayer, resetPlayer, setPosition, setLength, play, pause } = playerSlice.actions;
+export const { populatePlayer, resetPlayer, setPosition, sendPosition, setLength, play, pause } = playerSlice.actions;
 
 export default playerSlice.reducer;

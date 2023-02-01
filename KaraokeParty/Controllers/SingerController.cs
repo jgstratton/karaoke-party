@@ -10,9 +10,9 @@ namespace KaraokeParty.Controllers {
 		private readonly ILogger<PartyController> _logger;
 		private readonly KPContext context;
 
-		public SingerController(ILogger<PartyController> logger) {
+		public SingerController(ILogger<PartyController> logger, KPContext context) {
 			_logger = logger;
-			this.context = new KPContext();
+			this.context = context;
 		}
 
 		[HttpGet]

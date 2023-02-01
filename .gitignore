@@ -3,3 +3,5 @@ obj/
 /Songs/*
 */bin/*
 _old/*
+.env.*
+appsettings.Production.json

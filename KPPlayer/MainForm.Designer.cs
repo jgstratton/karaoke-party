@@ -45,6 +45,7 @@ namespace KPPlayer
 			this.txtMessages = new System.Windows.Forms.TextBox();
 			this.lblVideoMessageDuration = new System.Windows.Forms.Label();
 			this.txtMessageDuration = new System.Windows.Forms.TextBox();
+			this.marqueeLabel1 = new KPPlayer.MarqueeLabel();
 			((System.ComponentModel.ISupportInitialize)(this.videoView1)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -58,6 +59,7 @@ namespace KPPlayer
 			this.videoView1.Name = "videoView1";
 			this.videoView1.Size = new System.Drawing.Size(1010, 561);
 			this.videoView1.TabIndex = 0;
+			this.videoView1.Text = "text stuff";
 			// 
 			// btnCheckConnection
 			// 
@@ -167,11 +169,24 @@ namespace KPPlayer
 			this.txtMessageDuration.Size = new System.Drawing.Size(292, 23);
 			this.txtMessageDuration.TabIndex = 12;
 			// 
+			// marqueeLabel1
+			// 
+			this.marqueeLabel1.BackColor = System.Drawing.SystemColors.Desktop;
+			this.marqueeLabel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.marqueeLabel1.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			this.marqueeLabel1.ForeColor = System.Drawing.SystemColors.MenuHighlight;
+			this.marqueeLabel1.Location = new System.Drawing.Point(0, 529);
+			this.marqueeLabel1.Name = "marqueeLabel1";
+			this.marqueeLabel1.Size = new System.Drawing.Size(462, 32);
+			this.marqueeLabel1.TabIndex = 14;
+			this.marqueeLabel1.Text = "Marquee Message";
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1010, 561);
+			this.Controls.Add(this.marqueeLabel1);
 			this.Controls.Add(this.txtMessageDuration);
 			this.Controls.Add(this.lblVideoMessageDuration);
 			this.Controls.Add(this.btnNextSong);
@@ -209,5 +224,6 @@ namespace KPPlayer
 		private System.Windows.Forms.TextBox txtMessages;
 		private System.Windows.Forms.Label lblVideoMessageDuration;
 		private System.Windows.Forms.TextBox txtMessageDuration;
+		private MarqueeLabel marqueeLabel1;
 	}
 }

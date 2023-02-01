@@ -94,7 +94,7 @@ namespace KPPlayer.Services {
 				System.Threading.ThreadPool.QueueUserWorkItem(_ => _mp.Stop());
 				AppState.Logger.LogInfo($"Video player stopped.");
 
-				_setMessage($"No performances in queue{_newline}Get your requests in!");
+				_setMessage($"No performances in queue{_newline}Get your requests in!{_newline}{_newline}Join at {AppState.ServerUrl} and use code {AppState.PartyKey}");
 				_showMessage();
 			});
 		}
@@ -139,7 +139,7 @@ namespace KPPlayer.Services {
 				if (position < 0) {
 					position = 0;
 				}
-				if (position != previousPosition) {
+				if (position != previousPosition && !Double.IsNaN(position)) {
 					await AppState.PlayerHub.InvokeAsync(nameof(PlayerHub.SendPosition), AppState.PartyKey, position);
 					AppState.Logger.LogInfo($"Send position completed: {position}");
 					previousPosition = position;

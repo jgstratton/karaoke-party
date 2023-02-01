@@ -1,9 +1,10 @@
-import { HubConnectionBuilder } from '@microsoft/signalr';
+import { HubConnectionBuilder, HubConnectionState } from '@microsoft/signalr';
 import { setPosition, setLength, resetPlayer } from '../slices/playerSlice';
 import { populatePerformances } from '../slices/performancesSlice';
 
 import ApiService from '../services/ApiService';
 
+const messageQueue = [];
 const connection = new HubConnectionBuilder()
 	.withUrl('https://localhost:7049/hubs/player')
 	.withAutomaticReconnect()
@@ -11,7 +12,14 @@ const connection = new HubConnectionBuilder()
 
 connection
 	.start()
-	.then((result) => console.log('Connected!'))
+	.then((result) => {
+		console.log('Connected!');
+		while (messageQueue.length > 0) {
+			console.log(`Getting caught up on ${messageQueue.length} signalR messages.`);
+			const messageSender = messageQueue.shift();
+			messageSender();
+		}
+	})
 	.catch((e) => console.log('Connection failed: ', e));
 
 const signalRMiddleware = (store) => {
@@ -26,7 +34,7 @@ const signalRMiddleware = (store) => {
 	});
 
 	connection.on('ReceiveVideoLength', (valueInMs) => {
-		store.dispatch(signalActionCreator(setLength(Math.floor(valueInMs / 1000))));
+		store.dispatch(signalActionCreator(setLength(valueInMs)));
 	});
 
 	connection.on('ReceiveNewPerformanceStarted', async (value) => {
@@ -39,38 +47,57 @@ const signalRMiddleware = (store) => {
 		store.dispatch(signalActionCreator(populatePerformances(curParty.queue)));
 	});
 
+	const queueMessageSender = (sendMessage) => {
+		// hub is connected and nothing queued? then just run the method
+		if (messageQueue.length === 0 && connection.state === HubConnectionState.Connected) {
+			sendMessage();
+			return;
+		}
+
+		// otherwise, queue up the message to be sent when the connection
+		messageQueue.push(sendMessage);
+	};
+
 	return (next) => (action) => {
 		if (!action.signalR) {
 			const currentStorePartyKey = store.getState().party.partyKey;
 			console.log(action);
 			switch (action.type) {
-				case 'player/setPosition':
-					connection.invoke('SendPosition', action.payload);
+				case 'player/sendPosition':
+					console.log('sending position from client', action.payload);
+					if (typeof action.payload != 'undefined') {
+						queueMessageSender(() =>
+							connection.invoke('SendPosition', currentStorePartyKey, action.payload)
+						);
+					}
 					break;
 				case 'player/pause':
-					connection.invoke('Pause', currentStorePartyKey);
+					queueMessageSender(() => connection.invoke('Pause', currentStorePartyKey));
 					break;
 				case 'player/play':
-					connection.invoke('Play', currentStorePartyKey);
+					queueMessageSender(() => connection.invoke('Play', currentStorePartyKey));
 					break;
 				case 'performances/startNextPerformance':
-					connection.invoke('StartNewPerformance', currentStorePartyKey);
+					queueMessageSender(() => connection.invoke('StartNewPerformance', currentStorePartyKey));
 					store.dispatch(resetPlayer());
 					break;
 				case 'performances/startPreviousPerformance':
-					connection.invoke('startPreviousPerformance', currentStorePartyKey);
+					queueMessageSender(() => connection.invoke('startPreviousPerformance', currentStorePartyKey));
 					store.dispatch(resetPlayer());
 					break;
 				case 'party/resetParty': {
 					if (currentStorePartyKey.length > 0) {
-						connection.invoke('LeaveParty', currentStorePartyKey);
+						queueMessageSender(() => connection.invoke('LeaveParty', currentStorePartyKey));
 					}
 					break;
 				}
 				case 'party/populateParty': {
-					console.log('getting party details');
-					console.log('joining party', action.payload.partyKey);
-					connection.invoke('JoinParty', action.payload.partyKey);
+					queueMessageSender(() => {
+						if (action.payload.partyKey) {
+							console.log(connection, action.payload.partyKey);
+							connection.invoke('JoinParty', action.payload.partyKey);
+						}
+					});
 					break;
 				}
 				default:

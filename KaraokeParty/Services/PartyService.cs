@@ -70,11 +70,31 @@ namespace KaraokeParty.Services {
 			context.SaveChanges();
 			return PerformanceDTO.FromDb(lastCompleted);
 		}
+
+		public void UpdateVideoLength(string partyKey, int timeInMs) {
+			Party? party = GetPartyByKey(partyKey);
+			if (party == null) {
+				return;
+			}
+			party.VideoLength = timeInMs;
+			context.SaveChanges();
+		}
+
+		public void UpdateVideoPosition(string partyKey, decimal position) {
+			Party? party = GetPartyByKey(partyKey);
+			if (party == null) {
+				return;
+			}
+			party.VideoPosition = position;
+			context.SaveChanges();
+		}
 	}
 
 	public interface IPartyService {
 		Party? GetPartyByKey(string partyKey);
 		PerformanceDTO? StartNextSong(string partyKey);
 		PerformanceDTO? StartPreviousSong(string partyKey);
+		void UpdateVideoLength(string partyKey, int timeInMs);
+		void UpdateVideoPosition(string partyKey, decimal position);
 	}
 }

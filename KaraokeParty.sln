@@ -9,6 +9,8 @@ Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "KPFrontend", "KPFrontend\KP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KPPlayer", "KPPlayer\KPPlayer.csproj", "{D1773F16-1F78-4242-BC7F-49DA97742049}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KPBuild", "KPBuild\KPBuild.csproj", "{F7B02E2F-2E4E-4B7E-89CB-11FB18115C0F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{D1773F16-1F78-4242-BC7F-49DA97742049}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1773F16-1F78-4242-BC7F-49DA97742049}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D1773F16-1F78-4242-BC7F-49DA97742049}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7B02E2F-2E4E-4B7E-89CB-11FB18115C0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7B02E2F-2E4E-4B7E-89CB-11FB18115C0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7B02E2F-2E4E-4B7E-89CB-11FB18115C0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7B02E2F-2E4E-4B7E-89CB-11FB18115C0F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

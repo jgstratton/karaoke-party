@@ -2,13 +2,19 @@
 
 namespace KaraokeParty.DataStore {
 	public class KPContext : DbContext {
+		private IConfiguration configuration;
+
 		public DbSet<Party> Parties { get; set; } = null!;
 		public DbSet<Singer> Singers { get; set; } = null!;
 		public DbSet<Song> Songs { get; set; } = null!;
 		public DbSet<Performance> Performances { get; set; }
 
+		public KPContext(IConfiguration iConfig) {
+			configuration = iConfig;
+		}
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
-			optionsBuilder.UseNpgsql("Host=localhost;Database=KaraokeParty;Username=admin;Password=password")
+			string dbConfigString = configuration.GetSection("DBConnectionString").Value ?? "";
+			optionsBuilder.UseNpgsql(dbConfigString)
 				.UseSnakeCaseNamingConvention()
 				.UseLazyLoadingProxies();
 			base.OnConfiguring(optionsBuilder);

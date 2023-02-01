@@ -2,6 +2,8 @@ import React from 'react';
 import { useState } from 'react';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import '../../css/table-classes.css';
 import Loading from '../common/Loading';
 import Overlay from '../common/Overlay';
@@ -34,22 +36,28 @@ const YouTubeResults = (props) => {
 			)}
 			<Card className="mt-3">
 				<Card.Body>
-					<Card.Title>Songs found on youtube</Card.Title>
+					<Card.Title>YouTube search results</Card.Title>
 					<Card.Text className="text-warning">
 						{props.loading ? (
 							<Loading />
 						) : (
 							<>
 								{props.results.map((r) => (
-									<div key={r.id}>
-										<Button className="float-right" onClick={() => downloadVideo(r.title, r.url)}>
-											<FontAwesomeIcon icon={faDownload} /> Download and add to queue
-										</Button>
-										<VideoPreview url={r.url} />
-										<div>{r.title}</div>
-										<a href={r.url}>{r.url}</a>
-										<hr />
-									</div>
+									<Row key={r.id}>
+										<Col md={8}>
+											<VideoPreview url={r.url} />
+											<div>{r.title}</div>
+											<a href={r.url}>{r.url}</a>
+										</Col>
+										<Col className="text-md-right mt-sm-3 mt-md-0" md={4}>
+											<Button onClick={() => downloadVideo(r.title, r.url)}>
+												<FontAwesomeIcon icon={faDownload} /> Download and add to queue
+											</Button>
+										</Col>
+										<Col sm={12}>
+											<hr />
+										</Col>
+									</Row>
 								))}
 							</>
 						)}

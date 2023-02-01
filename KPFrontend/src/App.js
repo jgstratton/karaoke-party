@@ -4,13 +4,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { populateParty, reset as resetParty } from './slices/partySlice';
 import { populateUser, reset as resetUser } from './slices/userSlice';
 import { populatePerformances, resetPerformances } from './slices/performancesSlice';
+import { setPosition, setLength } from './slices/playerSlice';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import RequireSession from './components/common/RequireSession';
 import SingerDashboard from './components/SingerDashboard';
 import NoParty from './components/NoParty';
 import DJDashboard from './components/DJDashboard';
 import StorageService from './services/StorageService';
-import DevTools from './components/common/DevTools';
 import Search from './components/Search';
 
 const App = () => {
@@ -24,12 +24,16 @@ const App = () => {
 			let loadedUser = await StorageService.loadUser();
 
 			if (loadedParty) {
+				console.log(loadedParty);
 				dispatch(populateParty(loadedParty));
+				dispatch(setPosition(loadedParty.videoPosition));
+				dispatch(setLength(loadedParty.videoLength));
 			} else {
 				dispatch(resetParty(loadedParty));
 			}
 
 			if (loadedUser) {
+				console.log('Loaded User:', loadedUser);
 				dispatch(populateUser(loadedUser));
 			} else {
 				dispatch(resetUser(loadedUser));
@@ -51,7 +55,6 @@ const App = () => {
 				<div>Loading...</div>
 			) : (
 				<div>
-					<DevTools />
 					<Routes>
 						<Route path="/" element={<NoParty />} />
 						<Route path="/NoParty" element={<NoParty />} />

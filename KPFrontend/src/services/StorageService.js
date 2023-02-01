@@ -29,17 +29,26 @@ async function loadUser() {
 					singerId: id,
 				})
 		);
-		return await response.json();
+		const userObj = await response.json();
+		const isDj = localStorage.getItem('isDj');
+		if (isDj) {
+			userObj.isDj = true;
+		}
+		return await userObj;
 	}
 	return {};
 }
 
 function storeUser(user) {
 	localStorage.setItem('singerId', user.singerId);
+	if (user.isDj) {
+		localStorage.setItem('isDj', true);
+	}
 }
 
 function forgetUser() {
 	localStorage.removeItem('singerId');
+	localStorage.removeItem('isDj');
 }
 
 const StorageService = {

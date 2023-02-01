@@ -20,7 +20,13 @@ namespace KaraokeParty.Hubs {
 		}
 
 		public async Task SendPosition(string partyKey, decimal position) {
+			partyService.UpdateVideoPosition(partyKey, position);
 			await Clients.OthersInGroup(partyKey).ReceivePosition(position);
+		}
+
+		public async Task SendVideoLength(string partyKey, int timeInMs) {
+			partyService.UpdateVideoLength(partyKey, timeInMs);
+			await Clients.OthersInGroup(partyKey).ReceiveVideoLength(timeInMs);
 		}
 
 		public async Task StartNewPerformance(string partyKey) {
@@ -37,10 +43,6 @@ namespace KaraokeParty.Hubs {
 			if (dto != null) {
 				await Clients.Group(partyKey).ReceivePreviousSong(dto);
 			}
-		}
-
-		public async Task SendVideoLength(string partyKey, int timeInMs) {
-			await Clients.OthersInGroup(partyKey).ReceiveVideoLength(timeInMs);
 		}
 
 		public async Task Pause(string partyKey) {

@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { reset as resetUser } from '../../slices/userSlice';
 import { reset as resetParty } from '../../slices/partySlice';
 import { resetPerformances } from '../../slices/performancesSlice';
+import { resetPlayer } from '../../slices/playerSlice';
 import StorageService from '../../services/StorageService';
 
 const Menu = () => {
@@ -20,6 +21,7 @@ const Menu = () => {
 		dispatch(resetUser());
 		dispatch(resetParty());
 		dispatch(resetPerformances());
+		dispatch(resetPlayer());
 	}
 
 	return (

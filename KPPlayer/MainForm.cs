@@ -2,10 +2,12 @@
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Forms;
 using KaraokeParty.Controllers;
+using KaraokeParty.DataStore;
 using KaraokeParty.Hubs;
 using KPPlayer.Services;
 using KPPlayer.Types;
@@ -70,7 +72,7 @@ namespace KPPlayer {
 				query["partyKey"] = txtPartyKey.Text;
 
 				var response = await AppState.client.GetAsync($"party?{query}");
-				var data = await response.Content.ReadAsStringAsync();
+				var party = await response.Content.ReadFromJsonAsync<Party>();
 				
 				AppState.ServerUrl = txtServerUrl.Text;
 				AppState.PartyKey = txtPartyKey.Text;
@@ -80,7 +82,7 @@ namespace KPPlayer {
 				lblConnectionStatus.Text = ConnectionStatus.Connected.ToString();
 				AppState.Status = ConnectionStatus.Connected;
 				AppState.Logger.LogInfo("Connection Started");
-
+				marqueeLabel1.Text = $"{party.Title} Karaoke.                  Visit {AppState.ServerUrl} and use {AppState.PartyKey} to join in on the fun.";
 			} catch (Exception ex) {
 				AppState.Logger.LogInfo(ex.Message);
 				lblConnectionStatus.Text = ConnectionStatus.Failed.ToString();
@@ -118,6 +120,9 @@ namespace KPPlayer {
 					this.FormBorderStyle = FormBorderStyle.Fixed3D;
 					this.WindowState = FormWindowState.Normal;
 					foreach (var lbl in Controls.OfType<Label>()) {
+						if (lbl.Name == marqueeLabel1.Name) {
+							continue;
+						}
 						lbl.Show();
 					}
 					foreach (var btn in Controls.OfType<Button>()) {
@@ -134,6 +139,9 @@ namespace KPPlayer {
 					this.FormBorderStyle = FormBorderStyle.None;
 					this.WindowState = FormWindowState.Maximized;
 					foreach (var lbl in Controls.OfType<Label>()) {
+						if (lbl.Name == marqueeLabel1.Name) {
+							continue;
+						}
 						lbl.Hide();
 					}
 					foreach (var btn in Controls.OfType<Button>()) {
