@@ -26,4 +26,5 @@ services:
     ports:
       - ${API_PORT}:80
     volumes:
+      - "./Songs:/usr/lib/songs"
       - "./appsettings.Production.json:/app/appsettings.Production.json"

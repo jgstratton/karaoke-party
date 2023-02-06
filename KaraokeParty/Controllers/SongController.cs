@@ -15,7 +15,7 @@ namespace KaraokeParty.Controllers {
 			while(dir != null && dir.Name !="KaraokeParty") {
 				dir = dir.Parent;
 			}
-			this.VideoStoragePath = $"{dir?.Parent?.FullName}\\Songs";
+			this.VideoStoragePath = $"{dir?.Parent?.FullName}/Songs";
 			this.context = kpContext;
 		}
 
