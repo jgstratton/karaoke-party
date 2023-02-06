@@ -2,7 +2,7 @@
 
 module.exports = function (app) {
 	app.use(
-		createProxyMiddleware(['/party', '/singer', '/song'], {
+		createProxyMiddleware(['/party', '/singer', '/song', '/hubs'], {
 			target: 'https://localhost:7049',
 			secure: false,
 		})

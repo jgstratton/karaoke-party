@@ -5,10 +5,7 @@ import { populatePerformances } from '../slices/performancesSlice';
 import ApiService from '../services/ApiService';
 
 const messageQueue = [];
-const connection = new HubConnectionBuilder()
-	.withUrl('https://localhost:7049/hubs/player')
-	.withAutomaticReconnect()
-	.build();
+const connection = new HubConnectionBuilder().withUrl('./hubs/player').withAutomaticReconnect().build();
 
 connection
 	.start()
