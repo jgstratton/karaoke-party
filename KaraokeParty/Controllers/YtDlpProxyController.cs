@@ -1,18 +1,22 @@
 using AspNetCore.Proxy;
 using AspNetCore.Proxy.Options;
-using KaraokeParty.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KaraokeParty.Controllers {
 	[ApiController]
 	public class YtDlpProxyController : ControllerBase {
+		private string ytdlpConnectionString { get; set; }
 		private HttpProxyOptions _httpOptions = HttpProxyOptionsBuilder.Instance
 		  .WithShouldAddForwardedHeaders(false).Build();
+		
+		public YtDlpProxyController(IConfiguration config) {
+			ytdlpConnectionString = config.GetSection("YTDLPServiceConnectionString").Value ?? "";
+		}
 
-	  [Route("yt-dlp/{**rest}")]
+		[Route("yt-dlp/{**rest}")]
 		public Task ProxyCatchAll(string rest) {
 			var queryString = this.Request.QueryString.Value;
-			return this.HttpProxyAsync($"http://127.0.0.1:5000/{rest}{queryString}", _httpOptions);
+			return this.HttpProxyAsync($"{ytdlpConnectionString}/{rest}{queryString}", _httpOptions);
 		}
 	}
 }
