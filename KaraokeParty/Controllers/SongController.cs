@@ -10,12 +10,16 @@ namespace KaraokeParty.Controllers {
 		private readonly KPContext context;
 		private readonly string VideoStoragePath;
 
-		public SongController(KPContext kpContext) {
-			DirectoryInfo? dir = new DirectoryInfo(Directory.GetCurrentDirectory());
-			while(dir != null && dir.Name !="KaraokeParty") {
-				dir = dir.Parent;
+		public SongController(KPContext kpContext, IConfiguration config) {
+			if (config.GetSection("DownloadLocation")?.Value is string downloadLocation) {
+				this.VideoStoragePath = downloadLocation;
+			} else { 
+				DirectoryInfo? dir = new DirectoryInfo(Directory.GetCurrentDirectory());
+				while (dir != null && dir.Name != "KaraokeParty") {
+					dir = dir.Parent;
+				}
+				this.VideoStoragePath = $"{dir?.Parent?.FullName}/Songs";
 			}
-			this.VideoStoragePath = $"{dir?.Parent?.FullName}/Songs";
 			this.context = kpContext;
 		}
 
