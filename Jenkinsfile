@@ -8,8 +8,10 @@ pipeline {
 
 		stage('Build .net api docker image') {
 			steps {
-				echo "building karaoke-party-api"
-				def dockerImage = docker.build("jgstratton/karaoke-party-api:latest")
+				script {
+					echo "building karaoke-party-api"
+					def dockerImage = docker.build("jgstratton/karaoke-party-api:latest")
+				}
 			}
 		}
 	}
