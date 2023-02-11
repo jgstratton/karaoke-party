@@ -1,8 +1,8 @@
 pipeline {
 	agent any
 	environment {
-        DOCKER_REPOSITORY_HOST = credentials('jenkins-docker-repository-host')
-        DOCKER_REPOSITORY_PORT = credentials('jenkins-docker-repository-port')
+        DOCKER_REPOSITORY_HOST = credentials('jenkins-docker-registry-host')
+        DOCKER_REPOSITORY_PORT = credentials('jenkins-docker-registry-port')
     }
 	stages {
 
