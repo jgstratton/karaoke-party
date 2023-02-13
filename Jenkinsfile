@@ -1,8 +1,8 @@
 pipeline {
 	agent any
 	environment {
-        DOCKER_REPOSITORY_HOST = credentials('jenkins-docker-registry-host')
-        DOCKER_REPOSITORY_PORT = credentials('jenkins-docker-registry-port')
+        DOCKER_REGISTRY_HOST = credentials('jenkins-docker-registry-host')
+        DOCKER_REGISTRY_PORT = credentials('jenkins-docker-registry-port')
     }
 	stages {
 
@@ -10,7 +10,7 @@ pipeline {
 			steps {
 				script {
 					echo "building karaoke-party-api"
-					docker.withRegistry('http://${jenkins-docker-registry-host}:${jenkins-docker-registry-port}') {
+					docker.withRegistry('http://${DOCKER_REGISTRY_HOST}:${DOCKER_REGISTRY_PORT}') {
 						def dockerImage = docker.build("jgstratton/karaoke-party-api:latest")
 						dockerImage.push()
 					}
