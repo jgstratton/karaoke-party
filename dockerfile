@@ -13,7 +13,7 @@ FROM node:19.3 AS build-react
 WORKDIR /src
 COPY ./KPFrontend .
 RUN npm ci
-RUN chown -R node /src/node_modules
+# RUN chown -R node /src/node_modules
 RUN npm run build
 
 # deploy built application to new container
