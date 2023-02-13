@@ -10,7 +10,10 @@ pipeline {
 			steps {
 				script {
 					echo "building karaoke-party-api"
-					def dockerImage = docker.build("jgstratton/karaoke-party-api:latest")
+					docker.withRegistry('http://${jenkins-docker-registry-host}:${jenkins-docker-registry-port}') {
+						def dockerImage = docker.build("jgstratton/karaoke-party-api:latest")
+						dockerImage.push()
+					}
 				}
 			}
 		}
