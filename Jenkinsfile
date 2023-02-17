@@ -19,13 +19,15 @@ pipeline {
 		}
 		stage('Build yt-dlp docker image') {
 			steps {
-				dir("./YoutubeDownload") {
-					docker.withRegistry("http://${DOCKER_REGISTRY_HOST}:${DOCKER_REGISTRY_PORT}") {
-						docker
-							.build("jgstratton/karaoke-party-yt-dlp:latest")
-							.push()
-					}
-				}
+			    script {
+    				dir("./YoutubeDownload") {
+    					docker.withRegistry("http://${DOCKER_REGISTRY_HOST}:${DOCKER_REGISTRY_PORT}") {
+    						docker
+    							.build("jgstratton/karaoke-party-yt-dlp:latest")
+    							.push()
+    					}
+    				}
+			    }
 			}
 		}
 	}
