@@ -72,7 +72,6 @@ const signalRMiddleware = (store) => {
 			console.log(action);
 			switch (action.type) {
 				case 'player/sendPosition':
-					console.log('sending position from client', action.payload);
 					if (typeof action.payload != 'undefined') {
 						queueMessageSender(() =>
 							connection.invoke('SendPosition', currentStorePartyKey, action.payload)
@@ -84,14 +83,6 @@ const signalRMiddleware = (store) => {
 					break;
 				case 'player/play':
 					queueMessageSender(() => connection.invoke('Play', currentStorePartyKey));
-					break;
-				case 'player/setPosition':
-					console.log('sending position from client', action.payload);
-					if (typeof action.payload != 'undefined') {
-						queueMessageSender(() =>
-							connection.invoke('SendPosition', currentStorePartyKey, action.payload)
-						);
-					}
 					break;
 				case 'player/songEnded':
 					queueMessageSender(() => connection.invoke('StartNewPerformance', currentStorePartyKey));
