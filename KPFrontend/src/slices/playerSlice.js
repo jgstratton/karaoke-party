@@ -48,10 +48,20 @@ export const playerSlice = createSlice({
 		},
 		resetPlayer: () => initialState,
 		sendPosition: () => {},
+		sendDuration: () => {},
 	},
 });
 
-export const { populatePlayer, resetPlayer, setPosition, sendPosition, setLength, play, pause, songEnded } =
-	playerSlice.actions;
+export const {
+	populatePlayer,
+	resetPlayer,
+	setPosition,
+	sendPosition,
+	sendDuration,
+	setLength,
+	play,
+	pause,
+	songEnded,
+} = playerSlice.actions;
 
 export default playerSlice.reducer;

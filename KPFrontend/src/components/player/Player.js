@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { findDOMNode } from 'react-dom';
 import ReactPlayer from 'react-player';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faVideo } from '@fortawesome/free-solid-svg-icons';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { sendPosition, songEnded } from '../../slices/playerSlice';
+import { sendPosition, sendDuration, songEnded } from '../../slices/playerSlice';
 import Overlay from '../common/Overlay';
 
 const Player = () => {
@@ -67,7 +67,7 @@ const Player = () => {
 				onEnded={handleEnded}
 				// onError={(e) => console.log('onError', e)}
 				onProgress={handleProgress}
-				// onDuration={this.handleDuration}
+				onDuration={(duration) => dispatch(sendDuration(Math.floor(duration * 1000)))}
 			/>
 			{!userInteraction && (
 				<div

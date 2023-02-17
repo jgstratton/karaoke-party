@@ -78,6 +78,13 @@ const signalRMiddleware = (store) => {
 						);
 					}
 					break;
+				case 'player/sendDuration':
+					if (typeof action.payload != 'undefined') {
+						queueMessageSender(() =>
+							connection.invoke('SendVideoLength', currentStorePartyKey, action.payload)
+						);
+					}
+					break;
 				case 'player/pause':
 					queueMessageSender(() => connection.invoke('Pause', currentStorePartyKey));
 					break;
