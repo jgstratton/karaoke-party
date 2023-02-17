@@ -2,7 +2,8 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { populateParty, reset as resetParty } from './slices/partySlice';
-import { populateUser, reset as resetUser } from './slices/userSlice';
+import { populateUser, reset as resetUser, toggleDj } from './slices/userSlice';
+import { populatePlayer } from './slices/playerSlice';
 import { populatePerformances, resetPerformances } from './slices/performancesSlice';
 import { setPosition, setLength } from './slices/playerSlice';
 import { Routes, Route, Navigate } from 'react-router-dom';
@@ -12,6 +13,8 @@ import NoParty from './components/NoParty';
 import DJDashboard from './components/DJDashboard';
 import StorageService from './services/StorageService';
 import Search from './components/Search';
+import Player from './components/player/Player';
+import KeyPressChecker from './services/KeyPressChecker';
 
 const App = () => {
 	const dispatch = useDispatch();
@@ -19,6 +22,10 @@ const App = () => {
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
+		KeyPressChecker(['Shift', 'D', 'J'], () => {
+			dispatch(toggleDj());
+		});
+
 		async function load() {
 			let loadedParty = await StorageService.loadParty();
 			let loadedUser = await StorageService.loadUser();
@@ -26,6 +33,7 @@ const App = () => {
 			if (loadedParty) {
 				console.log(loadedParty);
 				dispatch(populateParty(loadedParty));
+				dispatch(populatePlayer(loadedParty));
 				dispatch(setPosition(loadedParty.videoPosition));
 				dispatch(setLength(loadedParty.videoLength));
 			} else {
@@ -69,6 +77,14 @@ const App = () => {
 							element={
 								<RequireSession>
 									<Search />
+								</RequireSession>
+							}
+						/>
+						<Route
+							path="Player"
+							element={
+								<RequireSession>
+									<Player />
 								</RequireSession>
 							}
 						/>

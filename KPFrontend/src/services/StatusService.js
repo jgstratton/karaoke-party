@@ -9,10 +9,13 @@ const getStatusName = (statusId) => statuses.filter((s) => s.id === statusId).ma
 const getStatusId = (statusName) => statuses.filter((s) => s.name === statusName).map((s) => s.id)[0];
 const getStatuses = () => [...statuses];
 
+const getLiveStatus = () => 2;
+
 const StatusService = {
 	getStatusName,
 	getStatusId,
 	getStatuses,
+	getLiveStatus,
 };
 
 export default StatusService;

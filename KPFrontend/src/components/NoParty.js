@@ -10,6 +10,7 @@ import Col from 'react-bootstrap/Col';
 import { useNavigate } from 'react-router-dom';
 import { populateUser } from '../slices/userSlice';
 import { populateParty } from '../slices/partySlice';
+import { populatePlayer } from '../slices/playerSlice';
 import { populatePerformances } from '../slices/performancesSlice';
 import { setPosition, setLength } from '../slices/playerSlice';
 import StorageService from '../services/StorageService';
@@ -51,6 +52,7 @@ const NoParty = () => {
 		let curParty = await ApiService.fetchParty(form.joinCode);
 		let newUser = await ApiService.joinParty(form.joinCode, form.singerName);
 		dispatch(populateParty(curParty));
+		dispatch(populatePlayer(curParty));
 		dispatch(setPosition(curParty.videoPosition));
 		dispatch(setLength(curParty.videoLength));
 		dispatch(populateUser(newUser));

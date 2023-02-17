@@ -1,11 +1,12 @@
 import { HubConnectionBuilder, HubConnectionState } from '@microsoft/signalr';
-import { setPosition, setLength, resetPlayer } from '../slices/playerSlice';
+import { setPosition, setLength } from '../slices/playerSlice';
 import { populatePerformances } from '../slices/performancesSlice';
+import { populatePlayer, pause, play } from '../slices/playerSlice';
 
 import ApiService from '../services/ApiService';
 
 const messageQueue = [];
-const connection = new HubConnectionBuilder().withUrl('./hubs/player').withAutomaticReconnect().build();
+const connection = new HubConnectionBuilder().withUrl('/hubs/player').withAutomaticReconnect().build();
 
 connection
 	.start()
@@ -37,11 +38,21 @@ const signalRMiddleware = (store) => {
 	connection.on('ReceiveNewPerformanceStarted', async (value) => {
 		let curParty = await ApiService.fetchParty(store.getState().party.partyKey);
 		store.dispatch(signalActionCreator(populatePerformances(curParty.queue)));
+		store.dispatch(signalActionCreator(populatePlayer(curParty)));
 	});
 
 	connection.on('ReceivePreviousSong', async (value) => {
 		let curParty = await ApiService.fetchParty(store.getState().party.partyKey);
 		store.dispatch(signalActionCreator(populatePerformances(curParty.queue)));
+		store.dispatch(signalActionCreator(populatePlayer(curParty)));
+	});
+
+	connection.on('ReceivePause', async () => {
+		store.dispatch(signalActionCreator(pause()));
+	});
+
+	connection.on('ReceivePlay', async () => {
+		store.dispatch(signalActionCreator(play()));
 	});
 
 	const queueMessageSender = (sendMessage) => {
@@ -74,13 +85,24 @@ const signalRMiddleware = (store) => {
 				case 'player/play':
 					queueMessageSender(() => connection.invoke('Play', currentStorePartyKey));
 					break;
+				case 'player/setPosition':
+					console.log('sending position from client', action.payload);
+					if (typeof action.payload != 'undefined') {
+						queueMessageSender(() =>
+							connection.invoke('SendPosition', currentStorePartyKey, action.payload)
+						);
+					}
+					break;
+				case 'player/songEnded':
+					queueMessageSender(() => connection.invoke('StartNewPerformance', currentStorePartyKey));
+					break;
 				case 'performances/startNextPerformance':
 					queueMessageSender(() => connection.invoke('StartNewPerformance', currentStorePartyKey));
-					store.dispatch(resetPlayer());
+					// store.dispatch(resetPlayer());
 					break;
 				case 'performances/startPreviousPerformance':
 					queueMessageSender(() => connection.invoke('startPreviousPerformance', currentStorePartyKey));
-					store.dispatch(resetPlayer());
+					// store.dispatch(resetPlayer());
 					break;
 				case 'party/resetParty': {
 					if (currentStorePartyKey.length > 0) {

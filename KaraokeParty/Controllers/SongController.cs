@@ -1,6 +1,10 @@
 using KaraokeParty.ApiModels;
 using KaraokeParty.DataStore;
 using Microsoft.AspNetCore.Mvc;
+using System.IO;
+using System.IO.Pipes;
+using System.Net;
+using System.Net.Http.Headers;
 
 namespace KaraokeParty.Controllers {
 	[ApiController]
@@ -63,6 +67,14 @@ namespace KaraokeParty.Controllers {
 		public ActionResult DownloadVideoToPlayer(string fileName) {
 			string videoPath = $"{VideoStoragePath}/{fileName}";
 			return File(System.IO.File.ReadAllBytes(videoPath), "application/octet-stream");
+		}
+
+		[HttpGet]
+		[Route("{fileName}")]
+		public IActionResult GetFile(string fileName) {
+			string videoPath = $"{VideoStoragePath}/{fileName}";
+			var file = System.IO.File.ReadAllBytes(videoPath);
+			return File(file, contentType: "video/mp4", fileDownloadName: fileName, enableRangeProcessing: true);
 		}
 	}
 }
