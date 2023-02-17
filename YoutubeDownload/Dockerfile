@@ -10,4 +10,5 @@ COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt &&\
 	pip3 install --upgrade yt-dlp
 
+COPY app.py app.py
 CMD ["python3", "/app/app.py"]
