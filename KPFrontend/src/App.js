@@ -47,7 +47,7 @@ const App = () => {
 				dispatch(resetUser(loadedUser));
 			}
 
-			if (loadedParty.queue) {
+			if (loadedParty && loadedParty.queue) {
 				dispatch(populatePerformances(loadedParty.queue));
 			} else {
 				dispatch(resetPerformances());

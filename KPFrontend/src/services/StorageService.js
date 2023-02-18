@@ -5,7 +5,7 @@ async function loadParty() {
 	if (partyKey) {
 		return await ApiService.fetchParty(partyKey);
 	}
-	return {};
+	return null;
 }
 
 function getPartyKey() {
@@ -36,7 +36,7 @@ async function loadUser() {
 		}
 		return await userObj;
 	}
-	return {};
+	return null;
 }
 
 function storeUser(user) {
