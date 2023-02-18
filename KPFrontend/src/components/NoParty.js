@@ -14,6 +14,7 @@ import { populatePlayer } from '../slices/playerSlice';
 import { populatePerformances } from '../slices/performancesSlice';
 import { setPosition, setLength } from '../slices/playerSlice';
 import StorageService from '../services/StorageService';
+import Menu from './common/Menu';
 
 const NoParty = () => {
 	const dispatch = useDispatch();
@@ -73,6 +74,7 @@ const NoParty = () => {
 		<div>Loading...</div>
 	) : (
 		<div className="container" style={{ padding: '5px', maxWidth: '900px' }}>
+			<Menu />
 			<h3 className="text-center">Welcome to Karaoke Party</h3>
 			<Row>
 				<Col xs={12} md={5}>
