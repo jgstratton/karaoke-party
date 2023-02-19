@@ -15,14 +15,11 @@ const Player = () => {
 	const player = useSelector((state) => state.player);
 	const [userInteraction, setUserInteraction] = useState(false);
 	const [lastReportedPosition, setLastReportedPosition] = useState(0);
-	const [played, setPlayed] = useState(0);
-	const [loaded, setLoaded] = useState(0);
-	const [duration, setDuration] = useState(0);
-	const [playbackRate, setPlaybackRate] = useState(1.0);
-	const [loop, setLoop] = useState(false);
+	const [playbackRate] = useState(1.0);
+	const [loop] = useState(false);
 
 	useEffect(() => {
-		if (lastReportedPosition != player.position && playerRef.current) {
+		if (lastReportedPosition !== player.position && playerRef.current) {
 			setLastReportedPosition(player.position);
 			playerRef.current.seekTo(parseFloat(player.position));
 		}

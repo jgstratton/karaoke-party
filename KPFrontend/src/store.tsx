@@ -6,7 +6,7 @@ import playerReducer from './slices/playerSlice';
 import signalRMiddleware from './middleware/signalRMiddleware';
 
 // create the store with the reducer function
-export const store = configureStore({
+const store = configureStore({
 	reducer: {
 		user: userReducer,
 		party: partyReducer,
@@ -17,3 +17,6 @@ export const store = configureStore({
 		return getDefaultMiddleware().concat([signalRMiddleware]);
 	},
 });
+
+export type RootState = ReturnType<typeof store.getState>
+export default store

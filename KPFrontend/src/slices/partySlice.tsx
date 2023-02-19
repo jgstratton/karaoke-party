@@ -1,9 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { RootState } from '../store';
 
-const initialState = {
-	partyId: null,
+export interface Party {
+	partyId?: Number;
+	title: string;
+	partyKey: string;
+}
+
+const initialState:Party = {
+	partyId: undefined,
 	title: '',
-	partyKey: '',
+	partyKey: ''
 };
 
 export const partySlice = createSlice({
@@ -19,6 +26,10 @@ export const partySlice = createSlice({
 		reset: () => initialState,
 	},
 });
+
+export const selectIsPartyInitialized = (state:RootState) => {
+	return (state.party?.partyKey ?? '').length > 0;
+}
 
 export const { populateParty, reset } = partySlice.actions;
 

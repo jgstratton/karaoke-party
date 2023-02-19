@@ -2,7 +2,6 @@ import React from 'react';
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Menu from './common/Menu';
-import Title from './common/Title';
 import LocalResults from './search/LocalResults';
 import YoutubeResults from './search/YoutubeResults';
 import SearchCard from './search/SearchCard';
@@ -69,7 +68,6 @@ const Search = (props) => {
 				''
 			)}
 			<Menu />
-			<Title />
 			<SearchCard submitSearch={submitSearch} searchString={searchString} setSearchString={setSearchString} />
 			{searchSubmitted && (
 				<>

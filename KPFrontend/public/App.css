@@ -1,0 +1,10 @@
+body{
+	background-size:cover;
+	background-attachment: fixed;
+	overflow-x:hidden;
+	overflow-y:scroll;
+}
+
+.card {
+	--bs-card-bg: rgba(27, 27, 27,.95);
+}

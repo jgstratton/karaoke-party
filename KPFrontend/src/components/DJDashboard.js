@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Menu from './common/Menu';
-import Title from './common/Title';
 import Card from 'react-bootstrap/Card';
 import ListGroup from 'react-bootstrap/ListGroup';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -39,7 +38,6 @@ const DJDashboard = (props) => {
 	return (
 		<div>
 			<Menu />
-			<Title />
 			<Row>
 				<DragDropContext onDragEnd={onDragEnd}>
 					<Col md={4}>
