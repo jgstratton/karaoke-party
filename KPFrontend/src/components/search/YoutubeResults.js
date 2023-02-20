@@ -36,7 +36,7 @@ const YouTubeResults = (props) => {
 			)}
 			<Card className="mt-3">
 				<Card.Body>
-					<Card.Title>YouTube search results</Card.Title>
+					<Card.Title>Online search results</Card.Title>
 					<Card.Text className="text-warning">
 						{props.loading ? (
 							<Loading />
