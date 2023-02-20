@@ -2,6 +2,7 @@ import { HubConnectionBuilder, HubConnectionState } from '@microsoft/signalr';
 import { setPosition, setLength } from '../slices/playerSlice';
 import { populatePerformances } from '../slices/performancesSlice';
 import { populatePlayer, pause, play } from '../slices/playerSlice';
+import { populateSettings } from '../slices/playerSlice';
 
 import ApiService from '../services/ApiService';
 
@@ -53,6 +54,10 @@ const signalRMiddleware = (store) => {
 
 	connection.on('ReceivePlay', async () => {
 		store.dispatch(signalActionCreator(play()));
+	});
+
+	connection.on('ReceivePlayerSettings', async (playerSettings) => {
+		store.dispatch(signalActionCreator(populateSettings(playerSettings)));
 	});
 
 	const queueMessageSender = (sendMessage) => {
@@ -115,6 +120,10 @@ const signalRMiddleware = (store) => {
 							connection.invoke('JoinParty', action.payload.partyKey);
 						}
 					});
+					break;
+				}
+				case 'player/populateSettings': {
+					queueMessageSender(() => connection.invoke('UpdateSettings', currentStorePartyKey, action.payload));
 					break;
 				}
 				default:

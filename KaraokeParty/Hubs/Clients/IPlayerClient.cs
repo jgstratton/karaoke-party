@@ -11,5 +11,6 @@ namespace KaraokeParty.Hubs.Clients
 		Task ReceivePlay();
 		Task ReceiveNewPerformanceStarted(PerformanceDTO performance);
 		Task ReceiveEndOfQueue();
+		Task ReceivePlayerSettings(PlayerSettingsDTO settings);
 	}
 }

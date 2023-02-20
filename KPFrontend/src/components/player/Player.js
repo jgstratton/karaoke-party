@@ -1,18 +1,20 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { findDOMNode } from 'react-dom';
 import ReactPlayer from 'react-player';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
 import { faVideo } from '@fortawesome/free-solid-svg-icons';
-
 import { useSelector, useDispatch } from 'react-redux';
-import { sendPosition, sendDuration, songEnded } from '../../slices/playerSlice';
+import { sendPosition, sendDuration, songEnded, selectPlayerSettings } from '../../slices/playerSlice';
 import Overlay from '../common/Overlay';
+import Marquee from 'react-fast-marquee';
+import useBodyClass from '../../utilities/useBodyClass';
 
 const Player = () => {
+	useBodyClass('player-open');
 	const dispatch = useDispatch();
 	const player = useSelector((state) => state.player);
+	const party = useSelector((state) => state.party);
+	const playerSettings = useSelector(selectPlayerSettings);
 	const [userInteraction, setUserInteraction] = useState(false);
 	const [lastReportedPosition, setLastReportedPosition] = useState(0);
 	const [playbackRate] = useState(1.0);
@@ -26,8 +28,6 @@ const Player = () => {
 	}, [lastReportedPosition, setLastReportedPosition, player]);
 
 	const enablePlayer = () => {
-		//launch in full screen by default
-		findDOMNode(playerRef.current).requestFullscreen();
 		setUserInteraction(true);
 	};
 
@@ -37,7 +37,7 @@ const Player = () => {
 	const playerRef = React.useRef();
 
 	return (
-		<div style={{ height: 'calc(100vh)', overflowY: 'hidden' }}>
+		<div style={{ height: `calc(100vh)`, overflowY: 'hidden' }}>
 			<ReactPlayer
 				ref={playerRef}
 				className="react-player"
@@ -66,6 +66,26 @@ const Player = () => {
 				onProgress={handleProgress}
 				onDuration={(duration) => dispatch(sendDuration(Math.floor(duration * 1000)))}
 			/>
+			{playerSettings.marqueeEnabled && (
+				<div
+					className="marquee-wrap"
+					style={{
+						height: `${playerSettings.marqueeSize}px`,
+						lineHeight: `${playerSettings.marqueeSize}px`,
+						fontSize: `${playerSettings.marqueeSize * 0.8}px`,
+					}}
+				>
+					<Marquee clasName="marquee-component" gradient={false} speed={playerSettings.marqueeSpeed}>
+						<span className="p-2">
+							{playerSettings.marqueeText
+								.replace(/%code%/gi, party.partyKey)
+								.replace(/%url%/gi, window.location.href)
+								.replaceAll(' ', '\u00A0')}
+						</span>
+					</Marquee>
+				</div>
+			)}
+
 			{!userInteraction && (
 				<div
 					className="text-center"
@@ -82,13 +102,12 @@ const Player = () => {
 					<Overlay>
 						<div className="text-center">
 							<p className="mb-3" style={{ lineHeight: '30px' }}>
-								Some browsers don't like it when websites start jamming playing music right away.
+								Some browsers don't like it when websites start jamming their music right away.
 								<br />
-								Click the button below to let your browser know you're in the mood for some 🎶🎶 karaoke
-								🎶🎶!
+								Let your browser know you're in the mood for some 🎶🎶 karaoke 🎶🎶!
 							</p>
 							<button className="btn btn-primary" onClick={enablePlayer}>
-								Start Player
+								Launch Karaoke Player
 								<FontAwesomeIcon icon={faVideo} className="ml-1" />
 							</button>
 						</div>

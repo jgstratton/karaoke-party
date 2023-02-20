@@ -5,7 +5,7 @@ import { Form, Button, Card } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { populateUser } from '../slices/userSlice';
 import { populateParty } from '../slices/partySlice';
-import { populatePlayer } from '../slices/playerSlice';
+import { populatePlayer, populateSettings } from '../slices/playerSlice';
 import { populatePerformances } from '../slices/performancesSlice';
 import { setPosition, setLength } from '../slices/playerSlice';
 import StorageService from '../services/StorageService';
@@ -41,6 +41,7 @@ const NoParty = () => {
 		newUser.isDj = true;
 		dispatch(populateUser(newUser));
 		dispatch(populateParty(newParty));
+		dispatch(populateSettings(newParty));
 		StorageService.storeUser(newUser);
 		StorageService.storeParty(newParty);
 		navigate('/redirectHome');
@@ -51,6 +52,7 @@ const NoParty = () => {
 		let newUser = await ApiService.joinParty(form.joinCode, form.singerName);
 		dispatch(populateParty(curParty));
 		dispatch(populatePlayer(curParty));
+		dispatch(populateSettings(curParty));
 		dispatch(setPosition(curParty.videoPosition));
 		dispatch(setLength(curParty.videoLength));
 		dispatch(populateUser(newUser));

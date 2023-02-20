@@ -156,6 +156,7 @@ namespace KaraokeParty.Controllers {
 		[HttpPost]
 		public Party Post(PartyPost postParty) {
 			Party newParty = postParty.ToDb();
+			partyService.ApllyDefaultPlayerSettings(newParty);
 			context.Parties.Add(newParty);
 			context.SaveChanges();
 			return newParty;

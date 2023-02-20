@@ -29,5 +29,13 @@ namespace KaraokeParty.DataStore {
 		public decimal VideoPosition { get; set; }
 
 		public int VideoLength { get; set; }
+
+		public Boolean MarqueeEnabled { get; set; } = false;
+
+		public string MarqueeText { get; set; } = "";
+
+		public int MarqueeSpeed { get; set; } = 20;
+
+		public int MarqueeSize { get; set; } = 40;
 	}
 }

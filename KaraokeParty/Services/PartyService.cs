@@ -88,10 +88,31 @@ namespace KaraokeParty.Services {
 			party.VideoPosition = position;
 			context.SaveChanges();
 		}
+
+		public void SavePlayerSettings(string partyKey, PlayerSettingsDTO settings) {
+			Party? party = GetPartyByKey(partyKey);
+			if (party == null) {
+				return;
+			}
+			party.MarqueeSize = settings.MarqueeSize;
+			party.MarqueeText = settings.MarqueeText;
+			party.MarqueeEnabled = settings.MarqueeEnabled;
+			party.MarqueeSpeed = settings.MarqueeSpeed;
+			context.SaveChanges();
+		}
+
+		public void ApllyDefaultPlayerSettings(Party party) {
+			party.MarqueeSize = 30;
+			party.MarqueeText = "Visit %Url% and use code %code% to put in your requests";
+			party.MarqueeEnabled = false;
+			party.MarqueeSpeed = 40;
+		}
 	}
 
 	public interface IPartyService {
+		void ApllyDefaultPlayerSettings(Party party);
 		Party? GetPartyByKey(string partyKey);
+		void SavePlayerSettings(string partyKey, PlayerSettingsDTO settings);
 		PerformanceDTO? StartNextSong(string partyKey);
 		PerformanceDTO? StartPreviousSong(string partyKey);
 		void UpdateVideoLength(string partyKey, int timeInMs);

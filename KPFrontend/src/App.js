@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { populateParty, reset as resetParty } from './slices/partySlice';
 import { populateUser, reset as resetUser, toggleDj } from './slices/userSlice';
-import { populatePlayer } from './slices/playerSlice';
+import { populatePlayer, populateSettings } from './slices/playerSlice';
 import { populatePerformances, resetPerformances } from './slices/performancesSlice';
 import { setPosition, setLength } from './slices/playerSlice';
 import { Routes, Route, Navigate } from 'react-router-dom';
@@ -33,6 +33,7 @@ const App = () => {
 				console.log(loadedParty);
 				dispatch(populateParty(loadedParty));
 				dispatch(populatePlayer(loadedParty));
+				dispatch(populateSettings(loadedParty));
 				dispatch(setPosition(loadedParty.videoPosition));
 				dispatch(setLength(loadedParty.videoLength));
 			} else {
