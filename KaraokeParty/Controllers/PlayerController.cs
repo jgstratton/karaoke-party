@@ -21,29 +21,6 @@ namespace KaraokeParty.Controllers {
 			this.context = context;
 		}
 
-		[HttpGet]
-		public ActionResult<PlayerDTO> Get(string partyKey) {
-			Party? party = partyService.GetPartyByKey(partyKey);
-			if (party == null) {
-				return NotFound();
-			}
-			List<PerformanceDTO> queue = party.Queue
-				.Where(q => q.Status == PerformanceStatus.Queued)
-				.Select(a => new PerformanceDTO {
-					FileName = a.Song?.FileName,
-					Sort_Order = a.Sort_Order,
-					PerformanceId = a.PerformanceID,
-					SingerId = a.Singer?.SingerId,
-					SingerName = a.Singer?.Name,
-					Status = a.Status
-				}).OrderBy(q => q.Sort_Order).ToList();
-			return new PlayerDTO {
-				PlayerState = party.PlayerState,
-				Performance = queue.FirstOrDefault(),
-				UpcomingPerformances = queue.Skip(1).ToList()
-			};
-		}
-
 		[HttpPost]
 		[Route("EndPerformance")]
 		public ActionResult<bool> EndSong(string partyKey, [FromQuery] int performanceId) {

@@ -1,5 +1,6 @@
 ﻿using KaraokeParty.ApiModels;
 using KaraokeParty.DataStore;
+using Microsoft.EntityFrameworkCore;
 
 namespace KaraokeParty.Services {
 	public class PartyService : IPartyService {
@@ -107,11 +108,47 @@ namespace KaraokeParty.Services {
 			party.MarqueeEnabled = false;
 			party.MarqueeSpeed = 40;
 		}
+
+		public List<PerformanceDTO> MovePerformance(string partyKey, MovePerformanceDTO dto) {
+			Party? party = GetPartyByKey(partyKey);
+			if (party == null) {
+				throw new Exception($"Unable to find party with key: {partyKey}");
+			}
+			int targetRow = dto.TargetIndex + 1;
+			// increase the order by value of all records after the target index
+			context.Database.ExecuteSql($@"
+					WITH cte AS (
+						SELECT performance_id as id, row_number() OVER (ORDER BY sort_order) as row_num
+						FROM performances
+						WHERE performances.party_id = {party.PartyId}
+							and status = {(int)dto.TargetStatus}
+							and performance_id != {dto.PerformanceId}
+						UNION
+						SELECT performance_id as id, 0 as row_num
+						FROM performances
+						WHERE performance_id = {dto.PerformanceId}
+					)
+					UPDATE performances 
+					SET sort_order =
+						CASE
+							WHEN performance_id = {dto.PerformanceId} THEN {targetRow}
+							WHEN cte.row_num < {targetRow} THEN cte.row_num
+							WHEN cte.row_num >= {targetRow} THEN cte.row_num + 1
+							ELSE 999
+						END,
+						status = {(int)dto.TargetStatus}
+					FROM cte
+					WHERE performances.performance_id = cte.id
+				"
+			);
+			return party.Queue.Select(p => PerformanceDTO.FromDb(p)).ToList();
+		}
 	}
 
 	public interface IPartyService {
 		void ApllyDefaultPlayerSettings(Party party);
 		Party? GetPartyByKey(string partyKey);
+		List<PerformanceDTO> MovePerformance(string partyKey, MovePerformanceDTO dto);
 		void SavePlayerSettings(string partyKey, PlayerSettingsDTO settings);
 		PerformanceDTO? StartNextSong(string partyKey);
 		PerformanceDTO? StartPreviousSong(string partyKey);

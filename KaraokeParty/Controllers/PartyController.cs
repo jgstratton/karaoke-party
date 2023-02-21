@@ -3,9 +3,7 @@ using KaraokeParty.DataStore;
 using KaraokeParty.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Npgsql;
-using System.Data.SqlClient;
-using System.Reflection.Metadata;
+
 
 namespace KaraokeParty.Controllers {
 	[ApiController]
@@ -22,21 +20,15 @@ namespace KaraokeParty.Controllers {
 		}
 
 		[HttpGet]
-		public ActionResult<Party> Get(string partyKey) {
-			// Load up the whole party at once, because... why not? just get it all working
-			Party? party = context.Parties
-				.Include(p => p.Singers)
-				.Include(p => p.Queue)
-					.ThenInclude(q => q.Singer)
-				.Include(p => p.Queue)
-					.ThenInclude(q => q.Song)
-				.Where(p =>
+		public ActionResult<PartyDTO> Get(string partyKey) {
+			Party? party = context.Parties.Where(p =>
 				!p.IsExpired && p.PartyKey == partyKey
 			).OrderByDescending(p => p.DateTimeCreated).FirstOrDefault();
+
 			if (party == null) {
 				return NotFound();
 			}
-			return party;
+			return PartyDTO.FromDb(party);
 		}
 
 		[HttpGet]
@@ -73,44 +65,6 @@ namespace KaraokeParty.Controllers {
 			context.Performances.Add(performance);
 			context.SaveChanges();
 			return performance;
-		}
-
-		[HttpPost]
-		[Route("{partyKey}/performance/{performanceId}/move")]
-		public ActionResult MovePerformance(string partyKey, int performanceId, [FromBody] MovePerformanceBody body) {
-			Party? party = partyService.GetPartyByKey(partyKey);
-			if (party == null) {
-				return NotFound();
-			}
-			int targetRow = body.TargetIndex + 1;
-			// increase the order by value of all records after the target index
-			context.Database.ExecuteSql($@"
-					WITH cte AS (
-						SELECT performance_id as id, row_number() OVER (ORDER BY sort_order) as row_num
-						FROM performances
-						WHERE performances.party_id = {party.PartyId}
-							and status = {(int)body.TargetStatus}
-							and performance_id != {performanceId}
-						UNION
-						SELECT performance_id as id, 0 as row_num
-						FROM performances
-						WHERE performance_id = {performanceId}
-					)
-					UPDATE performances 
-					SET sort_order =
-						CASE
-							WHEN performance_id = {performanceId} THEN {targetRow}
-							WHEN cte.row_num < {targetRow} THEN cte.row_num
-							WHEN cte.row_num >= {targetRow} THEN cte.row_num + 1
-							ELSE 999
-						END,
-						status = {(int)body.TargetStatus}
-					FROM cte
-					WHERE performances.performance_id = cte.id
-				"
-			);
-
-			return Ok();
 		}
 
 		[HttpPut]
