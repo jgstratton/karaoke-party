@@ -46,7 +46,7 @@ namespace KaraokeParty.Controllers {
 
 		[HttpPost]
 		[Route("{partyKey}/performance")]
-		public ActionResult<Performance> PostPerformance(string partyKey, [FromBody] PerformanceDTO dto) {
+		public ActionResult<PerformanceDTO> PostPerformance(string partyKey, [FromBody] PerformanceDTO dto) {
 			if (dto.PerformanceId != null) {
 				return BadRequest("Wrong verb, use PUT to update an existing performance");
 			}
@@ -64,7 +64,7 @@ namespace KaraokeParty.Controllers {
 			};
 			context.Performances.Add(performance);
 			context.SaveChanges();
-			return performance;
+			return PerformanceDTO.FromDb(performance);
 		}
 
 		[HttpPut]

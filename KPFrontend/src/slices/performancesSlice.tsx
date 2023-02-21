@@ -31,7 +31,7 @@ export const performancesSlice = createSlice({
 			state.completed = state.completed.reverse();
 		},
 
-		addRequest: (state, action) => {
+		addRequest: (state, action: PayloadAction<PerformanceDTO>) => {
 			state.requests.push(action.payload);
 		},
 

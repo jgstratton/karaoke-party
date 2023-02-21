@@ -11,8 +11,9 @@ import { useNavigate } from 'react-router-dom';
 import Overlay from './common/Overlay';
 import Button from 'react-bootstrap/Button';
 import { addRequest } from '../slices/performancesSlice';
+import { RootState } from '../store';
 
-const Search = (props) => {
+const Search = () => {
 	const navigate = useNavigate();
 	const [searchString, setSearchString] = useState('');
 	const [localResults, setLocalResults] = useState([]);
@@ -21,8 +22,8 @@ const Search = (props) => {
 	const [localLoading, setLocalLoading] = useState(false);
 	const [youtubeLoading, setYoutubeLoading] = useState(false);
 	const [addedToQueue, setAddedToQueue] = useState(false);
-	const party = useSelector((state) => state.party);
-	const user = useSelector((state) => state.user);
+	const party = useSelector((state: RootState) => state.party);
+	const user = useSelector((state: RootState) => state.user);
 	const dispatch = useDispatch();
 
 	async function submitSearch() {
@@ -33,6 +34,7 @@ const Search = (props) => {
 		setLocalLoading(false);
 		setYoutubeLoading(true);
 		const tempYoutubeResults = await YTService.searchYoutube(searchString);
+		// @ts-ignore
 		setYoutubeResults(tempYoutubeResults.filter((x) => !tempLocalResults.map((lr) => lr.url).includes(x.url)));
 		setYoutubeLoading(false);
 	}
@@ -42,7 +44,7 @@ const Search = (props) => {
 		setSearchString('');
 	}
 
-	async function addToQueue(filename) {
+	async function addToQueue(filename: string) {
 		const newPerforamance = await ApiService.addPerformance(party.partyKey, {
 			fileName: filename,
 			singerId: user.singerId,
@@ -61,7 +63,7 @@ const Search = (props) => {
 						<Button onClick={() => navigate('/home')}>Done for now</Button>
 					</div>
 					<div className="mb-3">
-						<Button onClick={() => resetSearch(false)}>Search for another song</Button>
+						<Button onClick={() => resetSearch()}>Search for another song</Button>
 					</div>
 				</Overlay>
 			) : (
