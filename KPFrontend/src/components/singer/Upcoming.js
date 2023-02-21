@@ -9,7 +9,7 @@ const Upcoming = () => {
 		<ListGroup>
 			{performanceList.length > 0 ? (
 				performanceList.map((s, i) => (
-					<ListGroup.Item key={s.performanceID}>
+					<ListGroup.Item key={s.performanceId}>
 						<div className="text-warning">{s.singer?.name}</div>
 						{s.song?.title}
 					</ListGroup.Item>

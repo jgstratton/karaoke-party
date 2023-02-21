@@ -83,7 +83,7 @@ async function addPerformance(partyKey, performance) {
 		body: JSON.stringify(performance),
 	});
 	let responseJson = await response.json();
-	if (responseJson.performanceID) {
+	if (responseJson.performanceId) {
 		return responseJson;
 	}
 	alert('error adding performance');
@@ -98,7 +98,7 @@ async function updatePerformance(partyKey, performance) {
 		},
 
 		body: JSON.stringify({
-			performanceID: performance.performanceID,
+			performanceId: performance.performanceId,
 			singerId: performance.singer.singerId,
 			fileName: performance.song.fileName,
 			songCompleted: performance.songCompleted,
@@ -106,29 +106,10 @@ async function updatePerformance(partyKey, performance) {
 		}),
 	});
 	let responseJson = await response.json();
-	if (responseJson.performanceID) {
+	if (responseJson.performanceId) {
 		return responseJson;
 	}
 	alert('error adding performance');
-}
-
-async function movePerformance(party, performance, targetIndex, targetStatus) {
-	let response = await fetch(`party/${party.partyKey}/performance/${performance.performanceID}/move`, {
-		method: 'POST',
-		headers: {
-			Accept: 'application/json',
-			'Content-Type': 'application/json',
-		},
-
-		body: JSON.stringify({
-			targetStatus: targetStatus,
-			targetIndex: targetIndex,
-		}),
-	});
-	if (response.status === 200) {
-		return;
-	}
-	alert('error moving performance');
 }
 
 const ApiService = {
@@ -139,7 +120,6 @@ const ApiService = {
 	searchSongs,
 	addPerformance,
 	updatePerformance,
-	movePerformance,
 };
 
 export default ApiService;

@@ -32,7 +32,7 @@ const App = () => {
 			if (loadedParty) {
 				console.log(loadedParty);
 				dispatch(populateParty(loadedParty));
-				dispatch(populatePlayer(loadedParty));
+				dispatch(populatePlayer(loadedParty.player));
 				dispatch(populateSettings(loadedParty));
 				dispatch(setPosition(loadedParty.videoPosition));
 				dispatch(setLength(loadedParty.videoLength));

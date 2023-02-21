@@ -51,7 +51,7 @@ const NoParty = () => {
 		let curParty = await ApiService.fetchParty(form.joinCode);
 		let newUser = await ApiService.joinParty(form.joinCode, form.singerName);
 		dispatch(populateParty(curParty));
-		dispatch(populatePlayer(curParty));
+		dispatch(populatePlayer(curParty.player));
 		dispatch(populateSettings(curParty));
 		dispatch(setPosition(curParty.videoPosition));
 		dispatch(setLength(curParty.videoLength));

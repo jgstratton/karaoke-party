@@ -39,13 +39,13 @@ const signalRMiddleware = (store) => {
 	connection.on('ReceiveNewPerformanceStarted', async (value) => {
 		let curParty = await ApiService.fetchParty(store.getState().party.partyKey);
 		store.dispatch(signalActionCreator(populatePerformances(curParty.queue)));
-		store.dispatch(signalActionCreator(populatePlayer(curParty)));
+		store.dispatch(signalActionCreator(populatePlayer(curParty.player)));
 	});
 
 	connection.on('ReceivePreviousSong', async (value) => {
 		let curParty = await ApiService.fetchParty(store.getState().party.partyKey);
 		store.dispatch(signalActionCreator(populatePerformances(curParty.queue)));
-		store.dispatch(signalActionCreator(populatePlayer(curParty)));
+		store.dispatch(signalActionCreator(populatePlayer(curParty.player)));
 	});
 
 	connection.on('ReceivePause', async () => {
@@ -58,6 +58,10 @@ const signalRMiddleware = (store) => {
 
 	connection.on('ReceivePlayerSettings', async (playerSettings) => {
 		store.dispatch(signalActionCreator(populateSettings(playerSettings)));
+	});
+
+	connection.on('ReceivePerformances', async (performances) => {
+		store.dispatch(signalActionCreator(populatePerformances(performances)));
 	});
 
 	const queueMessageSender = (sendMessage) => {
@@ -124,6 +128,12 @@ const signalRMiddleware = (store) => {
 				}
 				case 'player/populateSettings': {
 					queueMessageSender(() => connection.invoke('UpdateSettings', currentStorePartyKey, action.payload));
+					break;
+				}
+				case 'performances/sendMovePerformance': {
+					queueMessageSender(() =>
+						connection.invoke('MovePerformance', currentStorePartyKey, action.payload)
+					);
 					break;
 				}
 				default:

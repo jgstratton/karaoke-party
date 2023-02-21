@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import PlayerDTO from '../dtoTypes/PlayerDTO';
 import StatusService from '../services/StatusService';
 import { RootState } from '../store';
 
@@ -29,23 +30,22 @@ export const playerSlice = createSlice({
 	initialState: initialState,
 	reducers: {
 		// payload is party object
-		populatePlayer: (state, action) => {
-			const curPerformance = action.payload.queue.filter(
-				(q: any) => q.status === StatusService.getLiveStatus()
-			)[0];
-
-			if (curPerformance) {
+		populatePlayer: (state, action: PayloadAction<PlayerDTO>) => {
+			if (action.payload.playerState === StatusService.getLiveStatus()) {
 				state.enabled = true;
 				state.playing = true;
-				state.url = `./song/${curPerformance.song.fileName}`;
-				state.title = curPerformance.song.title;
+				state.url = `./song/${action.payload.fileName}`;
+				state.title = action.payload.title;
+				state.position = action.payload.videoPosition;
+				state.length = action.payload.videoLength;
 			} else {
 				state.enabled = false;
 				state.playing = false;
 				state.url = '';
 				state.title = '';
+				state.position = 0;
+				state.length = 0;
 			}
-			state.position = 0;
 		},
 		setPosition: (state, action) => {
 			state.position = action.payload;

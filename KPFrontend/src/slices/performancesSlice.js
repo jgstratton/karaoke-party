@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import StatusService from '../services/StatusService';
 import StatusServices from '../services/StatusService';
 
 const initialState = {
@@ -18,26 +17,13 @@ export const performancesSlice = createSlice({
 			StatusServices.getStatuses().forEach((s) => {
 				state[s.name] = action.payload
 					.filter((q) => q.status === s.id)
-					.sort((a, b) => cmp(a.sort_Order, b.sort_Order) || cmp(a.performanceID, b.performanceID));
+					.sort((a, b) => cmp(a.sort_Order, b.sort_Order) || cmp(a.performanceId, b.performanceId));
 			});
 			state.completed = state.completed.reverse();
 		},
 
 		addRequest: (state, action) => {
 			state.requests.push(action.payload);
-		},
-
-		movePerformance: (state, action) => {
-			const { targetPerformance, targetIndex, targetStatus } = action.payload;
-			const sourceStatusName = StatusService.getStatusName(targetPerformance.status);
-			const targetStatusName = StatusService.getStatusName(targetStatus);
-			// remove item from original list
-			state[sourceStatusName].splice(
-				state[sourceStatusName].findIndex((e) => e.performanceID === targetPerformance.performanceID),
-				1
-			);
-			// insert item into target list
-			state[targetStatusName].splice(targetIndex, 0, targetPerformance);
 		},
 
 		startNextPerformance: (state, action) => {
@@ -47,16 +33,17 @@ export const performancesSlice = createSlice({
 			console.log('previous performance started');
 		},
 		resetPerformances: () => initialState,
+		sendMovePerformance: () => {},
 	},
 });
 
 export const {
 	populatePerformances,
 	addRequest,
-	movePerformance,
 	resetPerformances,
 	startNextPerformance,
 	startPreviousPerformance,
+	sendMovePerformance,
 } = performancesSlice.actions;
 
 export default performancesSlice.reducer;

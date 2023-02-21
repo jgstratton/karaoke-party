@@ -1,4 +1,5 @@
 import React from 'react';
+import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -6,34 +7,34 @@ import Menu from './common/Menu';
 import Card from 'react-bootstrap/Card';
 import ListGroup from 'react-bootstrap/ListGroup';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import ApiService from '../services/ApiService';
 import StatusService from '../services/StatusService';
-import { movePerformance } from '../slices/performancesSlice';
+import { sendMovePerformance } from '../slices/performancesSlice';
 import Player from './dj/Player';
 
 const DJDashboard = (props) => {
 	const dispatch = useDispatch();
 	const performances = useSelector((state) => state.performances);
-	const party = useSelector((state) => state.party);
 
 	const onDragEnd = (result) => {
-		if (result.reason === 'DROP') {
+		if (result.reason === 'DROP' && result.destination) {
 			const targetStatus = StatusService.getStatusId(result.destination.droppableId);
 			const targetId = Number(result.draggableId);
 			const targetPerformance = performances[result.source.droppableId].filter(
-				(q) => q.performanceID === targetId
+				(q) => q.performanceId === targetId
 			)[0];
 			const targetIndex = result.destination.index;
 			dispatch(
-				movePerformance({
-					targetStatus: targetStatus,
-					targetIndex: targetIndex,
-					targetPerformance: targetPerformance,
+				sendMovePerformance({
+					performanceId: targetPerformance.id,
+					TargetStatus: targetStatus,
+					TargetIndex: targetIndex,
 				})
 			);
-			ApiService.movePerformance(party, targetPerformance, targetIndex, targetStatus);
 		}
 	};
+	useEffect(() => {
+		console.log('DJ Dashboard: Performances', performances);
+	}, [performances]);
 
 	return (
 		<div>
@@ -55,8 +56,8 @@ const DJDashboard = (props) => {
 												<ListGroup>
 													{performances.requests.map((s, i) => (
 														<Draggable
-															key={s.performanceID}
-															draggableId={s.performanceID.toString()}
+															key={s.performanceId}
+															draggableId={s.performanceId.toString()}
 															index={i}
 														>
 															{(provided) => (
@@ -101,8 +102,8 @@ const DJDashboard = (props) => {
 												<ListGroup>
 													{performances.queued.map((s, i) => (
 														<Draggable
-															key={s.performanceID}
-															draggableId={s.performanceID.toString()}
+															key={s.performanceId}
+															draggableId={s.performanceId.toString()}
 															index={i}
 														>
 															{(provided) => (
@@ -111,7 +112,7 @@ const DJDashboard = (props) => {
 																	{...provided.draggableProps}
 																	{...provided.dragHandleProps}
 																>
-																	<ListGroup.Item key={s.performanceID}>
+																	<ListGroup.Item key={s.performanceId}>
 																		<div className="text-warning">
 																			{s.singer?.name}
 																		</div>
@@ -139,7 +140,7 @@ const DJDashboard = (props) => {
 							<Card.Text className="text-warning">
 								<ListGroup>
 									{performances.completed.map((s, i) => (
-										<ListGroup.Item key={s.performanceID}>
+										<ListGroup.Item key={s.performanceId}>
 											<div className="text-warning">{s.singer?.name}</div>
 											{s.song?.title}
 										</ListGroup.Item>
