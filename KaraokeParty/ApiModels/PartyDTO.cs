@@ -8,10 +8,12 @@ namespace KaraokeParty.ApiModels {
 
 		public PlayerDTO Player { get; set; }
 		public List<PerformanceDTO> Performances { get; set; }
+		public PlayerSettingsDTO PlayerSettings { get; set; }
 
 		public PartyDTO() {
 			Player = new PlayerDTO();
 			Performances = new List<PerformanceDTO>();
+			PlayerSettings = new PlayerSettingsDTO();
 		}
 
 		public static PartyDTO FromDb(Party party) {
@@ -33,7 +35,13 @@ namespace KaraokeParty.ApiModels {
 					PlayerState = party.PlayerState,
 					Title = currentPerformance?.SongTitle ?? ""
 				},
-				Performances = performances
+				Performances = performances,
+				PlayerSettings = new PlayerSettingsDTO {
+					MarqueeEnabled = party.MarqueeEnabled,
+					MarqueeSize = party.MarqueeSize,
+					MarqueeSpeed = party.MarqueeSpeed,
+					MarqueeText = party.MarqueeText
+				}
 			};
 		}
 	}

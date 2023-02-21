@@ -7,6 +7,8 @@ namespace KaraokeParty.ApiModels {
 		public string? SingerName { get; set; }
 		public string? FileName { get; set; }
 		public string? SongTitle { get; set; }
+		public string? Url { get; set; }
+
 		public PerformanceStatus Status { get; set; }
 		public int? Sort_Order { get; set; }
 
@@ -42,7 +44,8 @@ namespace KaraokeParty.ApiModels {
 				SingerName = performance.Singer?.Name,
 				Sort_Order = performance.Sort_Order,
 				Status = performance.Status,
-				SongTitle = performance.Song?.Title
+				SongTitle = performance.Song?.Title,
+				Url = performance.Song?.Url
 			};
 		}
 	}
