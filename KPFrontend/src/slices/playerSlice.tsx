@@ -31,21 +31,12 @@ export const playerSlice = createSlice({
 	reducers: {
 		// payload is party object
 		populatePlayer: (state, action: PayloadAction<PlayerDTO>) => {
-			if (action.payload.playerState === StatusService.getLiveStatus()) {
-				state.enabled = true;
-				state.playing = true;
-				state.url = `./song/${action.payload.fileName}`;
-				state.title = action.payload.title;
-				state.position = action.payload.videoPosition;
-				state.length = action.payload.videoLength;
-			} else {
-				state.enabled = false;
-				state.playing = false;
-				state.url = '';
-				state.title = '';
-				state.position = 0;
-				state.length = 0;
-			}
+			state.enabled = true;
+			state.playing = action.payload.playerState === 1;
+			state.url = `./song/${action.payload.fileName}`;
+			state.title = action.payload.title;
+			state.position = action.payload.videoPosition;
+			state.length = action.payload.videoLength;
 		},
 		setPosition: (state, action) => {
 			state.position = action.payload;
@@ -64,7 +55,7 @@ export const playerSlice = createSlice({
 		},
 		resetPlayer: () => initialState,
 		sendPosition: () => {},
-		sendDuration: () => {},
+		sendDuration: (state, action: PayloadAction<number>) => {},
 		populateSettings: (state, action: PayloadAction<playerSettings>) => {
 			if (action.payload) {
 				state.settings = action.payload;

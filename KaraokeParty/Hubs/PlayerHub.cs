@@ -51,10 +51,12 @@ namespace KaraokeParty.Hubs {
 		}
 
 		public async Task Pause(string partyKey) {
+			partyService.Pause(partyKey);
 			await Clients.OthersInGroup(partyKey).ReceivePause();
 		}
 
 		public async Task Play(string partyKey) {
+			partyService.Play(partyKey);
 			await Clients.OthersInGroup(partyKey).ReceivePlay();
 		}
 

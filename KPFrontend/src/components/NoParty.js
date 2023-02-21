@@ -7,7 +7,6 @@ import { populateUser } from '../slices/userSlice';
 import { populateParty } from '../slices/partySlice';
 import { populatePlayer, populateSettings } from '../slices/playerSlice';
 import { populatePerformances } from '../slices/performancesSlice';
-import { setPosition, setLength } from '../slices/playerSlice';
 import StorageService from '../services/StorageService';
 import Menu from './common/Menu';
 

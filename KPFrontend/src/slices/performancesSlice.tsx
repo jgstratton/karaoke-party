@@ -1,14 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { MovePerformanceDTO } from '../dtoTypes/MovePerformanceDTO';
 import PerformanceDTO from '../dtoTypes/PerformanceDTO';
 import StatusServices from '../services/StatusService';
 
-interface iState {
+interface iPerformancesState {
 	requests: PerformanceDTO[];
 	queued: PerformanceDTO[];
 	live: PerformanceDTO[];
 	completed: PerformanceDTO[];
 }
-const initialState: iState = {
+const initialState: iPerformancesState = {
 	requests: [],
 	queued: [],
 	live: [],
@@ -20,7 +21,7 @@ export const performancesSlice = createSlice({
 	name: 'performances',
 	initialState: initialState,
 	reducers: {
-		populatePerformances: (state: iState, action: PayloadAction<PerformanceDTO[]>) => {
+		populatePerformances: (state: iPerformancesState, action: PayloadAction<PerformanceDTO[]>) => {
 			StatusServices.getStatuses().forEach((s) => {
 				// @ts-ignore:
 				state[s.name] = action.payload
@@ -41,7 +42,7 @@ export const performancesSlice = createSlice({
 			console.log('previous performance started');
 		},
 		resetPerformances: () => initialState,
-		sendMovePerformance: () => {},
+		sendMovePerformance: (state, action: PayloadAction<MovePerformanceDTO>) => {},
 	},
 });
 

@@ -143,12 +143,32 @@ namespace KaraokeParty.Services {
 			);
 			return party.Queue.Select(p => PerformanceDTO.FromDb(p)).ToList();
 		}
+
+		public void Pause (string partyKey) {
+			Party? party = GetPartyByKey(partyKey);
+			if (party == null) {
+				throw new Exception($"Unable to find party with key: {partyKey}");
+			}
+			party.PlayerState = PlayerState.Paused;
+			context.SaveChanges();
+		}
+
+		public void Play(string partyKey) {
+			Party? party = GetPartyByKey(partyKey);
+			if (party == null) {
+				throw new Exception($"Unable to find party with key: {partyKey}");
+			}
+			party.PlayerState = PlayerState.Playing;
+			context.SaveChanges();
+		}
 	}
 
 	public interface IPartyService {
 		void ApllyDefaultPlayerSettings(Party party);
 		Party? GetPartyByKey(string partyKey);
 		List<PerformanceDTO> MovePerformance(string partyKey, MovePerformanceDTO dto);
+		void Pause(string partyKey);
+		void Play(string partyKey);
 		void SavePlayerSettings(string partyKey, PlayerSettingsDTO settings);
 		PerformanceDTO? StartNextSong(string partyKey);
 		PerformanceDTO? StartPreviousSong(string partyKey);

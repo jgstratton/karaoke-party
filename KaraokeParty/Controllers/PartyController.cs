@@ -93,7 +93,7 @@ namespace KaraokeParty.Controllers {
 		}
 
 		[HttpDelete]
-		[Route("{partyKey}/performance/{performanceId}")]
+		[Route("{partyKey}/performance/{PerformanceId}")]
 		public ActionResult<Performance> DeletePerformance(string partyKey, int performanceId) {
 			Performance? performance = context.Performances.Find(performanceId);
 			if (performance == null) {

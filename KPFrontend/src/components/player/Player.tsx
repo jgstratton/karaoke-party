@@ -8,12 +8,13 @@ import { sendPosition, sendDuration, songEnded, selectPlayerSettings } from '../
 import Overlay from '../common/Overlay';
 import Marquee from 'react-fast-marquee';
 import useBodyClass from '../../utilities/useBodyClass';
+import { RootState } from '../../store';
 
 const Player = () => {
 	useBodyClass('player-open');
 	const dispatch = useDispatch();
-	const player = useSelector((state) => state.player);
-	const party = useSelector((state) => state.party);
+	const player = useSelector((state: RootState) => state.player);
+	const party = useSelector((state: RootState) => state.party);
 	const playerSettings = useSelector(selectPlayerSettings);
 	const [userInteraction, setUserInteraction] = useState(false);
 	const [lastReportedPosition, setLastReportedPosition] = useState(0);
@@ -23,7 +24,8 @@ const Player = () => {
 	useEffect(() => {
 		if (lastReportedPosition !== player.position && playerRef.current) {
 			setLastReportedPosition(player.position);
-			playerRef.current.seekTo(parseFloat(player.position));
+			// @ts-ignore:
+			playerRef.current.seekTo(player.position);
 		}
 	}, [lastReportedPosition, setLastReportedPosition, player]);
 
@@ -31,6 +33,7 @@ const Player = () => {
 		setUserInteraction(true);
 	};
 
+	// @ts-ignore:
 	const handleProgress = (status) => dispatch(sendPosition(status.played));
 	const handleEnded = () => dispatch(songEnded());
 
@@ -39,6 +42,7 @@ const Player = () => {
 	return (
 		<div style={{ height: `calc(100vh)`, overflowY: 'hidden' }}>
 			<ReactPlayer
+				// @ts-ignore:
 				ref={playerRef}
 				className="react-player"
 				width="100%"
@@ -75,7 +79,7 @@ const Player = () => {
 						fontSize: `${playerSettings.marqueeSize * 0.8}px`,
 					}}
 				>
-					<Marquee clasName="marquee-component" gradient={false} speed={playerSettings.marqueeSpeed}>
+					<Marquee gradient={false} speed={playerSettings.marqueeSpeed}>
 						<span className="p-2">
 							{playerSettings.marqueeText
 								.replace(/%code%/gi, party.partyKey)
