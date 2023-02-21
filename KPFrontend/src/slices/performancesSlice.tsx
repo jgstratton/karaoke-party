@@ -1,20 +1,28 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import PerformanceDTO from '../dtoTypes/PerformanceDTO';
 import StatusServices from '../services/StatusService';
 
-const initialState = {
+interface iState {
+	requests: PerformanceDTO[];
+	queued: PerformanceDTO[];
+	live: PerformanceDTO[];
+	completed: PerformanceDTO[];
+}
+const initialState: iState = {
 	requests: [],
 	queued: [],
 	live: [],
 	completed: [],
 };
-const cmp = (a, b) => (a > b) - (a < b);
+const cmp = (a: number, b: number) => +(a > b) - +(a < b);
 
 export const performancesSlice = createSlice({
 	name: 'performances',
 	initialState: initialState,
 	reducers: {
-		populatePerformances: (state, action) => {
+		populatePerformances: (state: iState, action: PayloadAction<PerformanceDTO[]>) => {
 			StatusServices.getStatuses().forEach((s) => {
+				// @ts-ignore:
 				state[s.name] = action.payload
 					.filter((q) => q.status === s.id)
 					.sort((a, b) => cmp(a.sort_Order, b.sort_Order) || cmp(a.performanceId, b.performanceId));
@@ -26,10 +34,10 @@ export const performancesSlice = createSlice({
 			state.requests.push(action.payload);
 		},
 
-		startNextPerformance: (state, action) => {
+		startNextPerformance: (state, action: PayloadAction<void>) => {
 			console.log('previous performance started');
 		},
-		startPreviousPerformance: (state, action) => {
+		startPreviousPerformance: (state, action: PayloadAction<void>) => {
 			console.log('previous performance started');
 		},
 		resetPerformances: () => initialState,

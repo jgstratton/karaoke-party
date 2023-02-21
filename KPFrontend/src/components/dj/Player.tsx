@@ -9,15 +9,17 @@ import DateTimeUtilities from '../../utilities/dateTimeUtilities';
 import ListGroup from 'react-bootstrap/ListGroup';
 import { play, pause } from '../../slices/playerSlice';
 import { startNextPerformance, startPreviousPerformance } from '../../slices/performancesSlice';
+import classNames from 'classnames';
+import { RootState } from '../../store';
 
 const Player = () => {
 	const dispatch = useDispatch();
-	const performances = useSelector((state) => state.performances);
-	const storePlayer = useSelector((state) => state.player);
+	const performances = useSelector((state: RootState) => state.performances);
+	const storePlayer = useSelector((state: RootState) => state.player);
 	const livePerformance = performances.live[0];
 
 	return (
-		<Card className={[styles.player, storePlayer.enabled ? styles.enabled : '', 'mb-4']}>
+		<Card className={classNames([styles.player, storePlayer.enabled ? styles.enabled : '', 'mb-4'])}>
 			<Card.Body>
 				<Card.Title>Now Playing</Card.Title>
 				<Card.Text>
@@ -25,10 +27,10 @@ const Player = () => {
 						<ListGroup.Item>
 							{livePerformance ? (
 								<>
-									<div className="text-warning">{livePerformance?.singer?.name}</div>
-									{livePerformance.song?.title}
+									<div className="text-warning">{livePerformance?.singerName}</div>
+									{livePerformance?.songTitle}
 									<br />
-									<a href={livePerformance?.song.url}>{livePerformance.song.url}</a>
+									<a href={livePerformance?.url}>{livePerformance?.url}</a>
 								</>
 							) : (
 								<div className="text-warning">Nothing playing right now</div>

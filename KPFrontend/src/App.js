@@ -4,7 +4,6 @@ import { populateParty, reset as resetParty } from './slices/partySlice';
 import { populateUser, reset as resetUser, toggleDj } from './slices/userSlice';
 import { populatePlayer, populateSettings } from './slices/playerSlice';
 import { populatePerformances, resetPerformances } from './slices/performancesSlice';
-import { setPosition, setLength } from './slices/playerSlice';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import RequireSession from './components/common/RequireSession';
 import SingerDashboard from './components/SingerDashboard';
@@ -33,9 +32,7 @@ const App = () => {
 				console.log(loadedParty);
 				dispatch(populateParty(loadedParty));
 				dispatch(populatePlayer(loadedParty.player));
-				dispatch(populateSettings(loadedParty));
-				dispatch(setPosition(loadedParty.videoPosition));
-				dispatch(setLength(loadedParty.videoLength));
+				dispatch(populateSettings(loadedParty.playerSettings));
 			} else {
 				dispatch(resetParty(loadedParty));
 			}
@@ -47,8 +44,8 @@ const App = () => {
 				dispatch(resetUser(loadedUser));
 			}
 
-			if (loadedParty && loadedParty.queue) {
-				dispatch(populatePerformances(loadedParty.queue));
+			if (loadedParty && loadedParty.performances) {
+				dispatch(populatePerformances(loadedParty.performances));
 			} else {
 				dispatch(resetPerformances());
 			}

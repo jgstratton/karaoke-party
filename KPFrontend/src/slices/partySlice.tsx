@@ -1,24 +1,22 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import PartyDTO from '../dtoTypes/PartyDTO';
 import { RootState } from '../store';
 
 export interface Party {
-	partyId?: Number;
 	title: string;
 	partyKey: string;
 }
 
-const initialState:Party = {
-	partyId: undefined,
+const initialState: Party = {
 	title: '',
-	partyKey: ''
+	partyKey: '',
 };
 
 export const partySlice = createSlice({
 	name: 'party',
 	initialState: initialState,
 	reducers: {
-		populateParty: (state, action) => {
-			state.partyId = action.payload.partyId;
+		populateParty: (state, action: PayloadAction<PartyDTO>) => {
 			state.title = action.payload.title;
 			state.partyKey = action.payload.partyKey;
 		},
@@ -27,9 +25,9 @@ export const partySlice = createSlice({
 	},
 });
 
-export const selectIsPartyInitialized = (state:RootState) => {
+export const selectIsPartyInitialized = (state: RootState) => {
 	return (state.party?.partyKey ?? '').length > 0;
-}
+};
 
 export const { populateParty, reset } = partySlice.actions;
 

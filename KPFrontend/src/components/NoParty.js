@@ -41,7 +41,7 @@ const NoParty = () => {
 		newUser.isDj = true;
 		dispatch(populateUser(newUser));
 		dispatch(populateParty(newParty));
-		dispatch(populateSettings(newParty));
+		dispatch(populateSettings(newParty.playerSettings));
 		StorageService.storeUser(newUser);
 		StorageService.storeParty(newParty);
 		navigate('/redirectHome');
@@ -52,14 +52,11 @@ const NoParty = () => {
 		let newUser = await ApiService.joinParty(form.joinCode, form.singerName);
 		dispatch(populateParty(curParty));
 		dispatch(populatePlayer(curParty.player));
-		dispatch(populateSettings(curParty));
-		dispatch(setPosition(curParty.videoPosition));
-		dispatch(setLength(curParty.videoLength));
+		dispatch(populateSettings(curParty.playerSettings));
 		dispatch(populateUser(newUser));
-		dispatch(populatePerformances(curParty.queue));
+		dispatch(populatePerformances(curParty.performances));
 		StorageService.storeUser(newUser);
 		StorageService.storeParty(curParty);
-		//navigate('/home');
 	}
 
 	useEffect(() => {
