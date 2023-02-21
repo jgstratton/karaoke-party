@@ -4,10 +4,11 @@ import DateTimeUtilities from '../../utilities/dateTimeUtilities';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMicrophone } from '@fortawesome/free-solid-svg-icons';
 import ListGroup from 'react-bootstrap/ListGroup';
+import { RootState } from '../../store';
 
 const Player = () => {
-	const performances = useSelector((state) => state.performances);
-	const storePlayer = useSelector((state) => state.player);
+	const performances = useSelector((state: RootState) => state.performances);
+	const storePlayer = useSelector((state: RootState) => state.player);
 	const livePerformance = performances.live[0];
 
 	return (
@@ -16,9 +17,9 @@ const Player = () => {
 				<>
 					<ListGroup.Item>
 						<div className="text-warning">
-							<FontAwesomeIcon icon={faMicrophone} fixedWidth /> {livePerformance?.singer?.name}
+							<FontAwesomeIcon icon={faMicrophone} fixedWidth /> {livePerformance?.singerName}
 						</div>
-						{livePerformance.song?.title}
+						{livePerformance?.songTitle}
 						<div className="float-right">
 							{DateTimeUtilities.secondsToHHMMSS(storePlayer.length * storePlayer.position)} /{' '}
 							{DateTimeUtilities.secondsToHHMMSS(storePlayer.length)}
