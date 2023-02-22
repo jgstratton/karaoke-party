@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { useCallback, useEffect, useState } from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { populateSettings, selectPlayerSettings } from '../../slices/playerSlice';
+import { broadcastSettings, selectPlayerSettings } from '../../slices/playerSlice';
 import styles from './SettingsModal.module.css';
 interface props {
 	show: boolean;
@@ -37,7 +37,7 @@ const SettingsModal = ({ show, handleClose }: props) => {
 
 	const handleSave = () => {
 		dispatch(
-			populateSettings({
+			broadcastSettings({
 				marqueeEnabled,
 				marqueeText,
 				marqueeSpeed,

@@ -126,7 +126,7 @@ const signalRMiddleware = (store) => {
 					});
 					break;
 				}
-				case 'player/populateSettings': {
+				case 'player/broadcastSettings': {
 					queueMessageSender(() => connection.invoke('UpdateSettings', currentStorePartyKey, action.payload));
 					break;
 				}

@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import PlayerDTO from '../dtoTypes/PlayerDTO';
-import StatusService from '../services/StatusService';
 import { RootState } from '../store';
 
 interface playerSettings {
@@ -25,6 +24,8 @@ const initialState = {
 	},
 };
 
+const msToSec = (timeInMs: number) => Math.floor(timeInMs / 1000);
+
 export const playerSlice = createSlice({
 	name: 'player',
 	initialState: initialState,
@@ -36,13 +37,13 @@ export const playerSlice = createSlice({
 			state.url = `./song/${action.payload.fileName}`;
 			state.title = action.payload.title;
 			state.position = action.payload.videoPosition;
-			state.length = action.payload.videoLength;
+			state.length = msToSec(action.payload.videoLength);
 		},
 		setPosition: (state, action) => {
 			state.position = action.payload;
 		},
 		setLength: (state, action) => {
-			state.length = Math.floor(action.payload / 1000);
+			state.length = msToSec(action.payload);
 		},
 		pause: (state) => {
 			state.playing = false;
@@ -61,6 +62,7 @@ export const playerSlice = createSlice({
 				state.settings = action.payload;
 			}
 		},
+		broadcastSettings: (state, action: PayloadAction<playerSettings>) => {},
 	},
 });
 
@@ -69,16 +71,17 @@ export const selectPlayerSettings = (state: RootState) => {
 };
 
 export const {
+	broadcastSettings,
+	pause,
+	play,
 	populatePlayer,
+	populateSettings,
 	resetPlayer,
-	setPosition,
 	sendPosition,
 	sendDuration,
 	setLength,
-	play,
-	pause,
+	setPosition,
 	songEnded,
-	populateSettings,
 } = playerSlice.actions;
 
 export default playerSlice.reducer;
