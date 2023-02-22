@@ -21,9 +21,9 @@ async function joinParty(partyKey, singerName) {
 				name: singerName,
 			})
 	);
-	let singer = await response.json();
-	if (singer.singerId) {
-		return singer;
+	let user = await response.json();
+	if (user.userId) {
+		return user;
 	}
 	alert('error joining party');
 }
@@ -40,9 +40,9 @@ async function createParty(title, djName) {
 			djName: djName,
 		}),
 	});
-	let party = await response.json();
-	if (party.partyKey) {
-		return party;
+	let createPartyResponse = await response.json();
+	if (createPartyResponse.party.partyKey) {
+		return createPartyResponse;
 	}
 	alert('error creating party');
 }

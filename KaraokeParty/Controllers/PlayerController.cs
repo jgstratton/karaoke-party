@@ -35,23 +35,5 @@ namespace KaraokeParty.Controllers {
 			return true;
 		}
 
-		[HttpGet]
-		[Route("GetQueuedList")]
-		public ActionResult<GetQueuedListResponse> GetQueuedList(string partyKey) {
-			Party? party = partyService.GetPartyByKey(partyKey);
-			if (party == null) {
-				return NotFound();
-			}
-			return new GetQueuedListResponse {
-				Performances = party.Queue.Where(p => p.Status == PerformanceStatus.Queued).Select(p => new GetQueuedListResponse.Performance {
-					FileName = p.Song?.FileName ?? "",
-					Sort_Order = p.Sort_Order,
-					PerformanceId = p.PerformanceID,
-					SingerName = p.User?.Name ?? ""
-				}).ToList()
-			};
-		}
-
-
 	}
 }

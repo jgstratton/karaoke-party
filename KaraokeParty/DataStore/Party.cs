@@ -20,8 +20,6 @@ namespace KaraokeParty.DataStore {
 
 		public bool IsExpired { get; set; } = false;
 
-		public virtual List<User> Singers { get; set; } = new List<User>();
-
 		public virtual List<Performance> Queue { get; set; } = new List<Performance>();
 
 		public PlayerState PlayerState { get; set; } = PlayerState.Stopped;

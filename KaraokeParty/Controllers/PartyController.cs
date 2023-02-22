@@ -33,13 +33,12 @@ namespace KaraokeParty.Controllers {
 
 		[HttpGet]
 		[Route("{partyKey}/join")]
-		public ActionResult<User> Join(string partyKey, [FromQuery] SingerDTO singer) {
+		public ActionResult<User> Join(string partyKey, [FromQuery] UserDTO singer) {
 			Party? party = partyService.GetPartyByKey(partyKey);
 			if (party == null) {
 				return NotFound();
 			}
 			User newSinger = singer.ToDb();
-			party.Singers.Add(newSinger);
 			context.SaveChanges();
 			return newSinger;
 		}
@@ -51,7 +50,7 @@ namespace KaraokeParty.Controllers {
 				return BadRequest("Wrong verb, use PUT to update an existing performance");
 			}
 			Party? party = partyService.GetPartyByKey(partyKey);
-			User? singer = context.Singers.Find(dto.SingerId);
+			User? singer = context.Users.Find(dto.UserId);
 			Song? song = context.Songs.Find(dto.FileName);
 
 			if (party == null || singer == null || song == null) {
@@ -108,12 +107,24 @@ namespace KaraokeParty.Controllers {
 		}
 
 		[HttpPost]
-		public Party Post(PartyPost postParty) {
-			Party newParty = postParty.ToDb();
+		public CreatePartyResponse Post(CreatePartyPost postParty) {
+			Party newParty = new Party {
+				Title = postParty.Title,
+				PartyKey = KeyGenerator.CreateAlphaKey(4),
+			};
+			User newUser = new User {
+				Name = postParty.DJName,
+				IsDj = true
+			};
 			partyService.ApllyDefaultPlayerSettings(newParty);
 			context.Parties.Add(newParty);
+			context.Users.Add(newUser);
 			context.SaveChanges();
-			return newParty;
+
+			return new CreatePartyResponse {
+				Party = PartyDTO.FromDb(newParty),
+				Dj = UserDTO.FromDb(newUser)
+			};
 		}
 	}
 }

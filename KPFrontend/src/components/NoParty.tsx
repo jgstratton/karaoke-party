@@ -9,11 +9,13 @@ import { populatePlayer, populateSettings } from '../slices/playerSlice';
 import { populatePerformances } from '../slices/performancesSlice';
 import StorageService from '../services/StorageService';
 import Menu from './common/Menu';
+import { CreatePartyResponse } from '../dtoTypes/CreatePartyResponse';
+import { RootState } from '../store';
 
 const NoParty = () => {
 	const dispatch = useDispatch();
-	const user = useSelector((state) => state.user);
-	const party = useSelector((state) => state.party);
+	const user = useSelector((state: RootState) => state.user);
+	const party = useSelector((state: RootState) => state.party);
 
 	const [loading, setLoading] = useState(true);
 	const [mode, setMode] = useState('Join');
@@ -26,7 +28,7 @@ const NoParty = () => {
 	});
 	const navigate = useNavigate();
 
-	function handleInputChange(e) {
+	function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
 		const { name, value } = e.target;
 		setForm({
 			...form,
@@ -34,19 +36,18 @@ const NoParty = () => {
 		});
 	}
 
-	async function handleCreate(e) {
-		let newParty = await ApiService.createParty(form.partyName, form.djName);
-		const newUser = newParty.singers[0];
-		newUser.isDj = true;
-		dispatch(populateUser(newUser));
-		dispatch(populateParty(newParty));
-		dispatch(populateSettings(newParty.playerSettings));
-		StorageService.storeUser(newUser);
-		StorageService.storeParty(newParty);
+	async function handleCreate() {
+		let partyResponse: CreatePartyResponse = await ApiService.createParty(form.partyName, form.djName);
+		let { party, dj } = partyResponse;
+		dispatch(populateUser(dj));
+		dispatch(populateParty(party));
+		dispatch(populateSettings(party.playerSettings));
+		StorageService.storeUser(dj);
+		StorageService.storeParty(party);
 		navigate('/redirectHome');
 	}
 
-	async function handleJoin(e) {
+	async function handleJoin() {
 		let curParty = await ApiService.fetchParty(form.joinCode);
 		let newUser = await ApiService.joinParty(form.joinCode, form.singerName);
 		dispatch(populateParty(curParty));
@@ -59,7 +60,7 @@ const NoParty = () => {
 	}
 
 	useEffect(() => {
-		if (user && user.singerId && party && party.partyKey) {
+		if (user && user.userId && party && party.partyKey) {
 			navigate('/home');
 		}
 		setLoading(false);

@@ -5,7 +5,7 @@ namespace KaraokeParty.DataStore {
 		private IConfiguration configuration;
 
 		public DbSet<Party> Parties { get; set; } = null!;
-		public DbSet<User> Singers { get; set; } = null!;
+		public DbSet<User> Users { get; set; } = null!;
 		public DbSet<Song> Songs { get; set; } = null!;
 		public DbSet<Performance> Performances { get; set; }
 

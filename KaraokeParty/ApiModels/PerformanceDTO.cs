@@ -3,7 +3,8 @@
 namespace KaraokeParty.ApiModels {
 	public class PerformanceDTO {
 		public int? PerformanceId { get; set; }
-		public int? SingerId { get; set; }
+		public int? UserId { get; set; }
+		public string? UserName { get; set; }
 		public string? SingerName { get; set; }
 		public string? FileName { get; set; }
 		public string? SongTitle { get; set; }
@@ -16,8 +17,9 @@ namespace KaraokeParty.ApiModels {
 			if (performance.User is null) {
 				throw new Exception("Missing singer.");
 			}
-			if (performance.User.UserId != SingerId) {
-				throw new Exception($"Changing singers is not supported");
+
+			if (performance.User.UserId != UserId || performance.User.Name != UserName) {
+				throw new Exception($"Changing user is not supported");
 			}
 
 			if (FileName != null && FileName != performance.Song?.FileName) {
@@ -30,7 +32,7 @@ namespace KaraokeParty.ApiModels {
 			}
 
 			performance.Status = Status;
-
+			performance.SingerName = SingerName ?? "";
 			if (Sort_Order != null) {
 				performance.Sort_Order = Sort_Order;
 			}
@@ -40,8 +42,9 @@ namespace KaraokeParty.ApiModels {
 			return new PerformanceDTO {
 				PerformanceId = performance.PerformanceID,
 				FileName = performance.Song?.FileName,
-				SingerId = performance.User?.UserId,
-				SingerName = performance.User?.Name,
+				UserId = performance.User?.UserId,
+				UserName = performance.User?.Name,
+				SingerName = performance.SingerName,
 				Sort_Order = performance.Sort_Order,
 				Status = performance.Status,
 				SongTitle = performance.Song?.Title,

@@ -9,6 +9,7 @@ interface iPerformancesState {
 	live: PerformanceDTO[];
 	completed: PerformanceDTO[];
 }
+
 const initialState: iPerformancesState = {
 	requests: [],
 	queued: [],

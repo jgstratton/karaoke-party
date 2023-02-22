@@ -1,6 +1,7 @@
 export default interface PerformanceDTO {
 	performanceId: number;
-	singerId: number;
+	userId: number;
+	userName: string;
 	singerName: string;
 	fileName: string;
 	songTitle: string;
