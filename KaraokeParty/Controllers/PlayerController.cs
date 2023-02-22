@@ -47,7 +47,7 @@ namespace KaraokeParty.Controllers {
 					FileName = p.Song?.FileName ?? "",
 					Sort_Order = p.Sort_Order,
 					PerformanceId = p.PerformanceID,
-					SingerName = p.Singer?.Name ?? ""
+					SingerName = p.User?.Name ?? ""
 				}).ToList()
 			};
 		}

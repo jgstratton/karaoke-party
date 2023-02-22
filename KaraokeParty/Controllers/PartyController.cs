@@ -33,12 +33,12 @@ namespace KaraokeParty.Controllers {
 
 		[HttpGet]
 		[Route("{partyKey}/join")]
-		public ActionResult<Singer> Join(string partyKey, [FromQuery] SingerDTO singer) {
+		public ActionResult<User> Join(string partyKey, [FromQuery] SingerDTO singer) {
 			Party? party = partyService.GetPartyByKey(partyKey);
 			if (party == null) {
 				return NotFound();
 			}
-			Singer newSinger = singer.ToDb();
+			User newSinger = singer.ToDb();
 			party.Singers.Add(newSinger);
 			context.SaveChanges();
 			return newSinger;
@@ -51,7 +51,7 @@ namespace KaraokeParty.Controllers {
 				return BadRequest("Wrong verb, use PUT to update an existing performance");
 			}
 			Party? party = partyService.GetPartyByKey(partyKey);
-			Singer? singer = context.Singers.Find(dto.SingerId);
+			User? singer = context.Singers.Find(dto.SingerId);
 			Song? song = context.Songs.Find(dto.FileName);
 
 			if (party == null || singer == null || song == null) {
@@ -59,7 +59,7 @@ namespace KaraokeParty.Controllers {
 			}
 			Performance performance = new Performance {
 				Party = party,
-				Singer = singer,
+				User = singer,
 				Song = song
 			};
 			context.Performances.Add(performance);
@@ -76,7 +76,7 @@ namespace KaraokeParty.Controllers {
 				}
 				Performance? performance = context.Performances
 					.Include(p => p.Party)
-					.Include(p => p.Singer)
+					.Include(p => p.User)
 					.Where(p => p.PerformanceID == dto.PerformanceId).FirstOrDefault();
 				if (performance == null) {
 					return NotFound($"No performance was found with id {dto.PerformanceId}");

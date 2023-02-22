@@ -16,8 +16,8 @@ namespace KaraokeParty.Controllers {
 		}
 
 		[HttpGet]
-		public ActionResult<Singer> Get(int singerId) {
-			Singer? singer = context.Singers.Find(singerId);
+		public ActionResult<User> Get(int singerId) {
+			User? singer = context.Singers.Find(singerId);
 			if (singer is null) {
 				return NotFound();
 			}
@@ -25,11 +25,11 @@ namespace KaraokeParty.Controllers {
 		}
 
 		[HttpPost]
-		public ActionResult<Singer> Post(SingerDTO singerPost) {
+		public ActionResult<User> Post(SingerDTO singerPost) {
 			if (singerPost.SingerId is null) {
 				return NotFound();
 			}
-			Singer? singer = context.Singers.Find(singerPost.SingerId);
+			User? singer = context.Singers.Find(singerPost.SingerId);
 			if (singer is null) {
 				return NotFound();
 			}

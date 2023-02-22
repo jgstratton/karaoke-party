@@ -5,9 +5,11 @@ namespace KaraokeParty.DataStore {
 		[Key]
 		public int PerformanceID { get; set; }
 
+		public string SingerName { get; set; } = "";
+
 		public virtual Party? Party { get; set; }
 
-		public virtual Singer? Singer { get; set; }
+		public virtual User? User { get; set; }
 
 		public virtual Song? Song { get; set; }
 

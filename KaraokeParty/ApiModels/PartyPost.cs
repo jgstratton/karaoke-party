@@ -10,8 +10,8 @@ namespace KaraokeParty.ApiModels {
 			return new Party {
 				Title = Title,
 				PartyKey = KeyGenerator.CreateAlphaKey(4),
-				Singers = new List<Singer> {
-					new Singer {
+				Singers = new List<User> {
+					new User {
 						Name = string.IsNullOrWhiteSpace(DJName) ? "DJ" : DJName,
 						IsDj = true
 					}

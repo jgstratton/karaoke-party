@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace KaraokeParty.DataStore {
-	public class Singer {
+	public class User {
 
 		[Key]
-		public int SingerId { get; set; }
+		public int UserId { get; set; }
 
 		[Required]
 		[MaxLength(128)]

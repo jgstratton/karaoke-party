@@ -13,10 +13,10 @@ namespace KaraokeParty.ApiModels {
 		public int? Sort_Order { get; set; }
 
 		public void UpdateDb(KPContext context, Performance performance) {
-			if (performance.Singer is null) {
+			if (performance.User is null) {
 				throw new Exception("Missing singer.");
 			}
-			if (performance.Singer.SingerId != SingerId) {
+			if (performance.User.UserId != SingerId) {
 				throw new Exception($"Changing singers is not supported");
 			}
 
@@ -40,8 +40,8 @@ namespace KaraokeParty.ApiModels {
 			return new PerformanceDTO {
 				PerformanceId = performance.PerformanceID,
 				FileName = performance.Song?.FileName,
-				SingerId = performance.Singer?.SingerId,
-				SingerName = performance.Singer?.Name,
+				SingerId = performance.User?.UserId,
+				SingerName = performance.User?.Name,
 				Sort_Order = performance.Sort_Order,
 				Status = performance.Status,
 				SongTitle = performance.Song?.Title,

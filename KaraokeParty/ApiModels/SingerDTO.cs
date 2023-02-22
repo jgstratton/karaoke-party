@@ -7,16 +7,16 @@ namespace KaraokeParty.ApiModels {
 		public string Name { get; set; } = "";
 		public bool IsDj { get; set; } = false;
 
-		public Singer ToDb() {
-			return new Singer {
+		public User ToDb() {
+			return new User {
 				Name = Name,
 				IsDj = IsDj
 			};
 		}
 
-		public void UpdateDb(Singer singer) {
-			if (singer.SingerId != SingerId) {
-				throw new Exception($"Attempted to update wrong object {SingerId}:{singer.SingerId}");
+		public void UpdateDb(User singer) {
+			if (singer.UserId != SingerId) {
+				throw new Exception($"Attempted to update wrong object {SingerId}:{singer.UserId}");
 			}
 			if (!string.IsNullOrEmpty(Name)) {
 				singer.Name = Name;
