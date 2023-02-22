@@ -33,22 +33,20 @@ namespace KaraokeParty.Controllers {
 
 		[HttpGet]
 		[Route("{partyKey}/join")]
-		public ActionResult<User> Join(string partyKey, [FromQuery] UserDTO singer) {
+		public ActionResult<UserDTO> Join(string partyKey, [FromQuery] UserDTO singer) {
 			Party? party = partyService.GetPartyByKey(partyKey);
 			if (party == null) {
 				return NotFound();
 			}
-			User newSinger = singer.ToDb();
+			User newUser = singer.ToDb();
+			context.Users.Add(newUser);
 			context.SaveChanges();
-			return newSinger;
+			return UserDTO.FromDb(newUser);
 		}
 
 		[HttpPost]
 		[Route("{partyKey}/performance")]
-		public ActionResult<PerformanceDTO> PostPerformance(string partyKey, [FromBody] PerformanceDTO dto) {
-			if (dto.PerformanceId != null) {
-				return BadRequest("Wrong verb, use PUT to update an existing performance");
-			}
+		public ActionResult<PerformanceDTO> PostPerformance(string partyKey, [FromBody] PerformanceRequestDTO dto) {
 			Party? party = partyService.GetPartyByKey(partyKey);
 			User? singer = context.Users.Find(dto.UserId);
 			Song? song = context.Songs.Find(dto.FileName);
@@ -59,7 +57,8 @@ namespace KaraokeParty.Controllers {
 			Performance performance = new Performance {
 				Party = party,
 				User = singer,
-				Song = song
+				Song = song,
+				SingerName = dto.SingerName
 			};
 			context.Performances.Add(performance);
 			context.SaveChanges();

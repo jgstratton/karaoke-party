@@ -1,4 +1,9 @@
-async function fetchParty(partyKey) {
+import { CreatePartyResponse } from '../dtoTypes/CreatePartyResponse';
+import PerformanceDTO from '../dtoTypes/PerformanceDTO';
+import { PerformanceRequestDTO } from '../dtoTypes/PerformanceRequestDTO';
+import { SongDTO } from '../dtoTypes/SongDTO';
+
+async function fetchParty(partyKey: string) {
 	console.log('fetching party');
 	const response = await fetch(
 		'party?' +
@@ -14,7 +19,7 @@ async function fetchParty(partyKey) {
 	alert('error fetching party');
 }
 
-async function joinParty(partyKey, singerName) {
+async function joinParty(partyKey: string, singerName: string) {
 	const response = await fetch(
 		`party/${partyKey}/join?` +
 			new URLSearchParams({
@@ -28,7 +33,7 @@ async function joinParty(partyKey, singerName) {
 	alert('error joining party');
 }
 
-async function createParty(title, djName) {
+async function createParty(title: string, djName: string) {
 	let response = await fetch('party', {
 		method: 'POST',
 		headers: {
@@ -40,14 +45,14 @@ async function createParty(title, djName) {
 			djName: djName,
 		}),
 	});
-	let createPartyResponse = await response.json();
+	let createPartyResponse: CreatePartyResponse = await response.json();
 	if (createPartyResponse.party.partyKey) {
 		return createPartyResponse;
 	}
 	alert('error creating party');
 }
 
-async function addSong(song) {
+async function addSong(song: SongDTO) {
 	let response = await fetch('song', {
 		method: 'POST',
 		headers: {
@@ -63,7 +68,7 @@ async function addSong(song) {
 	alert('error saving song metadata');
 }
 
-async function searchSongs(searchString) {
+async function searchSongs(searchString: string) {
 	const response = await fetch(
 		`song/search?` +
 			new URLSearchParams({
@@ -73,7 +78,7 @@ async function searchSongs(searchString) {
 	return await response.json();
 }
 
-async function addPerformance(partyKey, performance) {
+async function addPerformance(partyKey: string, performance: PerformanceRequestDTO) {
 	let response = await fetch(`party/${partyKey}/performance?`, {
 		method: 'POST',
 		headers: {
@@ -89,7 +94,7 @@ async function addPerformance(partyKey, performance) {
 	alert('error adding performance');
 }
 
-async function updatePerformance(partyKey, performance) {
+async function updatePerformance(partyKey: string, performance: PerformanceDTO) {
 	let response = await fetch(`party/${partyKey}/performance`, {
 		method: 'PUT',
 		headers: {
@@ -97,13 +102,7 @@ async function updatePerformance(partyKey, performance) {
 			'Content-Type': 'application/json',
 		},
 
-		body: JSON.stringify({
-			performanceId: performance.performanceId,
-			singerId: performance.singer.singerId,
-			fileName: performance.song.fileName,
-			songCompleted: performance.songCompleted,
-			order: performance.order,
-		}),
+		body: JSON.stringify(performance),
 	});
 	let responseJson = await response.json();
 	if (responseJson.performanceId) {

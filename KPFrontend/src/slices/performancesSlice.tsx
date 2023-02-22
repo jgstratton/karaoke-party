@@ -27,7 +27,7 @@ export const performancesSlice = createSlice({
 				// @ts-ignore:
 				state[s.name] = action.payload
 					.filter((q) => q.status === s.id)
-					.sort((a, b) => cmp(a.sort_Order, b.sort_Order) || cmp(a.performanceId, b.performanceId));
+					.sort((a, b) => cmp(a.sort_Order, b.sort_Order) || cmp(a.performanceId ?? 0, b.performanceId ?? 0));
 			});
 			state.completed = state.completed.reverse();
 		},

@@ -18,6 +18,7 @@ export const userSlice = createSlice({
 	initialState: initialState,
 	reducers: {
 		populateUser: (state, action: PayloadAction<UserDTO>) => {
+			console.log('populating user', action.payload);
 			state.userId = action.payload.userId;
 			state.isDj = action.payload.isDj;
 			state.name = action.payload.name;

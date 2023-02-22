@@ -9,7 +9,6 @@ import { populatePlayer, populateSettings } from '../slices/playerSlice';
 import { populatePerformances } from '../slices/performancesSlice';
 import StorageService from '../services/StorageService';
 import Menu from './common/Menu';
-import { CreatePartyResponse } from '../dtoTypes/CreatePartyResponse';
 import { RootState } from '../store';
 
 const NoParty = () => {
@@ -37,14 +36,16 @@ const NoParty = () => {
 	}
 
 	async function handleCreate() {
-		let partyResponse: CreatePartyResponse = await ApiService.createParty(form.partyName, form.djName);
-		let { party, dj } = partyResponse;
-		dispatch(populateUser(dj));
-		dispatch(populateParty(party));
-		dispatch(populateSettings(party.playerSettings));
-		StorageService.storeUser(dj);
-		StorageService.storeParty(party);
-		navigate('/redirectHome');
+		let partyResponse = await ApiService.createParty(form.partyName, form.djName);
+		if (partyResponse) {
+			let { party, dj } = partyResponse;
+			dispatch(populateUser(dj));
+			dispatch(populateParty(party));
+			dispatch(populateSettings(party.playerSettings));
+			StorageService.storeUser(dj);
+			StorageService.storeParty(party);
+			navigate('/redirectHome');
+		}
 	}
 
 	async function handleJoin() {

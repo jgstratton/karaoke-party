@@ -21,12 +21,12 @@ function forgetParty() {
 }
 
 async function loadUser() {
-	const id = localStorage.getItem('singerId');
+	const id = localStorage.getItem('userId');
 	if (id) {
 		const response = await fetch(
 			'singer?' +
 				new URLSearchParams({
-					singerId: id,
+					userId: id,
 				})
 		);
 		const userObj = await response.json();
@@ -40,14 +40,14 @@ async function loadUser() {
 }
 
 function storeUser(user) {
-	localStorage.setItem('singerId', user.singerId);
+	localStorage.setItem('userId', user.userId);
 	if (user.isDj) {
 		localStorage.setItem('isDj', true);
 	}
 }
 
 function forgetUser() {
-	localStorage.removeItem('singerId');
+	localStorage.removeItem('userId');
 	localStorage.removeItem('isDj');
 }
 

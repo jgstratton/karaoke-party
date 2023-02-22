@@ -16,8 +16,8 @@ namespace KaraokeParty.Controllers {
 		}
 
 		[HttpGet]
-		public ActionResult<User> Get(int singerId) {
-			User? singer = context.Users.Find(singerId);
+		public ActionResult<User> Get(int userId) {
+			User? singer = context.Users.Find(userId);
 			if (singer is null) {
 				return NotFound();
 			}

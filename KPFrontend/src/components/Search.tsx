@@ -47,7 +47,8 @@ const Search = () => {
 	async function addToQueue(filename: string) {
 		const newPerforamance = await ApiService.addPerformance(party.partyKey, {
 			fileName: filename,
-			singerId: user.userId,
+			userId: user.userId ?? 0,
+			singerName: '',
 		});
 		dispatch(addRequest(newPerforamance));
 		setAddedToQueue(true);
