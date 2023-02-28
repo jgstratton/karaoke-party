@@ -17,7 +17,7 @@ namespace KaraokeParty.Controllers {
 		public SongController(KPContext kpContext, IConfiguration config) {
 			if (config.GetSection("DownloadLocation")?.Value is string downloadLocation) {
 				this.VideoStoragePath = downloadLocation;
-			} else { 
+			} else {
 				DirectoryInfo? dir = new DirectoryInfo(Directory.GetCurrentDirectory());
 				while (dir != null && dir.Name != "KaraokeParty") {
 					dir = dir.Parent;
@@ -38,16 +38,16 @@ namespace KaraokeParty.Controllers {
 
 		[HttpGet]
 		[Route("search")]
-		public ActionResult<List<Song>> Search([FromQuery] string searchString) {
+		public ActionResult<List<SongDTO>> Search([FromQuery] string searchString) {
 			var filteredSongs = context.Songs.ToList();
-			foreach(var keyword in searchString.ToUpper().Split()) {
+			foreach (var keyword in searchString.ToUpper().Split()) {
 				filteredSongs = filteredSongs.Where(s => s.Title.ToUpper().Contains(keyword)).ToList();
 			}
-			return filteredSongs;
+			return filteredSongs.Select(fs => SongDTO.FromDb(fs)).ToList();
 		}
 
 		[HttpPost]
-		public ActionResult<Song> Post(SongDTO songDto) {
+		public ActionResult<SongDTO> Post(SongDTO songDto) {
 			if (songDto.FileName is null) {
 				return NotFound();
 			}
@@ -59,7 +59,7 @@ namespace KaraokeParty.Controllers {
 				songDto.UpdateDb(song);
 			}
 			context.SaveChanges();
-			return song;
+			return SongDTO.FromDb(song);
 		}
 
 		[HttpGet]
