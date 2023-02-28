@@ -3,8 +3,6 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import '../../css/table-classes.css';
 import Loading from '../common/Loading';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDownload, faMicrophone } from '@fortawesome/free-solid-svg-icons';
 import VideoPreview from './VideoPreview';
 import { Col, Row } from 'react-bootstrap';
 import { SongDTO } from '../../dtoTypes/SongDTO';

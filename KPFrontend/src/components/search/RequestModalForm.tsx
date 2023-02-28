@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
-import { selectUserName } from '../../slices/userSlice';
+import { selectUserIsDj, selectUserName } from '../../slices/userSlice';
 import VideoPreview from './VideoPreview';
 
 interface iProps {
@@ -14,11 +14,24 @@ interface iProps {
 
 const RequestModalForm = ({ title, url, show, handleSubmit, handleClose }: iProps) => {
 	const [singerName, setSingerName] = useState('');
+	const [showNameWarning, setShowNameWarning] = useState(false);
 	const userName = useSelector(selectUserName);
-	useEffect(() => {
-		setSingerName(userName);
-	}, [userName]);
+	const isDj = useSelector(selectUserIsDj);
 
+	useEffect(() => {
+		if (!isDj) {
+			setSingerName(userName);
+		}
+	}, [isDj, userName]);
+
+	const submitForm = () => {
+		if (singerName.trim().length === 0) {
+			setShowNameWarning(true);
+			return;
+		}
+		setShowNameWarning(false);
+		handleSubmit(singerName);
+	};
 	return (
 		<Modal size="lg" show={show} backdrop="static">
 			<Modal.Header closeButton>
@@ -40,13 +53,16 @@ const RequestModalForm = ({ title, url, show, handleSubmit, handleClose }: iProp
 						onChange={(e) => setSingerName(e.target.value)}
 					/>
 					<Form.Text className="text-muted">Who will be performing this song?</Form.Text>
+					{showNameWarning && (
+						<p className="text-danger">You must provide a singer's name... this isn't karaoke roulette!</p>
+					)}
 				</Form.Group>
 			</Modal.Body>
 			<Modal.Footer>
 				<Button variant="secondary" onClick={handleClose}>
 					Cancel
 				</Button>
-				<Button variant="primary" onClick={() => handleSubmit(singerName)}>
+				<Button variant="primary" onClick={() => submitForm()}>
 					Submit Request
 				</Button>
 			</Modal.Footer>

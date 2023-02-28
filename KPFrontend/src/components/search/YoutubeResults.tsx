@@ -8,27 +8,41 @@ import '../../css/table-classes.css';
 import Loading from '../common/Loading';
 import Overlay from '../common/Overlay';
 import VideoPreview from './VideoPreview';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDownload } from '@fortawesome/free-solid-svg-icons';
 import YTService from '../../services/YTService';
 import ApiService from '../../services/ApiService';
+import { YtdlpSongDTO } from '../../dtoTypes/YtdlpSongDTO';
+import RequestModalForm from './RequestModalForm';
 
-const YouTubeResults = (props) => {
+interface iProps {
+	results: YtdlpSongDTO[];
+	loading: boolean;
+	addToQueue: (filename: string, singerName: string) => Promise<void>;
+}
+const YouTubeResults = ({ results, loading, addToQueue }: iProps) => {
 	const [downloadInProgress, setDownloadInProgress] = useState(false);
+	const [selectedSong, setSelectedSong] = useState<YtdlpSongDTO>();
+	const [showRequestForm, setShowRequestForm] = useState(false);
 
-	async function downloadVideo(title, url) {
+	const selectSong = (song: YtdlpSongDTO) => {
+		setSelectedSong(song);
+		setShowRequestForm(true);
+	};
+
+	const handleSubmitForm = async (singerName: string) => {
 		setDownloadInProgress(true);
-		let fileName = await YTService.downloadYoutube(url);
+		let fileName = await YTService.downloadYoutube(selectedSong?.url ?? '');
 		await ApiService.addSong({
 			fileName: fileName,
-			title: title,
-			url: url,
+			title: selectedSong?.title ?? '',
+			url: selectedSong?.url ?? '',
 		});
 		setDownloadInProgress(false);
-		props.addToQueue(fileName);
-	}
+		setShowRequestForm(false);
+		addToQueue(fileName, singerName);
+	};
+
 	return (
-		<div>
+		<>
 			{downloadInProgress && (
 				<Overlay>
 					<Loading>Download in progress... this may take a minute...</Loading>
@@ -38,11 +52,11 @@ const YouTubeResults = (props) => {
 				<Card.Body>
 					<Card.Title>Online search results</Card.Title>
 					<Card.Text className="text-warning">
-						{props.loading ? (
+						{loading ? (
 							<Loading />
 						) : (
 							<>
-								{props.results.map((r) => (
+								{results.map((r) => (
 									<Row key={r.id}>
 										<Col md={8}>
 											<VideoPreview url={r.url} />
@@ -50,9 +64,7 @@ const YouTubeResults = (props) => {
 											<a href={r.url}>{r.url}</a>
 										</Col>
 										<Col className="text-sm-right mt-sm-3 mt-md-0" md={4}>
-											<Button onClick={() => downloadVideo(r.title, r.url)}>
-												<FontAwesomeIcon icon={faDownload} /> Download and add to queue
-											</Button>
+											<Button onClick={() => selectSong(r)}>Request this song</Button>
 										</Col>
 										<Col sm={12}>
 											<hr />
@@ -64,7 +76,14 @@ const YouTubeResults = (props) => {
 					</Card.Text>
 				</Card.Body>
 			</Card>
-		</div>
+			<RequestModalForm
+				show={showRequestForm}
+				title={selectedSong?.title ?? ''}
+				url={selectedSong?.url ?? ''}
+				handleClose={() => setShowRequestForm(false)}
+				handleSubmit={handleSubmitForm}
+			/>
+		</>
 	);
 };
 export default YouTubeResults;
