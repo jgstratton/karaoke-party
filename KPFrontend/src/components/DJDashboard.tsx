@@ -19,6 +19,7 @@ import { sendMovePerformance } from '../slices/performancesSlice';
 import Player from './dj/Player';
 import { RootState } from '../store';
 import PerformanceDTO from '../dtoTypes/PerformanceDTO';
+import ListItem from './dj/ListItem';
 
 interface state {
 	requests: PerformanceDTO[];
@@ -159,12 +160,7 @@ const DJDashboard = () => {
 																	{...provided.draggableProps}
 																	{...provided.dragHandleProps}
 																>
-																	<ListGroup.Item>
-																		<div className="text-warning">
-																			{s.singerName}
-																		</div>
-																		{s.songTitle}
-																	</ListGroup.Item>
+																	<ListItem performance={s} />
 																</div>
 															)}
 														</Draggable>
@@ -207,12 +203,7 @@ const DJDashboard = () => {
 																	{...provided.draggableProps}
 																	{...provided.dragHandleProps}
 																>
-																	<ListGroup.Item key={s.performanceId}>
-																		<div className="text-warning">
-																			{s.singerName}
-																		</div>
-																		{s.songTitle}
-																	</ListGroup.Item>
+																	<ListItem performance={s} />
 																</div>
 															)}
 														</Draggable>
