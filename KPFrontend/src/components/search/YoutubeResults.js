@@ -49,7 +49,7 @@ const YouTubeResults = (props) => {
 											<div>{r.title}</div>
 											<a href={r.url}>{r.url}</a>
 										</Col>
-										<Col className="text-md-right mt-sm-3 mt-md-0" md={4}>
+										<Col className="text-sm-right mt-sm-3 mt-md-0" md={4}>
 											<Button onClick={() => downloadVideo(r.title, r.url)}>
 												<FontAwesomeIcon icon={faDownload} /> Download and add to queue
 											</Button>

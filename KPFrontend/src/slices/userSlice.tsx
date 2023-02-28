@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { UserDTO } from '../dtoTypes/UserDTO';
+import { RootState } from '../store';
 
 interface iUserState {
 	userId?: number;
@@ -32,6 +33,9 @@ export const userSlice = createSlice({
 	},
 });
 
+export const selectUserName = (state: RootState) => {
+	return state.user?.name ?? '';
+};
 export const { populateUser, reset, toggleDj } = userSlice.actions;
 
 export default userSlice.reducer;
