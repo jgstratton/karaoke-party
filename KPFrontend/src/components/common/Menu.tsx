@@ -10,6 +10,7 @@ import styles from './Menu.module.css';
 import SettingsModal from '../dj/SettingsModal';
 import { useState } from 'react';
 import { RootState } from '../../store';
+import ConfirmModal from './ConfirmModal';
 
 const Menu = () => {
 	const user = useSelector((state: RootState) => state.user);
@@ -20,6 +21,7 @@ const Menu = () => {
 
 	// dj settings modals control
 	const [showDjSettings, setShowDjSettings] = useState(false);
+	const [showConfirmLeave, setShowConfirmLeave] = useState(false);
 	const handleHideDjSettings = () => setShowDjSettings(false);
 	const handleShowDjSettings = () => setShowDjSettings(true);
 
@@ -49,8 +51,10 @@ const Menu = () => {
 						<Navbar.Collapse id="responsive-navbar-nav">
 							<Nav>
 								<Nav.Link onClick={() => navigate('/home')}>Home</Nav.Link>
-								<Nav.Link onClick={() => navigate('/search')}>Request a song</Nav.Link>
-								<Nav.Link onClick={leaveParty}>Leave Party</Nav.Link>
+								<Nav.Link onClick={() => navigate('/search')}>
+									{user.isDj ? 'Add Request' : 'Request a song'}
+								</Nav.Link>
+								<Nav.Link onClick={() => setShowConfirmLeave(true)}>Leave Party</Nav.Link>
 								{user.isDj && (
 									<>
 										<Nav.Link onClick={handleShowDjSettings}>Open DJ Settings</Nav.Link>
@@ -72,6 +76,18 @@ const Menu = () => {
 				)}
 			</Navbar>
 			<SettingsModal show={showDjSettings} handleClose={handleHideDjSettings} />
+			<ConfirmModal
+				show={showConfirmLeave}
+				handleCancel={() => setShowConfirmLeave(false)}
+				handleConfirm={leaveParty}
+			>
+				<p>You sure you want to exit the party?</p>
+				<br />
+				<p className="text-warning">
+					As the DJ, if you exit the party you won't be able to regain control of the requests or the video
+					player. Make sure this is what you want to do.
+				</p>
+			</ConfirmModal>
 		</>
 	);
 };
