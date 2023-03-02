@@ -1,6 +1,6 @@
 {
-	"short_name": "React App",
-	"name": "Create React App Sample",
+	"short_name": "Karaoke Party",
+	"name": "Karaoke Party",
 	"icons": [
 		{
 			"src": "favicon.ico",
@@ -11,11 +11,6 @@
 			"src": "images/logo192.png",
 			"type": "image/png",
 			"sizes": "192x192"
-		},
-		{
-			"src": "images/logo512.png",
-			"type": "image/png",
-			"sizes": "512x512"
 		}
 	],
 	"start_url": ".",
