@@ -3,6 +3,11 @@ const cacheName = 'MyFancyCacheName_v4';
 const searchKeys = ['/party', '/song', '/images', 'sw.js'];
 
 self.addEventListener('fetch', (event) => {
+	// prevent cors issue when getting images from youtube
+	if (event.request.url.search('youtube.com') > 0) {
+		return;
+	}
+
 	if (event.request.method == 'GET') {
 		event.respondWith(
 			caches.open(cacheName).then((cache) => {

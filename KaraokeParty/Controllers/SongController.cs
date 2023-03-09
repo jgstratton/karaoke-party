@@ -41,7 +41,7 @@ namespace KaraokeParty.Controllers {
 		public ActionResult<List<SongDTO>> Search([FromQuery] string searchString) {
 			var filteredSongs = context.Songs.ToList();
 			foreach (var keyword in searchString.ToUpper().Split()) {
-				filteredSongs = filteredSongs.Where(s => s.Title.ToUpper().Contains(keyword)).ToList();
+				filteredSongs = filteredSongs.Where(s => s.Title.ToUpper().Contains(keyword) && s.FileName.Length > 0).ToList();
 			}
 			return filteredSongs.Select(fs => SongDTO.FromDb(fs)).ToList();
 		}

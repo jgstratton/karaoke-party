@@ -31,6 +31,11 @@ const YouTubeResults = ({ results, loading, addToQueue }: iProps) => {
 	const handleSubmitForm = async (singerName: string) => {
 		setDownloadInProgress(true);
 		let fileName = await YTService.downloadYoutube(selectedSong?.url ?? '');
+		if (fileName.length === 0) {
+			alert('error downloading file...');
+			setDownloadInProgress(false);
+			return;
+		}
 		await ApiService.addSong({
 			fileName: fileName,
 			title: selectedSong?.title ?? '',
