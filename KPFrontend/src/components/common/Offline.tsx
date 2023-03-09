@@ -10,6 +10,7 @@ const Offline = ({ children }: PropsWithChildren) => {
 	const [online, setStatus] = useState(true);
 
 	useEffect(() => {
+		setStatus(window.navigator.onLine);
 		window.addEventListener('online', () => setStatus(true));
 		window.addEventListener('offline', () => setStatus(false));
 

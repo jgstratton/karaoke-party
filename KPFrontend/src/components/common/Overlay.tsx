@@ -12,14 +12,17 @@ interface iProps {
 const Overlay = ({ backgroundOpacity = 0.9, position = Positions.Center, children }: PropsWithChildren<iProps>) => {
 	let top = '40%';
 	let right = 'auto';
+	let cssPosition = 'fixed';
 
 	switch (position) {
 		case Positions.TopRight:
+			cssPosition = 'fixed';
 			top = '30px';
 			right = '30px';
 			break;
 		case Positions.Center:
 		default:
+			cssPosition = 'relative';
 			top = '40%';
 			right = 'auto';
 	}
@@ -39,7 +42,8 @@ const Overlay = ({ backgroundOpacity = 0.9, position = Positions.Center, childre
 			<div
 				className="text-center"
 				style={{
-					position: 'absolute',
+					// @ts-ignore
+					position: cssPosition,
 					top: top,
 					right: right,
 				}}

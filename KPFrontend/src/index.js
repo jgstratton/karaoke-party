@@ -7,15 +7,12 @@ import { register as registerServiceWorker } from './serviceWorkerRegistration';
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 import store from './store';
-import Offline from './components/common/Offline';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
 	<BrowserRouter>
 		<Provider store={store}>
-			<Offline>
-				<App />
-			</Offline>
+			<App />
 		</Provider>
 	</BrowserRouter>
 );

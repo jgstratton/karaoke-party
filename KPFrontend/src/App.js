@@ -13,6 +13,7 @@ import StorageService from './services/StorageService';
 import Search from './components/Search';
 import Player from './components/player/Player';
 import KeyPressChecker from './services/KeyPressChecker';
+import Offline from './components/common/Offline';
 
 const App = () => {
 	const dispatch = useDispatch();
@@ -66,7 +67,9 @@ const App = () => {
 						<Route
 							path="home"
 							element={
-								<RequireSession>{user.isDj ? <DJDashboard /> : <SingerDashboard />}</RequireSession>
+								<Offline>
+									<RequireSession>{user.isDj ? <DJDashboard /> : <SingerDashboard />}</RequireSession>
+								</Offline>
 							}
 						/>
 						<Route
