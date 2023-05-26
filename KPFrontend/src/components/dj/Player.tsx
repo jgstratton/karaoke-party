@@ -1,16 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import Card from 'react-bootstrap/Card';
 import PlayerSlider from './PlayerSlider';
-import { faPlay, faPause, faForwardStep, faBackwardStep } from '@fortawesome/free-solid-svg-icons';
+import { faForwardStep, faBackwardStep, faPlayCircle, faPauseCircle, faTv } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from './Player.module.css';
 import DateTimeUtilities from '../../utilities/dateTimeUtilities';
-import ListGroup from 'react-bootstrap/ListGroup';
 import { play, pause } from '../../slices/playerSlice';
 import { startNextPerformance, startPreviousPerformance } from '../../slices/performancesSlice';
 import classNames from 'classnames';
 import { RootState } from '../../store';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 const Player = () => {
 	const dispatch = useDispatch();
@@ -18,62 +17,87 @@ const Player = () => {
 	const storePlayer = useSelector((state: RootState) => state.player);
 	const livePerformance = performances.live[0];
 
-	return (
-		<Card className={classNames([styles.player, storePlayer.enabled ? styles.enabled : '', 'mb-4'])}>
-			<Card.Body>
-				<Card.Title>Now Playing</Card.Title>
-				<Card.Text>
-					<ListGroup>
-						<ListGroup.Item>
-							{livePerformance ? (
-								<>
-									<div className="text-warning">{livePerformance?.singerName}</div>
-									{livePerformance?.songTitle}
-									<br />
-									<a href={livePerformance?.url}>{livePerformance?.url}</a>
-								</>
-							) : (
-								<div className="text-warning">Nothing playing right now</div>
-							)}
-						</ListGroup.Item>
-					</ListGroup>
-				</Card.Text>
+	useEffect(() => {
+		document.body.classList.add(styles.body);
+		return () => {
+			document.body.classList.remove(styles.body);
+		};
+	}, []);
 
-				<>
-					<div className={`${styles.controls}`}>
-						<FontAwesomeIcon
-							icon={faPlay}
-							className={storePlayer.playing ? styles.icon : styles.iconEnabled}
-							fixedWidth
-							onClick={() => dispatch(play())}
-						/>
-						<FontAwesomeIcon
-							icon={faPause}
-							className={storePlayer.playing ? styles.iconEnabled : styles.icon}
-							fixedWidth
-							onClick={() => dispatch(pause())}
-						/>
+	return (
+		<div className={classNames([styles.player])}>
+			{livePerformance ? (
+				<div className={styles.nowPlaying}>
+					<div>
+						{livePerformance?.singerName && (
+							<span className="text-warning pr-2">{livePerformance?.singerName}</span>
+						)}
+						<span className="text-muted">
+							{livePerformance?.singerName !== livePerformance?.userName &&
+								livePerformance?.userName.length &&
+								`(Submitted by ${livePerformance?.userName})`}
+						</span>
+					</div>
+
+					<a href={livePerformance?.url}>{livePerformance?.songTitle}</a>
+				</div>
+			) : (
+				<div className={classNames(['text-warning', styles.nowPlaying])}>Nothing playing right now</div>
+			)}
+
+			<div className={`${styles.controls}`}>
+				<div className={`${styles.controlsLine1}`}>
+					<FontAwesomeIcon
+						className={classNames([styles.icon, styles.navigate])}
+						icon={faBackwardStep}
+						onClick={() => dispatch(startPreviousPerformance())}
+					/>
+					<FontAwesomeIcon
+						icon={faPlayCircle}
+						className={storePlayer.playing ? styles.iconHidden : styles.icon}
+						fixedWidth
+						onClick={() => dispatch(play())}
+					/>
+					<FontAwesomeIcon
+						icon={faPauseCircle}
+						className={storePlayer.playing ? styles.icon : styles.iconHidden}
+						fixedWidth
+						onClick={() => dispatch(pause())}
+					/>
+					<FontAwesomeIcon
+						className={classNames([styles.icon, styles.navigate])}
+						icon={faForwardStep}
+						onClick={() => dispatch(startNextPerformance())}
+					/>
+				</div>
+
+				<div className={`${styles.controlsLine2}`}>
+					<div className="text-right pr-3">
+						{DateTimeUtilities.secondsToHHMMSS(storePlayer.length * storePlayer.position)}
+					</div>
+					<div className="text-center">
 						<PlayerSlider
 							playerSlidePosition={storePlayer.position}
 							videoLengthSeconds={storePlayer.length}
 						/>
 					</div>
-					<hr />
-					<div className={`${styles.controlsLine2}`}>
-						<button className="btn btn-primary" onClick={() => dispatch(startPreviousPerformance())}>
-							<FontAwesomeIcon icon={faBackwardStep} /> Previous Song
-						</button>
-						<div className="text-center">
-							{DateTimeUtilities.secondsToHHMMSS(storePlayer.length * storePlayer.position)} /{' '}
-							{DateTimeUtilities.secondsToHHMMSS(storePlayer.length)}
-						</div>
-						<button className="btn btn-primary" onClick={() => dispatch(startNextPerformance())}>
-							Next Song <FontAwesomeIcon icon={faForwardStep} />
-						</button>
-					</div>
-				</>
-			</Card.Body>
-		</Card>
+					<div className="text-left pl-3"> {DateTimeUtilities.secondsToHHMMSS(storePlayer.length)}</div>
+				</div>
+			</div>
+			<div className={styles.right}>
+				<div className={styles.launchToggle}>
+					<OverlayTrigger overlay={<Tooltip>Launch video player in new tab</Tooltip>} placement="top">
+						<a href="/player" target="_blank" rel="noopener noreferrer">
+							<FontAwesomeIcon
+								className={classNames([styles.icon, styles.navigate])}
+								icon={faTv}
+								onClick={() => dispatch(startPreviousPerformance())}
+							/>
+						</a>
+					</OverlayTrigger>
+				</div>
+			</div>
+		</div>
 	);
 };
 export default Player;

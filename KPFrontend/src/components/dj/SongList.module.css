@@ -1,0 +1,26 @@
+.listContents::-webkit-scrollbar{
+	display: none;
+}
+
+.listContents{
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+
+
+.listContents {
+	height:100%;
+	overflow-y:scroll;
+}
+
+.listContainer {
+	display: grid;
+    grid-gap: 5px;
+	padding:10px;
+    grid-template-columns: 60px 200px 250px auto 150px;
+	color:white;
+}
+
+.borderBottom {
+	border-bottom: 1px solid rgb(75,75,75);
+}

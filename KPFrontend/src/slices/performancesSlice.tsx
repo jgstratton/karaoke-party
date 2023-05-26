@@ -29,7 +29,6 @@ export const performancesSlice = createSlice({
 					.filter((q) => q.status === s.id)
 					.sort((a, b) => cmp(a.sort_Order, b.sort_Order) || cmp(a.performanceId ?? 0, b.performanceId ?? 0));
 			});
-			state.completed = state.completed.reverse();
 		},
 
 		addRequest: (state, action: PayloadAction<PerformanceDTO>) => {

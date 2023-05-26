@@ -38,7 +38,7 @@ const Menu = () => {
 		<>
 			<Navbar collapseOnSelect expand="lg" bg="dark" variant="dark" className={styles.navBar}>
 				<Navbar.Brand href="#home">
-					<div className={styles.logoText}>Karaoke Party</div>
+					<div className={user.isDj ? styles.logoTextSmall : styles.logoText}>Karaoke Party</div>
 					{isPartyInitialized && (
 						<div className={styles.titleText}>
 							{party?.title} ({party?.partyKey})
@@ -58,16 +58,6 @@ const Menu = () => {
 								{user.isDj && (
 									<>
 										<Nav.Link onClick={handleShowDjSettings}>Open DJ Settings</Nav.Link>
-										<Nav>
-											<Nav.Link
-												className="float-right"
-												href="/player"
-												target="_blank"
-												rel="noopener noreferrer"
-											>
-												Launch Video Player
-											</Nav.Link>
-										</Nav>
 									</>
 								)}
 							</Nav>

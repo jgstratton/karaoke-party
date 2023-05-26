@@ -2,7 +2,7 @@ body{
 	background-size:100%;
 	background-attachment: fixed;
 	overflow-x:hidden;
-	overflow-y:scroll;
+	overflow-y:auto;
 }
 
 body.player-open {

@@ -1,13 +1,68 @@
+.player {
+	background-color: black;
+	display: grid;
+	grid-gap: 10px;
+	grid-template-columns: 30% auto 30%;
+	grid-template-areas:
+	"nowPlaying  controls  right";
+	padding:10px;
+}
+
+.nowPlaying {
+	grid-area: nowPlaying;
+	max-width: 400px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	display: inline-block;
+}
+.nowPlaying a {
+	max-width:400px;
+	text-overflow: ellipsis;
+}
+
+.controls {
+	text-align: center;
+	grid-area: controls;
+}
+
+.right {
+	grid-area: right;
+}
+
 .player .icon,
 .player .iconEnabled{
 	font-size:22px;
 }
 
 .player .icon {
-	color:grey;
+	color:white;
+	font-size:34px;
+	padding-left: 10px;
+	padding-right: 10px;
+	vertical-align: middle;
 }
-.player .iconEnabled {
-	color: white;
+
+
+.player .icon.navigate {
+	font-size:28px;
+	color: rgb(179,179,179);
+}
+
+.player .icon {
+	color:white;
+	font-size:34px;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+.player .iconHidden {
+	display:none;
+}
+
+.player .icon:hover,
+.player .icon.navigate:hover {
+	cursor: pointer;
+	color: var(--bs-success);
 }
 
 .player.enabled .iconEnabled:hover{
@@ -15,14 +70,22 @@
 	cursor:pointer;
 }
 
-.controls {
-	display: grid;
-	padding:6px;
-	border-radius:3px;
-	grid-template-columns: [first] 35px [line2] 35px [line3] auto [end];
-}
-
 .controlsLine2 {
 	display: grid;
-	grid-template-columns: [first] 33% [line2] auto [col3-start] 33% [end];
+	grid-template-columns: [first] 100px [line2] auto [col3-start] 100px [end];
+}
+
+.controlsLine1 {
+	width: 100%;
+}
+
+.launchToggle {
+	position: relative;
+	top:50%;
+	margin-top:-10px;
+	text-align:right;
+}
+
+.body {
+	overflow-y: hidden;
 }

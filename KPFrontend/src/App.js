@@ -8,7 +8,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import RequireSession from './components/common/RequireSession';
 import SingerDashboard from './components/SingerDashboard';
 import NoParty from './components/NoParty';
-import DJDashboard from './components/DJDashboard';
+import DJDashboard from './components/dj/DJDashboard';
 import StorageService from './services/StorageService';
 import Search from './components/Search';
 import Player from './components/player/Player';
