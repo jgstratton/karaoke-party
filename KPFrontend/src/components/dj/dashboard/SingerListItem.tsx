@@ -2,8 +2,8 @@ import { faCheck, faMusic } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import { Badge } from 'react-bootstrap';
-import PerformanceDTO from '../../dtoTypes/PerformanceDTO';
-import StatusService from '../../services/StatusService';
+import PerformanceDTO from '../../../dtoTypes/PerformanceDTO';
+import StatusService from '../../../services/StatusService';
 
 interface iProps {
 	performance: PerformanceDTO;

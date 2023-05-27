@@ -29,6 +29,10 @@ export const selectIsPartyInitialized = (state: RootState) => {
 	return (state.party?.partyKey ?? '').length > 0;
 };
 
+export const selectPartyKey = (state: RootState) => {
+	return state.party?.partyKey ?? '';
+};
+
 export const { populateParty, reset } = partySlice.actions;
 
 export default partySlice.reducer;

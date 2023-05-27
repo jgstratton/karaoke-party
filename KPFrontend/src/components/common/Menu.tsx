@@ -11,6 +11,7 @@ import SettingsModal from '../dj/SettingsModal';
 import { useState } from 'react';
 import { RootState } from '../../store';
 import ConfirmModal from './ConfirmModal';
+import NewSingerModal from '../dj/NewSingerModal';
 
 const Menu = () => {
 	const user = useSelector((state: RootState) => state.user);
@@ -22,8 +23,11 @@ const Menu = () => {
 	// dj settings modals control
 	const [showDjSettings, setShowDjSettings] = useState(false);
 	const [showConfirmLeave, setShowConfirmLeave] = useState(false);
+	const [showNewSingerModal, setShowNewSingerModal] = useState(false);
 	const handleHideDjSettings = () => setShowDjSettings(false);
 	const handleShowDjSettings = () => setShowDjSettings(true);
+	const handleShowNewSingerModal = () => setShowNewSingerModal(true);
+	const handleHideNewSingerModal = () => setShowNewSingerModal(false);
 
 	function leaveParty() {
 		StorageService.forgetParty();
@@ -54,6 +58,11 @@ const Menu = () => {
 								<Nav.Link onClick={() => navigate('/search')}>
 									{user.isDj ? 'Add Request' : 'Request a song'}
 								</Nav.Link>
+								{user.isDj && (
+									<>
+										<Nav.Link onClick={handleShowNewSingerModal}>Add Singer</Nav.Link>
+									</>
+								)}
 								<Nav.Link onClick={() => setShowConfirmLeave(true)}>Leave Party</Nav.Link>
 								{user.isDj && (
 									<>
@@ -66,6 +75,7 @@ const Menu = () => {
 				)}
 			</Navbar>
 			<SettingsModal show={showDjSettings} handleClose={handleHideDjSettings} />
+			<NewSingerModal show={showNewSingerModal} handleClose={handleHideNewSingerModal} />
 			<ConfirmModal
 				show={showConfirmLeave}
 				handleCancel={() => setShowConfirmLeave(false)}

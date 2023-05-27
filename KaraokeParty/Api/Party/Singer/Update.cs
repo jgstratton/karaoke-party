@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KaraokeParty.Controllers {
 	[ApiController]
-	[Route("[controller]")]
 	public class ApiSingerUpdate : ControllerBase {
 		private readonly IPartyService partyService;
 		private readonly KPContext context;

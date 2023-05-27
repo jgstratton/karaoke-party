@@ -1,11 +1,10 @@
 import classNames from 'classnames';
 import React, { useEffect, useState } from 'react';
-import { Badge } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
-import PerformanceDTO from '../../dtoTypes/PerformanceDTO';
-import { RootState } from '../../store';
-import styles from './SongList.module.css';
-import SongListItem from './SongListItem';
+import PerformanceDTO from '../../../dtoTypes/PerformanceDTO';
+import { RootState } from '../../../store';
+import styles from './SingerList.module.css';
+import SingerListItem from './SingerListItem';
 
 interface state {
 	requests: PerformanceDTO[];
@@ -29,23 +28,22 @@ const SongList = () => {
 			<div className={classNames([styles.listContainer, styles.borderBottom, 'text-muted'])}>
 				<span>#</span>
 				<span>Singer</span>
-				<span></span>
-				<span>Title</span>
-				<span>
-					<Badge bg="success">
-						<span className="pl-2">{state.requests.length} New Requests</span>
-					</Badge>
-				</span>
+				<span>Songs Counts</span>
 			</div>
 			<div className={styles.listContents}>
 				{performances.completed.map((s, i) => (
 					<div className={styles.listContainer}>
-						<SongListItem performance={s} index={i + 1} className="text-muted" />
+						<SingerListItem performance={s} index={i + 1} className="text-muted" />
+					</div>
+				))}
+				{performances.completed.map((s, i) => (
+					<div className={styles.listContainer}>
+						<SingerListItem performance={s} index={i + 1} className="text-muted" />
 					</div>
 				))}
 				{performances.live.map((s, i) => (
 					<div className={classNames([styles.listContainer, 'text-warning'])}>
-						<SongListItem
+						<SingerListItem
 							performance={s}
 							index={performances.completed.length + i}
 							className="text-warning"
@@ -54,24 +52,9 @@ const SongList = () => {
 				))}
 				{state.queued.map((s, i) => (
 					<div className={styles.listContainer}>
-						<SongListItem
+						<SingerListItem
 							performance={s}
 							index={performances.completed.length + performances.live.length + 1 + i}
-						/>
-					</div>
-				))}
-				<hr />
-				{state.requests.map((s, i) => (
-					<div className={styles.listContainer}>
-						<SongListItem
-							performance={s}
-							index={
-								performances.completed.length +
-								performances.live.length +
-								performances.queued.length +
-								1 +
-								i
-							}
 						/>
 					</div>
 				))}

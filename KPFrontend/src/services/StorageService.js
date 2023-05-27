@@ -1,4 +1,4 @@
-import ApiService from './ApiService';
+import ApiService from '../api/ApiService';
 
 async function loadParty() {
 	const partyKey = localStorage.getItem('partyKey');
@@ -23,12 +23,7 @@ function forgetParty() {
 async function loadUser() {
 	const id = localStorage.getItem('userId');
 	if (id) {
-		const response = await fetch(
-			'singer?' +
-				new URLSearchParams({
-					userId: id,
-				})
-		);
+		const response = await fetch(`user/${id}`);
 		const userObj = await response.json();
 		const isDj = localStorage.getItem('isDj');
 		if (isDj) {

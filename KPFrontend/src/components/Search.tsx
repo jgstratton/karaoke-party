@@ -6,7 +6,7 @@ import LocalResults from './search/LocalResults';
 import YoutubeResults from './search/YoutubeResults';
 import SearchCard from './search/SearchCard';
 import YTService from '../services/YTService';
-import ApiService from '../services/ApiService';
+import ApiService from '../api/ApiService';
 import { useNavigate } from 'react-router-dom';
 import Overlay from './common/Overlay';
 import Button from 'react-bootstrap/Button';

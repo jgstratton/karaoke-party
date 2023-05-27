@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import ApiService from '../services/ApiService';
+import ApiService from '../api/ApiService';
 import { Form, Button, Card } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { populateUser } from '../slices/userSlice';

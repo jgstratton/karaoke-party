@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KaraokeParty.Controllers {
 	[ApiController]
-	[Route("[controller]")]
 	public class ApiSingerCreate : ControllerBase {
 		private readonly IPartyService partyService;
 		private readonly KPContext context;
@@ -26,9 +25,22 @@ namespace KaraokeParty.Controllers {
 				if (party == null) {
 					return NotFound();
 				}
-				context.Singers.Add(dto.ToDb());
+				int existingNameCount = context.Singers
+					.Where(s =>
+						s.Party != null
+						&& s.Party.PartyId == party.PartyId
+						&& s.Name.ToLower().Trim() == dto.Name.ToLower().Trim()
+					).Count();
+
+				if (existingNameCount > 0) {
+					return BadRequest("Name is already used in this party");
+				}
+
+				Singer dbSinger = dto.ToDb();
+				dbSinger.Party = party;
+				context.Singers.Add(dbSinger);
 				context.SaveChanges();
-				return dto;
+				return SingerDTO.FromDb(dbSinger);
 			} catch (Exception ex) {
 				return BadRequest($"An unexpected error occured: {ex.Message}");
 			}

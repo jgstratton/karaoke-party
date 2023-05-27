@@ -9,7 +9,7 @@ import Loading from '../common/Loading';
 import Overlay from '../common/Overlay';
 import VideoPreview from './VideoPreview';
 import YTService from '../../services/YTService';
-import ApiService from '../../services/ApiService';
+import ApiService from '../../api/ApiService';
 import { YtdlpSongDTO } from '../../dtoTypes/YtdlpSongDTO';
 import RequestModalForm from './RequestModalForm';
 

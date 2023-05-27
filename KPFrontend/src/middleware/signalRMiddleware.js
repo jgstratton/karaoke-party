@@ -4,7 +4,7 @@ import { populatePerformances } from '../slices/performancesSlice';
 import { populatePlayer, pause, play } from '../slices/playerSlice';
 import { populateSettings } from '../slices/playerSlice';
 
-import ApiService from '../services/ApiService';
+import ApiService from '../api/ApiService';
 
 const messageQueue = [];
 const connection = new HubConnectionBuilder().withUrl('/hubs/player').withAutomaticReconnect().build();

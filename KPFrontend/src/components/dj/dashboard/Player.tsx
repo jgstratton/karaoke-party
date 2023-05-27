@@ -4,11 +4,11 @@ import PlayerSlider from './PlayerSlider';
 import { faForwardStep, faBackwardStep, faPlayCircle, faPauseCircle, faTv } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from './Player.module.css';
-import DateTimeUtilities from '../../utilities/dateTimeUtilities';
-import { play, pause } from '../../slices/playerSlice';
-import { startNextPerformance, startPreviousPerformance } from '../../slices/performancesSlice';
+import DateTimeUtilities from '../../../utilities/dateTimeUtilities';
+import { play, pause } from '../../../slices/playerSlice';
+import { startNextPerformance, startPreviousPerformance } from '../../../slices/performancesSlice';
 import classNames from 'classnames';
-import { RootState } from '../../store';
+import { RootState } from '../../../store';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 const Player = () => {
