@@ -1,11 +1,11 @@
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
-import { selectSingerList } from '../../../slices/singerSlice';
+import { selectSingerSummaryList } from '../../../slices/singerSlice';
 import styles from './SingerList.module.css';
 import SingerListItem from './SingerListItem';
 
 const SingerList = () => {
-	const singers = useSelector(selectSingerList);
+	const singers = useSelector(selectSingerSummaryList);
 
 	return (
 		<>

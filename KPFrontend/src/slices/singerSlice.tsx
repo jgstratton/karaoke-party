@@ -1,5 +1,7 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import PerformanceDTO from '../dtoTypes/PerformanceDTO';
 import SingerDTO from '../dtoTypes/SingerDTO';
+import StatusService from '../services/StatusService';
 import { RootState } from '../store';
 
 interface iSingerState {
@@ -31,6 +33,32 @@ export const { populateSingers, addSinger } = singerSlice.actions;
 
 export const selectSingerList = (state: RootState) => {
 	return state.singer.singerList;
+};
+
+export type SingerSummary = {
+	singerId?: number;
+	name: string;
+	rotationNumber: number;
+	completedCount: number;
+	queuedCount: number;
+	requestedCount: number;
+};
+
+export const selectSingerSummaryList = (state: RootState): SingerSummary[] => {
+	return state.singer.singerList.map((s) => ({
+		singerId: s.singerId,
+		name: s.name,
+		rotationNumber: s.rotationNumber,
+		completedCount: state.performances.completed.filter(
+			(p) => p.singerId === s.singerId && p.status === StatusService.completed
+		).length,
+		queuedCount: state.performances.queued.filter(
+			(p) => p.singerId === s.singerId && p.status === StatusService.queued
+		).length,
+		requestedCount: state.performances.requests.filter(
+			(p) => p.singerId === s.singerId && p.status === StatusService.requests
+		).length,
+	}));
 };
 
 export default singerSlice.reducer;

@@ -1,8 +1,9 @@
 import { Badge } from 'react-bootstrap';
 import SingerDTO from '../../../dtoTypes/SingerDTO';
+import { SingerSummary } from '../../../slices/singerSlice';
 
 interface iProps {
-	singer: SingerDTO;
+	singer: SingerSummary;
 	index: number;
 	className?: string;
 }
@@ -14,13 +15,13 @@ const SingerListItem = ({ singer, index, className = '' }: iProps) => {
 			<span className={className}>{singer.name}</span>
 			<span className={className}>
 				<Badge bg="secondary" className="mr-1">
-					1
+					{singer.completedCount}
 				</Badge>
 				<Badge bg="success" className="mr-1">
-					4
+					{singer.queuedCount}
 				</Badge>
 				<Badge bg="primary" className="mr-1">
-					3
+					{singer.requestedCount}
 				</Badge>
 			</span>
 		</>

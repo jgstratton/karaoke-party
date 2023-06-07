@@ -11,11 +11,20 @@ const getStatuses = () => [...statuses];
 
 const getLiveStatus = () => 2;
 
+const requests = 0;
+const queued = 1;
+const live = 2;
+const completed = 3;
+
 const StatusService = {
 	getStatusName,
 	getStatusId,
 	getStatuses,
 	getLiveStatus,
+	requests,
+	queued,
+	live,
+	completed,
 };
 
 export default StatusService;
