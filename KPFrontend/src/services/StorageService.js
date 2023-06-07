@@ -1,9 +1,9 @@
-import ApiService from '../api/ApiService';
+import PartyApi from '../api/PartyApi';
 
 async function loadParty() {
 	const partyKey = localStorage.getItem('partyKey');
 	if (partyKey) {
-		return await ApiService.fetchParty(partyKey);
+		return await PartyApi.fetchPartyOrThrow(partyKey);
 	}
 	return null;
 }

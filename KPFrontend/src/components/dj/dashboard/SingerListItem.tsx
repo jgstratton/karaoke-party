@@ -1,21 +1,17 @@
-import { faCheck, faMusic } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React from 'react';
 import { Badge } from 'react-bootstrap';
-import PerformanceDTO from '../../../dtoTypes/PerformanceDTO';
-import StatusService from '../../../services/StatusService';
+import SingerDTO from '../../../dtoTypes/SingerDTO';
 
 interface iProps {
-	performance: PerformanceDTO;
+	singer: SingerDTO;
 	index: number;
 	className?: string;
 }
 
-const SingerListItem = ({ performance, index, className = '' }: iProps) => {
+const SingerListItem = ({ singer, index, className = '' }: iProps) => {
 	return (
 		<>
 			<span className={className}>{index}</span>
-			<span className={className}>{performance.singerName}</span>
+			<span className={className}>{singer.name}</span>
 			<span className={className}>
 				<Badge bg="secondary" className="mr-1">
 					1

@@ -1,11 +1,11 @@
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Alert, Button, Form, Modal } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import SingerApi from '../../api/SingerApi';
 import { selectPartyKey } from '../../slices/partySlice';
-import { addSinger } from '../../slices/singersSlice';
+import { addSinger } from '../../slices/singerSlice';
 import styles from './NewSingerModal.module.css';
 interface props {
 	show: boolean;

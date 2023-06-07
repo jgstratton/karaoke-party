@@ -10,6 +10,8 @@ import { populatePerformances } from '../slices/performancesSlice';
 import StorageService from '../services/StorageService';
 import Menu from './common/Menu';
 import { RootState } from '../store';
+import PartyApi from '../api/PartyApi';
+import { populateSingers } from '../slices/singerSlice';
 
 const NoParty = () => {
 	const dispatch = useDispatch();
@@ -49,13 +51,14 @@ const NoParty = () => {
 	}
 
 	async function handleJoin() {
-		let curParty = await ApiService.fetchParty(form.joinCode);
+		const curParty = await PartyApi.fetchPartyOrThrow(form.joinCode);
 		let newUser = await ApiService.joinParty(form.joinCode, form.singerName);
 		dispatch(populateParty(curParty));
 		dispatch(populatePlayer(curParty.player));
 		dispatch(populateSettings(curParty.playerSettings));
 		dispatch(populateUser(newUser));
 		dispatch(populatePerformances(curParty.performances));
+		dispatch(populateSingers(curParty.singers));
 		StorageService.storeUser(newUser);
 		StorageService.storeParty(curParty);
 	}

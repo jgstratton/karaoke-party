@@ -22,6 +22,8 @@ namespace KaraokeParty.DataStore {
 
 		public virtual List<Performance> Queue { get; set; } = new List<Performance>();
 
+		public virtual List<Singer> Singers { get; set; } = new List<Singer>();
+
 		public PlayerState PlayerState { get; set; } = PlayerState.Stopped;
 
 		public decimal VideoPosition { get; set; }

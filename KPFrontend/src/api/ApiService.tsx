@@ -3,22 +3,6 @@ import PerformanceDTO from '../dtoTypes/PerformanceDTO';
 import { PerformanceRequestDTO } from '../dtoTypes/PerformanceRequestDTO';
 import { SongDTO } from '../dtoTypes/SongDTO';
 
-async function fetchParty(partyKey: string) {
-	console.log('fetching party');
-	const response = await fetch(
-		'party?' +
-			new URLSearchParams({
-				partyKey: partyKey,
-			})
-	);
-	console.log('fetched', response);
-	let party = await response.json();
-	if (party.partyKey) {
-		return party;
-	}
-	alert('error fetching party');
-}
-
 async function joinParty(partyKey: string, singerName: string) {
 	const response = await fetch(
 		`party/${partyKey}/join?` +
@@ -113,7 +97,6 @@ async function updatePerformance(partyKey: string, performance: PerformanceDTO) 
 
 const ApiService = {
 	createParty,
-	fetchParty,
 	joinParty,
 	addSong,
 	searchSongs,

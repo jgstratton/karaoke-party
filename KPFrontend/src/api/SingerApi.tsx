@@ -1,5 +1,5 @@
-import { SingerDTO } from '../dtoTypes/SingerDTO';
-import { Result } from '../types/Result';
+import SingerDTO from '../dtoTypes/SingerDTO';
+import { Result } from './Result';
 
 const addSinger = async (partyKey: string, singer: SingerDTO): Promise<Result<SingerDTO>> => {
 	let response = await fetch(`party/${partyKey}/singer`, {

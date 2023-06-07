@@ -8,11 +8,13 @@ namespace KaraokeParty.ApiModels {
 
 		public PlayerDTO Player { get; set; }
 		public List<PerformanceDTO> Performances { get; set; }
+		public List<SingerDTO> Singers { get; set; }
 		public PlayerSettingsDTO PlayerSettings { get; set; }
 
 		public PartyDTO() {
 			Player = new PlayerDTO();
 			Performances = new List<PerformanceDTO>();
+			Singers = new List<SingerDTO>();
 			PlayerSettings = new PlayerSettingsDTO();
 		}
 
@@ -36,6 +38,7 @@ namespace KaraokeParty.ApiModels {
 					Title = currentPerformance?.SongTitle ?? ""
 				},
 				Performances = performances,
+				Singers = party.Singers.Select(s => SingerDTO.FromDb(s)).ToList(),
 				PlayerSettings = new PlayerSettingsDTO {
 					MarqueeEnabled = party.MarqueeEnabled,
 					MarqueeSize = party.MarqueeSize,

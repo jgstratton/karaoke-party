@@ -4,6 +4,7 @@ import { populateParty, reset as resetParty } from './slices/partySlice';
 import { populateUser, reset as resetUser, toggleDj } from './slices/userSlice';
 import { populatePlayer, populateSettings } from './slices/playerSlice';
 import { populatePerformances, resetPerformances } from './slices/performancesSlice';
+import { populateSingers } from './slices/singerSlice';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import RequireSession from './components/common/RequireSession';
 import SingerDashboard from './components/SingerDashboard';
@@ -47,6 +48,7 @@ const App = () => {
 
 			if (loadedParty && loadedParty.performances) {
 				dispatch(populatePerformances(loadedParty.performances));
+				dispatch(populateSingers(loadedParty.singers));
 			} else {
 				dispatch(resetPerformances());
 			}

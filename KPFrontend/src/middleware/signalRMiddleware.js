@@ -3,8 +3,9 @@ import { setPosition, setLength } from '../slices/playerSlice';
 import { populatePerformances } from '../slices/performancesSlice';
 import { populatePlayer, pause, play } from '../slices/playerSlice';
 import { populateSettings } from '../slices/playerSlice';
+import { populateSingers } from '../slices/singerSlice';
 
-import ApiService from '../api/ApiService';
+import PartyApi from '../api/PartyApi';
 
 const messageQueue = [];
 const connection = new HubConnectionBuilder().withUrl('/hubs/player').withAutomaticReconnect().build();
@@ -37,14 +38,16 @@ const signalRMiddleware = (store) => {
 	});
 
 	connection.on('ReceiveNewPerformanceStarted', async (value) => {
-		let curParty = await ApiService.fetchParty(store.getState().party.partyKey);
+		const curParty = await PartyApi.fetchPartyOrThrow(store.getState().party.partyKey);
 		store.dispatch(signalActionCreator(populatePerformances(curParty.performances)));
+		store.dispatch(signalActionCreator(populateSingers(curParty.singers)));
 		store.dispatch(signalActionCreator(populatePlayer(curParty.player)));
 	});
 
 	connection.on('ReceivePreviousSong', async (value) => {
-		let curParty = await ApiService.fetchParty(store.getState().party.partyKey);
+		const curParty = await PartyApi.fetchPartyOrThrow(store.getState().party.partyKey);
 		store.dispatch(signalActionCreator(populatePerformances(curParty.performances)));
+		store.dispatch(signalActionCreator(populateSingers(curParty.singers)));
 		store.dispatch(signalActionCreator(populatePlayer(curParty.player)));
 	});
 
