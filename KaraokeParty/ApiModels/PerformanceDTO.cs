@@ -4,6 +4,7 @@ namespace KaraokeParty.ApiModels {
 	public class PerformanceDTO {
 		public int? PerformanceId { get; set; }
 		public int? UserId { get; set; }
+		public int? SingerId { get; set; }
 		public string? UserName { get; set; }
 		public string? SingerName { get; set; }
 		public string? FileName { get; set; }
@@ -15,9 +16,9 @@ namespace KaraokeParty.ApiModels {
 
 		public void UpdateDb(KPContext context, Performance performance) {
 			if (performance.User is null) {
-				throw new Exception("Missing singer.");
+				throw new Exception("Missing user.");
 			}
-
+	
 			if (performance.User.UserId != UserId || performance.User.Name != UserName) {
 				throw new Exception($"Changing user is not supported");
 			}
@@ -31,6 +32,11 @@ namespace KaraokeParty.ApiModels {
 				}
 			}
 
+			Singer? newSinger = context.Singers.Where(s => s.SingerId == SingerId).FirstOrDefault();
+			if (newSinger != null) {
+				performance.Singer = newSinger;
+			}
+
 			performance.Status = Status;
 			performance.SingerName = SingerName ?? "";
 			if (Sort_Order != null) {
@@ -41,6 +47,7 @@ namespace KaraokeParty.ApiModels {
 		public static PerformanceDTO FromDb(Performance performance) {
 			return new PerformanceDTO {
 				PerformanceId = performance.PerformanceID,
+				SingerId = performance.Singer?.SingerId,
 				FileName = performance.Song?.FileName,
 				UserId = performance.User?.UserId,
 				UserName = performance.User?.Name,

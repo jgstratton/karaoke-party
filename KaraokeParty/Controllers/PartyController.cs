@@ -48,18 +48,23 @@ namespace KaraokeParty.Controllers {
 		[Route("{partyKey}/performance")]
 		public ActionResult<PerformanceDTO> PostPerformance(string partyKey, [FromBody] PerformanceRequestDTO dto) {
 			Party? party = partyService.GetPartyByKey(partyKey);
-			User? singer = context.Users.Find(dto.UserId);
+			User? user = context.Users.Find(dto.UserId);
 			Song? song = context.Songs.Find(dto.FileName);
+			Singer? singer = context.Singers.Find(dto.SingerId);
 
-			if (party == null || singer == null || song == null) {
+			if (party == null || user == null || song == null) {
 				return NotFound();
 			}
 			Performance performance = new Performance {
 				Party = party,
-				User = singer,
+				User = user,
 				Song = song,
 				SingerName = dto.SingerName
 			};
+			if (singer != null) {
+				performance.Singer = singer;
+				performance.Status = PerformanceStatus.Queued;
+			}
 			context.Performances.Add(performance);
 			context.SaveChanges();
 			return PerformanceDTO.FromDb(performance);

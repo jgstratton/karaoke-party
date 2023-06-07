@@ -13,6 +13,8 @@ namespace KaraokeParty.DataStore {
 
 		public virtual Song? Song { get; set; }
 
+		public virtual Singer? Singer { get; set; }
+
 		public PerformanceStatus Status { get; set; } = PerformanceStatus.Requested;
 
 		public int? Sort_Order { get; set; }

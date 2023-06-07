@@ -44,11 +44,12 @@ const Search = () => {
 		setSearchString('');
 	}
 
-	async function addToQueue(filename: string, singerName: string) {
+	async function addToQueue(filename: string, singerName: string, singerId: number) {
 		const newPerforamance = await ApiService.addPerformance(party.partyKey, {
 			fileName: filename,
 			userId: user.userId ?? 0,
 			singerName: singerName,
+			singerId: singerId,
 		});
 		dispatch(addRequest(newPerforamance));
 		setAddedToQueue(true);

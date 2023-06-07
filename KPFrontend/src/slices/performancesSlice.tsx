@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { MovePerformanceDTO } from '../dtoTypes/MovePerformanceDTO';
 import PerformanceDTO from '../dtoTypes/PerformanceDTO';
+import StatusService from '../services/StatusService';
 import StatusServices from '../services/StatusService';
 
 interface iPerformancesState {
@@ -23,16 +24,19 @@ export const performancesSlice = createSlice({
 	initialState: initialState,
 	reducers: {
 		populatePerformances: (state: iPerformancesState, action: PayloadAction<PerformanceDTO[]>) => {
+			const newState: iPerformancesState = { ...initialState };
 			StatusServices.getStatuses().forEach((s) => {
 				// @ts-ignore:
-				state[s.name] = action.payload
+				newState[s.name] = action.payload
 					.filter((q) => q.status === s.id)
 					.sort((a, b) => cmp(a.sort_Order, b.sort_Order) || cmp(a.performanceId ?? 0, b.performanceId ?? 0));
 			});
+			return newState;
 		},
 
 		addRequest: (state, action: PayloadAction<PerformanceDTO>) => {
-			state.requests.push(action.payload);
+			const statusName = StatusService.getStatusName(action.payload.status);
+			state[statusName as keyof iPerformancesState].push(action.payload);
 		},
 
 		startNextPerformance: (state, action: PayloadAction<void>) => {

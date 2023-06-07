@@ -11,7 +11,7 @@ import RequestModalForm from './RequestModalForm';
 interface iProps {
 	results: SongDTO[];
 	loading: boolean;
-	addToQueue: (filename: string, singerName: string) => Promise<void>;
+	addToQueue: (filename: string, singerName: string, singerId: number) => Promise<void>;
 }
 
 const LocalResults = ({ results, loading, addToQueue }: iProps) => {
@@ -23,8 +23,8 @@ const LocalResults = ({ results, loading, addToQueue }: iProps) => {
 		setShowRequestForm(true);
 	};
 
-	const handleSubmitForm = (singerName: string) => {
-		addToQueue(selectedSong?.fileName ?? '', singerName);
+	const handleSubmitForm = (singerName: string, singerId: number) => {
+		addToQueue(selectedSong?.fileName ?? '', singerName, singerId);
 		setShowRequestForm(false);
 	};
 

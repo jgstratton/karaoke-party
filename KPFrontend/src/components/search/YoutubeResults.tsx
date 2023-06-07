@@ -16,7 +16,7 @@ import RequestModalForm from './RequestModalForm';
 interface iProps {
 	results: YtdlpSongDTO[];
 	loading: boolean;
-	addToQueue: (filename: string, singerName: string) => Promise<void>;
+	addToQueue: (filename: string, singerName: string, singerId: number) => Promise<void>;
 }
 const YouTubeResults = ({ results, loading, addToQueue }: iProps) => {
 	const [downloadInProgress, setDownloadInProgress] = useState(false);
@@ -28,7 +28,7 @@ const YouTubeResults = ({ results, loading, addToQueue }: iProps) => {
 		setShowRequestForm(true);
 	};
 
-	const handleSubmitForm = async (singerName: string) => {
+	const handleSubmitForm = async (singerName: string, singerId: number) => {
 		setDownloadInProgress(true);
 		let fileName = await YTService.downloadYoutube(selectedSong?.url ?? '');
 		if (fileName.length === 0) {
@@ -43,7 +43,7 @@ const YouTubeResults = ({ results, loading, addToQueue }: iProps) => {
 		});
 		setDownloadInProgress(false);
 		setShowRequestForm(false);
-		addToQueue(fileName, singerName);
+		addToQueue(fileName, singerName, singerId);
 	};
 
 	return (
