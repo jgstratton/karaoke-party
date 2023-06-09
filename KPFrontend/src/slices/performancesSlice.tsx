@@ -3,6 +3,7 @@ import { MovePerformanceDTO } from '../dtoTypes/MovePerformanceDTO';
 import PerformanceDTO from '../dtoTypes/PerformanceDTO';
 import StatusService from '../services/StatusService';
 import StatusServices from '../services/StatusService';
+import { RootState } from '../store';
 
 interface iPerformancesState {
 	requests: PerformanceDTO[];
@@ -47,6 +48,11 @@ export const performancesSlice = createSlice({
 		sendMovePerformance: (state, action: PayloadAction<MovePerformanceDTO>) => {},
 	},
 });
+
+export const selectRequests = (state: RootState): PerformanceDTO[] => state.performances.requests;
+export const selectQueued = (state: RootState): PerformanceDTO[] => state.performances.queued;
+export const selectLive = (state: RootState): PerformanceDTO[] => state.performances.live;
+export const selectCompleted = (state: RootState): PerformanceDTO[] => state.performances.completed;
 
 export const {
 	populatePerformances,

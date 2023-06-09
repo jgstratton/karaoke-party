@@ -1,4 +1,4 @@
-import { Badge } from 'react-bootstrap';
+import { Badge, Button } from 'react-bootstrap';
 import SingerDTO from '../../../dtoTypes/SingerDTO';
 import { SingerSummary } from '../../../slices/singerSlice';
 
@@ -6,13 +6,18 @@ interface iProps {
 	singer: SingerSummary;
 	index: number;
 	className?: string;
+	handleSelectSinger: (singerId: number) => void;
 }
 
-const SingerListItem = ({ singer, index, className = '' }: iProps) => {
+const SingerListItem = ({ singer, index, className = '', handleSelectSinger }: iProps) => {
 	return (
 		<>
 			<span className={className}>{index}</span>
-			<span className={className}>{singer.name}</span>
+			<span className={className}>
+				<Button className="btn btn-link p-0" onClick={() => handleSelectSinger(singer.singerId ?? 0)}>
+					{singer.name}
+				</Button>
+			</span>
 			<span className={className}>
 				{singer.completedCount > 0 && (
 					<span

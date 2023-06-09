@@ -3,6 +3,7 @@ import PerformanceDTO from '../dtoTypes/PerformanceDTO';
 import SingerDTO from '../dtoTypes/SingerDTO';
 import StatusService from '../services/StatusService';
 import { RootState } from '../store';
+import { selectCompleted, selectLive, selectQueued, selectRequests } from './performancesSlice';
 
 interface iSingerState {
 	singerList: SingerDTO[];
@@ -31,10 +32,6 @@ export const singerSlice = createSlice({
 
 export const { populateSingers, addSinger } = singerSlice.actions;
 
-export const selectSingerList = (state: RootState) => {
-	return state.singer.singerList;
-};
-
 export type SingerSummary = {
 	singerId?: number;
 	name: string;
@@ -44,20 +41,55 @@ export type SingerSummary = {
 	queuedCount: number;
 };
 
-export const selectSingerSummaryList = (state: RootState): SingerSummary[] => {
-	return state.singer.singerList.map((s) => ({
-		singerId: s.singerId,
-		name: s.name,
-		rotationNumber: s.rotationNumber,
-		completedCount: state.performances.completed.filter(
-			(p) => p.singerId === s.singerId && p.status === StatusService.completed
-		).length,
-		queuedCount: state.performances.queued.filter(
-			(p) => p.singerId === s.singerId && p.status === StatusService.queued
-		).length,
-		liveCount: state.performances.live.filter((p) => p.singerId === s.singerId && p.status === StatusService.live)
-			.length,
-	}));
+export type SingerDetails = {
+	singerId?: number;
+	name: string;
+	rotationNumber: number;
+	performances: PerformanceDTO[];
 };
+
+export const selectSingerList = (state: RootState) => {
+	return state.singer.singerList;
+};
+
+export const selectSingerSummaryList = createSelector(
+	selectSingerList,
+	selectQueued,
+	selectLive,
+	selectCompleted,
+	(singers, queued, live, completed) => {
+		return singers.map((s) => ({
+			singerId: s.singerId,
+			name: s.name,
+			rotationNumber: s.rotationNumber,
+			completedCount: completed.filter((p) => p.singerId === s.singerId && p.status === StatusService.completed)
+				.length,
+			queuedCount: queued.filter((p) => p.singerId === s.singerId && p.status === StatusService.queued).length,
+			liveCount: live.filter((p) => p.singerId === s.singerId && p.status === StatusService.live).length,
+		}));
+	}
+);
+
+export const selectSingerId = (state: RootState, singerId: Number) => singerId;
+export const selectSingerById = createSelector([selectSingerList, selectSingerId], (singerList, singerId) => {
+	return singerList.find((s) => s.singerId == singerId);
+});
+
+const selectSingerPerformances = createSelector(
+	[selectQueued, selectLive, selectCompleted],
+	(queued, live, completed) => queued.concat(live, completed)
+);
+
+export const selectSingerDetailsById = createSelector(
+	[selectSingerById, selectSingerPerformances],
+	(singer, performances): SingerDetails => {
+		return {
+			singerId: singer?.singerId,
+			name: singer?.name ?? '',
+			rotationNumber: singer?.rotationNumber ?? 0,
+			performances: performances.filter((p) => p.singerId == singer?.singerId),
+		};
+	}
+);
 
 export default singerSlice.reducer;
