@@ -24,14 +24,12 @@ export const performancesSlice = createSlice({
 	initialState: initialState,
 	reducers: {
 		populatePerformances: (state: iPerformancesState, action: PayloadAction<PerformanceDTO[]>) => {
-			const newState: iPerformancesState = { ...initialState };
 			StatusServices.getStatuses().forEach((s) => {
 				// @ts-ignore:
-				newState[s.name] = action.payload
+				state[s.name] = action.payload
 					.filter((q) => q.status === s.id)
 					.sort((a, b) => cmp(a.sort_Order, b.sort_Order) || cmp(a.performanceId ?? 0, b.performanceId ?? 0));
 			});
-			return newState;
 		},
 
 		addRequest: (state, action: PayloadAction<PerformanceDTO>) => {

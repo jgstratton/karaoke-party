@@ -1,5 +1,6 @@
-import { faCheck, faMusic } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faMusic, faPlay } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faYoutube } from '@fortawesome/free-brands-svg-icons';
 import { Badge } from 'react-bootstrap';
 import PerformanceDTO from '../../../dtoTypes/PerformanceDTO';
 import StatusService from '../../../services/StatusService';
@@ -45,9 +46,19 @@ const SongListItem = ({ performance, index, className = '' }: iProps) => {
 					performance?.userName.length &&
 					`(Submitted by ${performance?.userName})`}
 			</span>
-			<a className={className} href={performance?.url} target="_blank" rel="noopener noreferrer">
+			<span className={className}>
+				<a
+					href={performance?.url}
+					target="_blank"
+					rel="noopener noreferrer"
+					className="mr-3"
+					title="Open Source Video in New Tab"
+				>
+					<FontAwesomeIcon icon={faYoutube} />
+				</a>
 				{performance?.songTitle}
-			</a>
+			</span>
+
 			<span>{renderSwitch()}</span>
 		</>
 	);

@@ -1,6 +1,5 @@
 import React from 'react';
 import Menu from '../../common/Menu';
-import BootstrapTable from 'react-bootstrap-table-next';
 import Player from './Player';
 import styles from './DJDashboard.module.css';
 import classNames from 'classnames';

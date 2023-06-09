@@ -19,6 +19,7 @@
 	padding:10px;
     grid-template-columns: 60px 200px 250px auto 150px;
 	color:white;
+	border-bottom:1px solid rgb(25,25,25);
 }
 
 .borderBottom {

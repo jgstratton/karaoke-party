@@ -40,8 +40,8 @@ export type SingerSummary = {
 	name: string;
 	rotationNumber: number;
 	completedCount: number;
+	liveCount: number;
 	queuedCount: number;
-	requestedCount: number;
 };
 
 export const selectSingerSummaryList = (state: RootState): SingerSummary[] => {
@@ -55,9 +55,8 @@ export const selectSingerSummaryList = (state: RootState): SingerSummary[] => {
 		queuedCount: state.performances.queued.filter(
 			(p) => p.singerId === s.singerId && p.status === StatusService.queued
 		).length,
-		requestedCount: state.performances.requests.filter(
-			(p) => p.singerId === s.singerId && p.status === StatusService.requests
-		).length,
+		liveCount: state.performances.live.filter((p) => p.singerId === s.singerId && p.status === StatusService.live)
+			.length,
 	}));
 };
 

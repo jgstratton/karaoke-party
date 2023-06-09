@@ -12,7 +12,7 @@ const SingerList = () => {
 			<div className={classNames([styles.listContainer, styles.borderBottom, 'text-muted'])}>
 				<span>#</span>
 				<span>Singer</span>
-				<span>Songs Counts</span>
+				<span></span>
 			</div>
 			<div className={styles.listContents}>
 				{singers.map((s, i) => (

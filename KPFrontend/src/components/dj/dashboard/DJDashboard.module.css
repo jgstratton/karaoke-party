@@ -31,14 +31,14 @@
 
 .songList {
 	grid-area: songList;
-	display: grid;
-	grid-template-rows: auto 1fr;
 }
 
 .songList, .singerList {
 	position: relative;
 	border-radius: 0.375rem;
 	background-color: rgb(18,18,18);
+	display: grid;
+	grid-template-rows: auto 1fr;
 }
 
 .singerList::-webkit-scrollbar,
