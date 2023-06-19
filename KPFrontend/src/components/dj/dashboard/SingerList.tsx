@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { selectSingerSummaryList } from '../../../slices/singerSlice';
 import { RootState } from '../../../store';
-import SingerModal from '../SingerModal';
+import SingerModal from '../singerModal/SingerModal';
 import styles from './SingerList.module.css';
 import SingerListItem from './SingerListItem';
 

@@ -32,6 +32,16 @@ namespace KaraokeParty.Controllers {
 				if (partyKey != singer.Party?.PartyKey) {
 					return BadRequest("partyKey mismatch");
 				}
+
+				if (dto.RotationNumber != singer.RotationNumber) {
+					List<Singer> allSingers = context.Singers.OrderBy(s => s.RotationNumber).ToList();
+					allSingers.RemoveAt(allSingers.FindIndex(s => s.SingerId == dto.SingerId));
+					allSingers.Insert(dto.RotationNumber - 1, singer);
+					for (var i = 0; i < allSingers.Count; i++) {
+						allSingers[i].RotationNumber = i + 1;
+					}
+				}
+
 				dto.UpdateDb(singer);
 				context.SaveChanges();
 				return dto;

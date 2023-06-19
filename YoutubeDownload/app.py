@@ -21,7 +21,7 @@ def hello_world():
 def search():
 	if "search_string" in request.args:
 		search_string = request.args["search_string"]
-		search_results = get_search_results(search_string + " karaoke")
+		search_results = get_search_results(search_string)
 	else:
 		search_string = None
 		search_results = {}

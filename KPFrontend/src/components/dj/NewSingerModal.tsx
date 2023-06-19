@@ -1,11 +1,11 @@
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Alert, Button, Form, Modal } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import SingerApi from '../../api/SingerApi';
 import { selectPartyKey } from '../../slices/partySlice';
-import { addSinger } from '../../slices/singerSlice';
+import { addSinger, selectRotationSize } from '../../slices/singerSlice';
 import styles from './NewSingerModal.module.css';
 interface props {
 	show: boolean;
@@ -20,6 +20,11 @@ const NewSingerModal = ({ show, handleClose }: props) => {
 	const [showErrorMessage, setShowErrorMessage] = useState(false);
 	const [errorMessage, setErrorMessage] = useState('');
 	const partyKey = useSelector(selectPartyKey);
+	const rotationSize = useSelector(selectRotationSize);
+
+	useEffect(() => {
+		setSingerPosition(rotationSize + 1);
+	}, [rotationSize]);
 
 	const resetForm = () => {
 		setSingerName('');
@@ -73,10 +78,14 @@ const NewSingerModal = ({ show, handleClose }: props) => {
 				<Form.Group className="mb-3">
 					<Form.Label>Rotation Position</Form.Label>
 					<Form.Select
+						value={singerPosition}
 						aria-label="Default select example"
 						onChange={(e) => setSingerPosition(parseInt(e.target.value))}
 					>
-						<option value="1">1 - (Add to start of rotation)</option>
+						{[...Array(rotationSize)].map((x, i) => (
+							<option value={i + 1}>{i + 1}</option>
+						))}
+						<option value={rotationSize + 1}>{rotationSize + 1} - (Add to end of the rotation)</option>
 					</Form.Select>
 					<Form.Text className="text-muted">Where in the rotation would you like to add the singer</Form.Text>
 					{showNameWarning && (
