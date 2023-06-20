@@ -17,6 +17,8 @@ namespace KaraokeParty.DataStore {
 
 		public PerformanceStatus Status { get; set; } = PerformanceStatus.Requested;
 
-		public int? Sort_Order { get; set; }
+		public int? SortOrder { get; set; }
+
+		public int? CompletedOrder { get; set; }
 	}
 }

@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { selectSingerSummaryList } from '../../../slices/singerSlice';
+import { selectSingerSummaryList } from '../../../slices/combinedSelectors';
 import { RootState } from '../../../store';
 import SingerModal from '../singerModal/SingerModal';
 import styles from './SingerList.module.css';
@@ -17,7 +17,7 @@ const SingerList = () => {
 
 			<div className={classNames([styles.listContainer, styles.borderBottom, 'text-muted'])}>
 				<span>#</span>
-				<span>Singer</span>
+				<span>Singer Rotation</span>
 				<span></span>
 			</div>
 			<div className={styles.listContents}>

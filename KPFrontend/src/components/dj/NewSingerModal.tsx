@@ -13,7 +13,6 @@ interface props {
 }
 
 const NewSingerModal = ({ show, handleClose }: props) => {
-	const dispatch = useDispatch();
 	const [singerName, setSingerName] = useState('');
 	const [singerPosition, setSingerPosition] = useState(1);
 	const [showNameWarning, setShowNameWarning] = useState(false);

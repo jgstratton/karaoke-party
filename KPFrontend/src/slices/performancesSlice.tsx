@@ -2,9 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { MovePerformanceDTO } from '../dtoTypes/MovePerformanceDTO';
 import PerformanceDTO from '../dtoTypes/PerformanceDTO';
 import StatusService from '../services/StatusService';
-import StatusServices from '../services/StatusService';
 import { RootState } from '../store';
-
 interface iPerformancesState {
 	requests: PerformanceDTO[];
 	queued: PerformanceDTO[];
@@ -25,12 +23,16 @@ export const performancesSlice = createSlice({
 	initialState: initialState,
 	reducers: {
 		populatePerformances: (state: iPerformancesState, action: PayloadAction<PerformanceDTO[]>) => {
-			StatusServices.getStatuses().forEach((s) => {
-				// @ts-ignore:
-				state[s.name] = action.payload
-					.filter((q) => q.status === s.id)
-					.sort((a, b) => cmp(a.sort_Order, b.sort_Order) || cmp(a.performanceId ?? 0, b.performanceId ?? 0));
-			});
+			state.completed = action.payload
+				.filter((q) => q.status === StatusService.completed)
+				.sort((a, b) => cmp(a.completedOrder ?? 0, b.completedOrder ?? 0));
+			state.live = action.payload.filter((q) => q.status === StatusService.live);
+			state.requests = action.payload
+				.filter((q) => q.status === StatusService.requests)
+				.sort((a, b) => cmp(a.performanceId ?? 0, b.performanceId ?? 0));
+
+			// queued performances are not sorted when loaded into the store
+			state.queued = action.payload.filter((q) => q.status === StatusService.queued);
 		},
 
 		addRequest: (state, action: PayloadAction<PerformanceDTO>) => {

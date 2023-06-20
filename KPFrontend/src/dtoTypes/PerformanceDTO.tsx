@@ -8,5 +8,6 @@ export default interface PerformanceDTO {
 	songTitle: string;
 	url: string;
 	status: number;
-	sort_Order: number;
+	sortOrder: number;
+	completedOrder: number;
 }

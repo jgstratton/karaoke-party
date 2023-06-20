@@ -22,18 +22,44 @@ namespace KaraokeParty.Services {
 			if (party == null) {
 				return null;
 			}
-			int lastCompleted = party.Queue.Where(p => p.Status == PerformanceStatus.Completed).Max(p => p.Sort_Order) ?? 0;
-			party.Queue
-				.Where(p => p.Status == PerformanceStatus.Live)
-				.ToList()
-				.ForEach(p => {
-					p.Status = PerformanceStatus.Completed;
-					p.Sort_Order = ++lastCompleted;
-				});
+			int lastCompleted = party.Queue.Where(p => p.Status == PerformanceStatus.Completed).Max(p => p.CompletedOrder) ?? 0;
 
-			Performance? nextPerformance = party.Queue
-				.Where(q => q.Status == PerformanceStatus.Queued)
-				.OrderBy(p => p.Sort_Order).FirstOrDefault();
+			Performance? currentPerformance = party.Queue
+				.Where(p => p.Status == PerformanceStatus.Live)
+				.FirstOrDefault();
+
+			int nextRotationNumber = 1;
+			int totalSingers = party.Singers.Count();
+
+			if (currentPerformance != null) {
+				currentPerformance.Status = PerformanceStatus.Completed;
+				currentPerformance.CompletedOrder = ++lastCompleted;
+
+				if (currentPerformance.Singer != null) {
+					if (currentPerformance.Singer.RotationNumber < totalSingers) {
+						nextRotationNumber = currentPerformance.Singer.RotationNumber + 1;
+					}
+				}
+			}
+
+			Performance? nextPerformance = null;
+			Singer? nextSinger = null;
+			int startingRotationNumber = nextRotationNumber;
+
+			while (nextPerformance == null) {
+				nextSinger = party.Singers.Where(s => s.RotationNumber == nextRotationNumber).FirstOrDefault();
+				if (nextSinger != null) {
+					nextPerformance = party.Queue
+						.Where(p => p.Singer?.SingerId == nextSinger.SingerId && p.Status == PerformanceStatus.Queued)
+						.OrderBy(p => p.SortOrder)
+						.FirstOrDefault();
+				}
+				nextRotationNumber = nextRotationNumber >= totalSingers ? 1 : nextRotationNumber + 1;
+
+				if (nextRotationNumber == startingRotationNumber) {
+					break;
+				}
+			}
 
 			PerformanceDTO? dto = null;
 			if (nextPerformance != null) {
@@ -52,19 +78,19 @@ namespace KaraokeParty.Services {
 
 			List<Performance> allCompletedDb = party.Queue.Where(p => p.Status == PerformanceStatus.Completed).ToList();
 			Performance? lastCompleted = allCompletedDb
-				.Where(p => p.Sort_Order == allCompletedDb.Max(p => p.Sort_Order))
+				.Where(p => p.SortOrder == allCompletedDb.Max(p => p.SortOrder))
 				.FirstOrDefault();
 
 			if (lastCompleted is null) {
 				return null;
 			}
-			int minQueuedIndex = party.Queue.Where(p => p.Status == PerformanceStatus.Queued).Min(p => p.Sort_Order) ?? 0;
+			int minQueuedIndex = party.Queue.Where(p => p.Status == PerformanceStatus.Queued).Min(p => p.SortOrder) ?? 0;
 
 			party.Queue.Where(p => p.Status == PerformanceStatus.Live)
 				.ToList().
 				ForEach(p => {
 					p.Status = PerformanceStatus.Queued;
-					p.Sort_Order = --minQueuedIndex;
+					p.SortOrder = --minQueuedIndex;
 				});
 
 			lastCompleted.Status = PerformanceStatus.Live;
@@ -144,7 +170,7 @@ namespace KaraokeParty.Services {
 			return party.Queue.Select(p => PerformanceDTO.FromDb(p)).ToList();
 		}
 
-		public void Pause (string partyKey) {
+		public void Pause(string partyKey) {
 			Party? party = GetPartyByKey(partyKey);
 			if (party == null) {
 				throw new Exception($"Unable to find party with key: {partyKey}");

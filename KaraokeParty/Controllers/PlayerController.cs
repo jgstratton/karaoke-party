@@ -1,4 +1,3 @@
-using KaraokeParty.ApiModels;
 using KaraokeParty.DataStore;
 using KaraokeParty.Hubs;
 using KaraokeParty.Services;

@@ -12,13 +12,14 @@ namespace KaraokeParty.ApiModels {
 		public string? Url { get; set; }
 
 		public PerformanceStatus Status { get; set; }
-		public int? Sort_Order { get; set; }
+		public int? SortOrder { get; set; }
+		public int? CompletedOrder { get; set; }
 
 		public void UpdateDb(KPContext context, Performance performance) {
 			if (performance.User is null) {
 				throw new Exception("Missing user.");
 			}
-	
+
 			if (performance.User.UserId != UserId || performance.User.Name != UserName) {
 				throw new Exception($"Changing user is not supported");
 			}
@@ -39,8 +40,10 @@ namespace KaraokeParty.ApiModels {
 
 			performance.Status = Status;
 			performance.SingerName = SingerName ?? "";
-			if (Sort_Order != null) {
-				performance.Sort_Order = Sort_Order;
+			performance.CompletedOrder = CompletedOrder;
+
+			if (SortOrder != null) {
+				performance.SortOrder = SortOrder;
 			}
 		}
 
@@ -52,7 +55,8 @@ namespace KaraokeParty.ApiModels {
 				UserId = performance.User?.UserId,
 				UserName = performance.User?.Name,
 				SingerName = performance.SingerName,
-				Sort_Order = performance.Sort_Order,
+				SortOrder = performance.SortOrder,
+				CompletedOrder = performance.CompletedOrder,
 				Status = performance.Status,
 				SongTitle = performance.Song?.Title,
 				Url = performance.Song?.Url

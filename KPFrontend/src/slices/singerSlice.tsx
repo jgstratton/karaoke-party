@@ -1,7 +1,6 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import PerformanceDTO from '../dtoTypes/PerformanceDTO';
 import SingerDTO from '../dtoTypes/SingerDTO';
-import StatusService from '../services/StatusService';
 import { RootState } from '../store';
 import { selectCompleted, selectLive, selectQueued } from './performancesSlice';
 
@@ -31,9 +30,9 @@ export const singerSlice = createSlice({
 			const targetIndex = state.singerList.findIndex((s) => s.singerId === action.payload.singerId);
 			const targetRotationNumberIndex = action.payload.rotationNumber - 1;
 			if (targetIndex >= 0) {
-				if (state.singerList[targetIndex].rotationNumber != action.payload.rotationNumber) {
+				if (state.singerList[targetIndex].rotationNumber !== action.payload.rotationNumber) {
 					const idRotationMap = state.singerList
-						.filter((s) => s.singerId != action.payload.singerId)
+						.filter((s) => s.singerId !== action.payload.singerId)
 						.sort((a, b) => cmp(a.rotationNumber, b.rotationNumber));
 					state.singerList = [
 						...idRotationMap.slice(0, targetRotationNumberIndex),
@@ -78,24 +77,6 @@ export const selectSingerList = (state: RootState) => {
 
 export const selectRotationSize = createSelector(selectSingerList, (singers) => singers.length);
 
-export const selectSingerSummaryList = createSelector(
-	selectSingerList,
-	selectQueued,
-	selectLive,
-	selectCompleted,
-	(singers, queued, live, completed) => {
-		return singers.map((s) => ({
-			singerId: s.singerId,
-			name: s.name,
-			rotationNumber: s.rotationNumber,
-			completedCount: completed.filter((p) => p.singerId === s.singerId && p.status === StatusService.completed)
-				.length,
-			queuedCount: queued.filter((p) => p.singerId === s.singerId && p.status === StatusService.queued).length,
-			liveCount: live.filter((p) => p.singerId === s.singerId && p.status === StatusService.live).length,
-		}));
-	}
-);
-
 export const selectSingerId = (state: RootState, singerId: Number) => singerId;
 export const selectSingerById = createSelector([selectSingerList, selectSingerId], (singerList, singerId) => {
 	return singerList.find((s) => s.singerId === singerId);
@@ -113,7 +94,9 @@ export const selectSingerDetailsById = createSelector(
 			singerId: singer?.singerId,
 			name: singer?.name ?? '',
 			rotationNumber: singer?.rotationNumber ?? 0,
-			performances: performances.filter((p) => p.singerId === singer?.singerId),
+			performances: performances
+				.filter((p) => p.singerId === singer?.singerId)
+				.sort((a, b) => cmp(a.completedOrder, b.completedOrder) || cmp(a.performanceId, b.performanceId)),
 		};
 	}
 );
