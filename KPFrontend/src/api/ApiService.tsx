@@ -78,30 +78,12 @@ async function addPerformance(partyKey: string, performance: PerformanceRequestD
 	alert('error adding performance');
 }
 
-async function updatePerformance(partyKey: string, performance: PerformanceDTO) {
-	let response = await fetch(`party/${partyKey}/performance`, {
-		method: 'PUT',
-		headers: {
-			Accept: 'application/json',
-			'Content-Type': 'application/json',
-		},
-
-		body: JSON.stringify(performance),
-	});
-	let responseJson = await response.json();
-	if (responseJson.performanceId) {
-		return responseJson;
-	}
-	alert('error adding performance');
-}
-
 const ApiService = {
 	createParty,
 	joinParty,
 	addSong,
 	searchSongs,
 	addPerformance,
-	updatePerformance,
 };
 
 export default ApiService;

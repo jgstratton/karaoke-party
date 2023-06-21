@@ -4,7 +4,7 @@ import PerformanceDTO from '../dtoTypes/PerformanceDTO';
 import StatusService from '../services/StatusService';
 import { RootState } from '../store';
 interface iPerformancesState {
-	requests: PerformanceDTO[];
+	performances: PerformanceDTO[];
 	queued: PerformanceDTO[];
 	live: PerformanceDTO[];
 	completed: PerformanceDTO[];
@@ -35,6 +35,9 @@ export const performancesSlice = createSlice({
 			state.queued = action.payload.filter((q) => q.status === StatusService.queued);
 		},
 
+		updatePerformance: (state: iPerformancesState, action: PayloadAction<PerformanceDTO>) => {
+			state.
+		},
 		addRequest: (state, action: PayloadAction<PerformanceDTO>) => {
 			const statusName = StatusService.getStatusName(action.payload.status);
 			state[statusName as keyof iPerformancesState].push(action.payload);

@@ -4,12 +4,15 @@ import { useEffect, useState } from 'react';
 import { Alert, Button, Col, Form, Modal, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import SingerApi from '../../../api/SingerApi';
+import StatusService from '../../../services/StatusService';
 import { selectPartyKey } from '../../../slices/partySlice';
 import { selectRotationSize, selectSingerDetailsById, updateSinger } from '../../../slices/singerSlice';
 import { RootState } from '../../../store';
 import styles from './SingerModal.module.css';
 import SingerModalPerformance from './SingerModalPerformance';
-
+import classNames from 'classnames';
+import PerformanceDTO from '../../../dtoTypes/PerformanceDTO';
+import PerformanceApi from '../../../api/PerformanceApi';
 interface props {
 	show: boolean;
 	singerId: number;
@@ -20,6 +23,7 @@ const SingerModal = ({ show, singerId, handleClose }: props) => {
 	const dispatch = useDispatch();
 	const [singerName, setSingerName] = useState('');
 	const [singerPosition, setSingerPosition] = useState(1);
+	const [performances, setPerformances] = useState<PerformanceDTO[]>([]);
 	const [showNameWarning, setShowNameWarning] = useState(false);
 	const [showErrorMessage, setShowErrorMessage] = useState(false);
 	const [errorMessage, setErrorMessage] = useState('');
@@ -28,15 +32,14 @@ const SingerModal = ({ show, singerId, handleClose }: props) => {
 	const rotationSize = useSelector(selectRotationSize);
 
 	const resetForm = () => {
-		console.log('resetting form');
 		setSingerName(singerDetails.name);
 		setSingerPosition(singerDetails.rotationNumber);
+		setPerformances(singerDetails.performances);
 		setShowErrorMessage(false);
 		setShowNameWarning(false);
 	};
 
 	useEffect(() => {
-		console.log(singerDetails);
 		resetForm();
 	}, [singerDetails]);
 
@@ -55,13 +58,45 @@ const SingerModal = ({ show, singerId, handleClose }: props) => {
 			name: singerName,
 			rotationNumber: singerPosition,
 		});
-		if (updatedSinger.ok) {
-			dispatch(updateSinger(updatedSinger.value));
-			handleCancel();
-		} else {
+
+		if (!updatedSinger.ok) {
 			setShowErrorMessage(true);
 			setErrorMessage(updatedSinger.error);
+			return;
 		}
+
+		dispatch(updateSinger(updatedSinger.value));
+
+		for (var i = 0; i < performances.length; i++) {
+			const performanceDto = performances[i];
+			const updatedPerformance = await PerformanceApi.updatePerformance(partyKey, performanceDto);
+			if (!updatedPerformance.ok) {
+				setShowErrorMessage(true);
+				setErrorMessage(updatedPerformance.error);
+				return;
+			}
+		}
+
+		handleCancel();
+	};
+
+	const moveItem = (objArray: any[], fromIndex: number, toIndex: number) => {
+		const item = objArray.splice(fromIndex, 1)[0];
+		objArray.splice(toIndex, 0, item);
+	};
+
+	const handleMoveUp = (performanceId: number) => {
+		const clonePerformances: PerformanceDTO[] = [...performances];
+		const targetIndex = clonePerformances.findIndex((p) => p.performanceId == performanceId);
+		moveItem(clonePerformances, targetIndex, targetIndex - 1);
+		setPerformances(clonePerformances);
+	};
+
+	const handleMoveDown = (performanceId: number) => {
+		const clonePerformances: PerformanceDTO[] = [...performances];
+		const targetIndex = clonePerformances.findIndex((p) => p.performanceId == performanceId);
+		moveItem(clonePerformances, targetIndex, targetIndex + 1);
+		setPerformances(clonePerformances);
 	};
 
 	return (
@@ -105,13 +140,27 @@ const SingerModal = ({ show, singerId, handleClose }: props) => {
 						)}
 					</Form.Group>
 				</Row>
-				<hr />
 				<div className={styles.listContents}>
-					{singerDetails.performances.map((p, i) => (
-						<div className={styles.listContainer}>
-							<SingerModalPerformance performance={p} index={i} singer={singerDetails} />
-						</div>
-					))}
+					{performances.map((p, i) => {
+						const allowMoveUp =
+							p.status == StatusService.queued &&
+							i > performances.findIndex((p) => p.status == StatusService.queued);
+						const allowMoveDown = p.status == StatusService.queued && i < performances.length - 1;
+						const allowDelete = p.status == StatusService.queued;
+						return (
+							<div className={classNames([styles.listContainer, styles.toggle])}>
+								<SingerModalPerformance
+									performance={p}
+									index={i}
+									allowMoveDown={allowMoveDown}
+									allowMoveUp={allowMoveUp}
+									allowDelete={allowDelete}
+									handleMoveDown={handleMoveDown}
+									handleMoveUp={handleMoveUp}
+								/>
+							</div>
+						);
+					})}
 				</div>
 				{showErrorMessage && (
 					<Alert variant={'danger'}>
@@ -122,7 +171,7 @@ const SingerModal = ({ show, singerId, handleClose }: props) => {
 			</Modal.Body>
 			<Modal.Footer>
 				<Button variant="secondary" onClick={handleCancel}>
-					Close
+					Close (without saving)
 				</Button>
 				<Button variant="primary" onClick={handleSave}>
 					Save Changes

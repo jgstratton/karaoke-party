@@ -64,6 +64,10 @@ namespace KaraokeParty.Controllers {
 			if (singer != null) {
 				performance.Singer = singer;
 				performance.Status = PerformanceStatus.Queued;
+				int? lastSongNumber = party.Queue
+					.Where(p => p.Singer != null && p.Singer.SingerId == singer.SingerId)
+					.Max(p => p.SortOrder);
+				performance.SortOrder = lastSongNumber is null ? 1 : lastSongNumber + 1;
 			}
 			context.Performances.Add(performance);
 			context.SaveChanges();
