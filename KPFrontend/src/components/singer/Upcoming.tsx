@@ -1,11 +1,10 @@
-import React from 'react';
 import { useSelector } from 'react-redux';
 import ListGroup from 'react-bootstrap/ListGroup';
-import { RootState } from '../../store';
+import { selectQueued } from '../../slices/performancesSlice';
 
 const Upcoming = () => {
-	const performances = useSelector((state: RootState) => state.performances);
-	const performanceList = performances.queued.slice(0, 5);
+	const performances = useSelector(selectQueued);
+	const performanceList = performances.slice(0, 5);
 	return (
 		<ListGroup>
 			{performanceList.length > 0 ? (

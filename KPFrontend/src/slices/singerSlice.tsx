@@ -84,19 +84,23 @@ export const selectSingerById = createSelector([selectSingerList, selectSingerId
 
 const selectSingerPerformances = createSelector(
 	[selectQueued, selectLive, selectCompleted],
-	(queued, live, completed) => queued.concat(live, completed)
+	(queued, live, completed) => {
+		console.log('select singer performances');
+		return queued.concat(live, completed);
+	}
 );
 
 export const selectSingerDetailsById = createSelector(
 	[selectSingerById, selectSingerPerformances],
 	(singer, performances): SingerDetails => {
+		console.log('getting singer details');
 		return {
 			singerId: singer?.singerId,
 			name: singer?.name ?? '',
 			rotationNumber: singer?.rotationNumber ?? 0,
 			performances: performances
 				.filter((p) => p.singerId === singer?.singerId)
-				.sort((a, b) => cmp(a.completedOrder, b.completedOrder) || cmp(a.performanceId, b.performanceId)),
+				.sort((a, b) => cmp(a.sortOrder, b.sortOrder)),
 		};
 	}
 );

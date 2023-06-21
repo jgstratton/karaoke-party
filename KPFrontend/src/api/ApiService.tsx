@@ -1,5 +1,4 @@
 import { CreatePartyResponse } from '../dtoTypes/CreatePartyResponse';
-import PerformanceDTO from '../dtoTypes/PerformanceDTO';
 import { PerformanceRequestDTO } from '../dtoTypes/PerformanceRequestDTO';
 import { SongDTO } from '../dtoTypes/SongDTO';
 

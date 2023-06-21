@@ -4,7 +4,6 @@ import { faYoutube } from '@fortawesome/free-brands-svg-icons';
 import { Badge, Dropdown } from 'react-bootstrap';
 import PerformanceDTO from '../../../dtoTypes/PerformanceDTO';
 import StatusService from '../../../services/StatusService';
-import SingerDTO from '../../../dtoTypes/SingerDTO';
 import React, { ReactNode } from 'react';
 
 interface iProps {
@@ -17,6 +16,7 @@ interface iProps {
 	allowDelete: boolean;
 	handleMoveUp: (performanceId: number) => void;
 	handleMoveDown: (performanceId: number) => void;
+	handleDelete: (performanceId: number) => void;
 }
 
 const SongListItem = ({
@@ -27,6 +27,7 @@ const SongListItem = ({
 	allowDelete,
 	handleMoveUp,
 	handleMoveDown,
+	handleDelete,
 	className = '',
 }: iProps) => {
 	const renderSwitch = () => {
@@ -54,16 +55,14 @@ const SongListItem = ({
 		}
 	};
 
-	type Ref = HTMLAnchorElement;
 	type CustomToggleProps = {
 		children?: React.ReactNode;
-		onClick?: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {};
+		onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {};
 	};
 
-	const CustomToggle = React.forwardRef((props: CustomToggleProps, ref: React.Ref<HTMLAnchorElement>) => (
-		<a
+	const CustomToggle = React.forwardRef((props: CustomToggleProps, ref: React.Ref<HTMLButtonElement>) => (
+		<button
 			className="btn btn-link"
-			href=""
 			ref={ref}
 			onClick={(e) => {
 				e.preventDefault();
@@ -73,7 +72,7 @@ const SongListItem = ({
 			}}
 		>
 			<FontAwesomeIcon icon={faEllipsis} />
-		</a>
+		</button>
 	));
 
 	return (
@@ -106,25 +105,19 @@ const SongListItem = ({
 
 						<Dropdown.Menu>
 							{allowMoveUp && (
-								<Dropdown.Item
-									href="#/action-1"
-									onClick={() => handleMoveUp(performance.performanceId)}
-								>
+								<Dropdown.Item as="button" onClick={() => handleMoveUp(performance.performanceId)}>
 									<FontAwesomeIcon icon={faUpLong} /> Move Up
 								</Dropdown.Item>
 							)}
 							{allowMoveDown && (
-								<Dropdown.Item
-									href="#/action-1"
-									onClick={() => handleMoveDown(performance.performanceId)}
-								>
+								<Dropdown.Item as="button" onClick={() => handleMoveDown(performance.performanceId)}>
 									<FontAwesomeIcon icon={faDownLong} /> Move Down
 								</Dropdown.Item>
 							)}
 
 							<Dropdown.Divider />
 							{allowDelete && (
-								<Dropdown.Item href="#/action-1">
+								<Dropdown.Item as="button" onClick={() => handleDelete(performance.performanceId)}>
 									<FontAwesomeIcon icon={faTrash} /> Delete
 								</Dropdown.Item>
 							)}

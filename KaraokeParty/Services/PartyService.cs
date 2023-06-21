@@ -90,7 +90,7 @@ namespace KaraokeParty.Services {
 				.ToList().
 				ForEach(p => {
 					p.Status = PerformanceStatus.Queued;
-					p.SortOrder = --minQueuedIndex;
+					p.CompletedOrder = null;
 				});
 
 			lastCompleted.Status = PerformanceStatus.Live;

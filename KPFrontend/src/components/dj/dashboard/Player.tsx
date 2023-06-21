@@ -6,16 +6,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from './Player.module.css';
 import DateTimeUtilities from '../../../utilities/dateTimeUtilities';
 import { play, pause } from '../../../slices/playerSlice';
-import { startNextPerformance, startPreviousPerformance } from '../../../slices/performancesSlice';
+import { selectLive, startNextPerformance, startPreviousPerformance } from '../../../slices/performancesSlice';
 import classNames from 'classnames';
 import { RootState } from '../../../store';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 const Player = () => {
 	const dispatch = useDispatch();
-	const performances = useSelector((state: RootState) => state.performances);
+	const performances = useSelector(selectLive);
 	const storePlayer = useSelector((state: RootState) => state.player);
-	const livePerformance = performances.live[0];
+	const livePerformance = performances[0];
 
 	useEffect(() => {
 		document.body.classList.add(styles.body);

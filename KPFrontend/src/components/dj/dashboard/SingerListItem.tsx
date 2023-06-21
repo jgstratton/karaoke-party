@@ -1,5 +1,4 @@
-import { Badge, Button } from 'react-bootstrap';
-import SingerDTO from '../../../dtoTypes/SingerDTO';
+import { Button } from 'react-bootstrap';
 import { SingerSummary } from '../../../slices/singerSlice';
 
 interface iProps {

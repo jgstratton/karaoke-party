@@ -3,7 +3,6 @@ import { Badge } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { selectQueuedSorted } from '../../../slices/combinedSelectors';
 import { selectCompleted, selectLive, selectRequests } from '../../../slices/performancesSlice';
-import { RootState } from '../../../store';
 import styles from './SongList.module.css';
 import SongListItem from './SongListItem';
 

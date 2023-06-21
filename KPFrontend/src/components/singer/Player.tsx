@@ -5,11 +5,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMicrophone } from '@fortawesome/free-solid-svg-icons';
 import ListGroup from 'react-bootstrap/ListGroup';
 import { RootState } from '../../store';
+import { selectLive } from '../../slices/performancesSlice';
 
 const Player = () => {
-	const performances = useSelector((state: RootState) => state.performances);
+	const performances = useSelector(selectLive);
 	const storePlayer = useSelector((state: RootState) => state.player);
-	const livePerformance = performances.live[0];
+	const livePerformance = performances[0];
 
 	return (
 		<ListGroup>

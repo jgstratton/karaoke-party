@@ -10,4 +10,5 @@ export default interface PerformanceDTO {
 	status: number;
 	sortOrder: number;
 	completedOrder: number;
+	deleteFlag: boolean;
 }
