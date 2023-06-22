@@ -3,4 +3,5 @@ export interface PerformanceRequestDTO {
 	fileName: string;
 	singerName: string;
 	singerId: number;
+	createNewSinger: boolean;
 }

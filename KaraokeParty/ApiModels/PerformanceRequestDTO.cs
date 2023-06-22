@@ -4,5 +4,6 @@
 		public int? SingerId { get; set; }
 		public string FileName { get; set; } = "";
 		public string SingerName { get; set; } = "";
+		public Boolean CreateNewSinger { get; set; } = false;
 	}
 }

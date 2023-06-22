@@ -22,7 +22,7 @@ const SingerList = () => {
 			</div>
 			<div className={styles.listContents}>
 				{singers.map((s, i) => (
-					<div className={styles.listContainer}>
+					<div key={s.singerId} className={styles.listContainer}>
 						<SingerListItem
 							handleSelectSinger={(singerId: number) => {
 								setSingerId(singerId);

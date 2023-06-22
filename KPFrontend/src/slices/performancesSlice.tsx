@@ -36,8 +36,7 @@ export const performancesSlice = createSlice({
 		},
 
 		addRequest: (state, action: PayloadAction<PerformanceDTO>) => {
-			const statusName = StatusService.getStatusName(action.payload.status);
-			state[statusName as keyof iPerformancesState].push(action.payload);
+			state.performances.push(action.payload);
 		},
 
 		startNextPerformance: (state, action: PayloadAction<void>) => {

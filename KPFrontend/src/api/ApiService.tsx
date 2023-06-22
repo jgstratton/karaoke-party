@@ -1,5 +1,4 @@
 import { CreatePartyResponse } from '../dtoTypes/CreatePartyResponse';
-import { PerformanceRequestDTO } from '../dtoTypes/PerformanceRequestDTO';
 import { SongDTO } from '../dtoTypes/SongDTO';
 
 async function joinParty(partyKey: string, singerName: string) {
@@ -61,28 +60,11 @@ async function searchSongs(searchString: string) {
 	return await response.json();
 }
 
-async function addPerformance(partyKey: string, performance: PerformanceRequestDTO) {
-	let response = await fetch(`party/${partyKey}/performance?`, {
-		method: 'POST',
-		headers: {
-			Accept: 'application/json',
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify(performance),
-	});
-	let responseJson = await response.json();
-	if (responseJson.performanceId) {
-		return responseJson;
-	}
-	alert('error adding performance');
-}
-
 const ApiService = {
 	createParty,
 	joinParty,
 	addSong,
 	searchSongs,
-	addPerformance,
 };
 
 export default ApiService;

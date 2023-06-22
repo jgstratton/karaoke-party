@@ -12,6 +12,7 @@ import Overlay from './common/Overlay';
 import Button from 'react-bootstrap/Button';
 import { addRequest } from '../slices/performancesSlice';
 import { RootState } from '../store';
+import PerformanceApi from '../api/PerformanceApi';
 
 const Search = () => {
 	const navigate = useNavigate();
@@ -45,13 +46,19 @@ const Search = () => {
 	}
 
 	async function addToQueue(filename: string, singerName: string, singerId: number) {
-		const newPerforamance = await ApiService.addPerformance(party.partyKey, {
+		const newPerforamance = await PerformanceApi.addPerformance(party.partyKey, {
 			fileName: filename,
 			userId: user.userId ?? 0,
 			singerName: singerName,
 			singerId: singerId,
+			createNewSinger: true,
 		});
-		dispatch(addRequest(newPerforamance));
+		if (!newPerforamance.ok) {
+			alert(newPerforamance.error.toString());
+			return;
+		}
+
+		dispatch(addRequest(newPerforamance.value));
 		setAddedToQueue(true);
 	}
 

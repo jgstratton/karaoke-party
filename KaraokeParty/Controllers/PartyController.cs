@@ -61,6 +61,22 @@ namespace KaraokeParty.Controllers {
 				Song = song,
 				SingerName = dto.SingerName
 			};
+
+			if (singer is null && dto.CreateNewSinger) {
+				bool singerNameIsOk = context.Singers
+					.Where(s => s.Name.ToUpper() == dto.SingerName.ToUpper() && s.Party != null && s.Party.PartyKey == partyKey)
+					.Count() == 0;
+				if (!singerNameIsOk) {
+					return BadRequest("The singer name is already used by another singer in this party");
+				}
+				singer = new Singer {
+					Name = dto.SingerName,
+					RotationNumber = party.Singers.Select(s => s.RotationNumber).DefaultIfEmpty(0).Max() + 1,
+					Party = party
+				};
+				context.Singers.Add(singer);
+			}
+
 			if (singer != null) {
 				performance.Singer = singer;
 				performance.Status = PerformanceStatus.Queued;
@@ -76,7 +92,7 @@ namespace KaraokeParty.Controllers {
 
 		[HttpPut]
 		[Route("{partyKey}/performance")]
-		public ActionResult<Performance> UpdatePerformance(string partyKey, [FromBody] PerformanceDTO dto) {
+		public ActionResult<PerformanceDTO> UpdatePerformance(string partyKey, [FromBody] PerformanceDTO dto) {
 			try {
 				if (dto.PerformanceId == null) {
 					return BadRequest("Wrong verb or missing id, use POST to update an existing performance, or provide a performance id");
@@ -93,7 +109,7 @@ namespace KaraokeParty.Controllers {
 				}
 				dto.UpdateDb(context, performance);
 				context.SaveChanges();
-				return performance;
+				return PerformanceDTO.FromDb(performance);
 			} catch (Exception ex) {
 				return BadRequest($"An unexpected error occured: {ex.Message}");
 			}
@@ -101,7 +117,7 @@ namespace KaraokeParty.Controllers {
 
 		[HttpDelete]
 		[Route("{partyKey}/performance/{PerformanceId}")]
-		public ActionResult<Performance> DeletePerformance(string partyKey, int performanceId) {
+		public ActionResult<bool> DeletePerformance(string partyKey, int performanceId) {
 			Performance? performance = context.Performances.Find(performanceId);
 			if (performance == null) {
 				return NotFound($"No performance was found with id {performanceId}");
@@ -111,7 +127,7 @@ namespace KaraokeParty.Controllers {
 			}
 			context.Performances.Remove(performance);
 			context.SaveChanges();
-			return performance;
+			return true;
 		}
 
 		[HttpPost]
