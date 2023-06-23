@@ -3,7 +3,7 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import '../../css/table-classes.css';
 import Loading from '../common/Loading';
-import VideoPreview from './VideoPreview';
+import VideoPreview from '../common/VideoPreview';
 import { Col, Row } from 'react-bootstrap';
 import { SongDTO } from '../../dtoTypes/SongDTO';
 import RequestModalForm from './RequestModalForm';
@@ -11,10 +11,10 @@ import RequestModalForm from './RequestModalForm';
 interface iProps {
 	results: SongDTO[];
 	loading: boolean;
-	addToQueue: (filename: string, singerName: string, singerId: number) => Promise<void>;
+	handleNewPerformance: (filename: string, singerName: string, singerId?: number) => Promise<void>;
 }
 
-const LocalResults = ({ results, loading, addToQueue }: iProps) => {
+const LocalResults = ({ results, loading, handleNewPerformance }: iProps) => {
 	const [selectedSong, setSelectedSong] = useState<SongDTO>();
 	const [showRequestForm, setShowRequestForm] = useState(false);
 
@@ -23,8 +23,8 @@ const LocalResults = ({ results, loading, addToQueue }: iProps) => {
 		setShowRequestForm(true);
 	};
 
-	const handleSubmitForm = (singerName: string, singerId: number) => {
-		addToQueue(selectedSong?.fileName ?? '', singerName, singerId);
+	const handleSubmitForm = (singerName: string, singerId?: number) => {
+		handleNewPerformance(selectedSong?.fileName ?? '', singerName, singerId);
 		setShowRequestForm(false);
 	};
 

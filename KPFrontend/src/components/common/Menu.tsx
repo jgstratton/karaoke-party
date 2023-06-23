@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { reset as resetUser } from '../../slices/userSlice';
 import { reset as resetParty, selectIsPartyInitialized } from '../../slices/partySlice';
-import { resetPerformances } from '../../slices/performancesSlice';
+import { resetPerformances, selectRequests } from '../../slices/performancesSlice';
 import { resetPlayer } from '../../slices/playerSlice';
 import StorageService from '../../services/StorageService';
 import styles from './Menu.module.css';
@@ -12,10 +12,14 @@ import { useState } from 'react';
 import { RootState } from '../../store';
 import ConfirmModal from './ConfirmModal';
 import NewSingerModal from '../dj/NewSingerModal';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faExclamation } from '@fortawesome/free-solid-svg-icons';
+import RequestProcessModal from '../dj/requestProcessModal/RequestProcessModal';
 
 const Menu = () => {
 	const user = useSelector((state: RootState) => state.user);
 	const party = useSelector((state: RootState) => state.party);
+	const requests = useSelector(selectRequests);
 	const isPartyInitialized = useSelector(selectIsPartyInitialized);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -24,10 +28,14 @@ const Menu = () => {
 	const [showDjSettings, setShowDjSettings] = useState(false);
 	const [showConfirmLeave, setShowConfirmLeave] = useState(false);
 	const [showNewSingerModal, setShowNewSingerModal] = useState(false);
+	const [showRequestProcessModal, setShowRequestProcessModal] = useState(false);
+
 	const handleHideDjSettings = () => setShowDjSettings(false);
 	const handleShowDjSettings = () => setShowDjSettings(true);
 	const handleShowNewSingerModal = () => setShowNewSingerModal(true);
 	const handleHideNewSingerModal = () => setShowNewSingerModal(false);
+	const handleShowRequestProcessModal = () => setShowRequestProcessModal(true);
+	const handleHideRequestProcessModal = () => setShowRequestProcessModal(false);
 
 	function leaveParty() {
 		StorageService.forgetParty();
@@ -53,7 +61,7 @@ const Menu = () => {
 				{isPartyInitialized && (
 					<>
 						<Navbar.Collapse id="responsive-navbar-nav">
-							<Nav>
+							<Nav className="me-auto">
 								<Nav.Link onClick={() => navigate('/home')}>Home</Nav.Link>
 								<Nav.Link onClick={() => navigate('/search')}>
 									{user.isDj ? 'Add Request' : 'Request a song'}
@@ -70,12 +78,26 @@ const Menu = () => {
 									</>
 								)}
 							</Nav>
+							{user.isDj && requests.length > 0 && (
+								<button
+									className="btn btn-success"
+									onClick={handleShowRequestProcessModal}
+									style={{
+										boxShadow:
+											'0px 1px 2px 0px rgba(0,255,255,0.7),1px 2px 4px 0px rgba(0,255,255,0.7),2px 4px 8px 0px rgba(0,255,255,0.7),2px 4px 16px 0px rgba(0,255,255,0.7);',
+									}}
+								>
+									{requests.length} New Requests <FontAwesomeIcon icon={faExclamation} />
+								</button>
+							)}
 						</Navbar.Collapse>
 					</>
 				)}
 			</Navbar>
 			<SettingsModal show={showDjSettings} handleClose={handleHideDjSettings} />
 			<NewSingerModal show={showNewSingerModal} handleClose={handleHideNewSingerModal} />
+			<RequestProcessModal show={showRequestProcessModal} handleClose={handleHideRequestProcessModal} />
+
 			<ConfirmModal
 				show={showConfirmLeave}
 				handleCancel={() => setShowConfirmLeave(false)}

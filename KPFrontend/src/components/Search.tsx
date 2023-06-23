@@ -45,13 +45,13 @@ const Search = () => {
 		setSearchString('');
 	}
 
-	async function addToQueue(filename: string, singerName: string, singerId: number) {
+	async function submitNewPerformance(filename: string, singerName: string, singerId?: number) {
 		const newPerforamance = await PerformanceApi.addPerformance(party.partyKey, {
 			fileName: filename,
 			userId: user.userId ?? 0,
 			singerName: singerName,
 			singerId: singerId,
-			createNewSinger: true,
+			createNewSinger: typeof singerId !== 'undefined',
 		});
 		if (!newPerforamance.ok) {
 			alert(newPerforamance.error.toString());
@@ -82,8 +82,16 @@ const Search = () => {
 			<SearchCard submitSearch={submitSearch} searchString={searchString} setSearchString={setSearchString} />
 			{searchSubmitted && (
 				<>
-					<LocalResults results={localResults} loading={localLoading} addToQueue={addToQueue} />
-					<YoutubeResults results={youtubeResults} loading={youtubeLoading} addToQueue={addToQueue} />
+					<LocalResults
+						results={localResults}
+						loading={localLoading}
+						handleNewPerformance={submitNewPerformance}
+					/>
+					<YoutubeResults
+						results={youtubeResults}
+						loading={youtubeLoading}
+						handleNewPerformance={submitNewPerformance}
+					/>
 				</>
 			)}
 		</div>

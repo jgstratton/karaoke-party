@@ -3,23 +3,24 @@ import { Button, Form, Modal } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { selectSingerList } from '../../slices/singerSlice';
 import { selectUserIsDj, selectUserName } from '../../slices/userSlice';
-import VideoPreview from './VideoPreview';
+import VideoPreview from '../common/VideoPreview';
 
 interface iProps {
 	title: string;
 	url: string;
 	show: boolean;
-	handleSubmit: (singerName: string, singerId: number) => void;
+	handleSubmit: (singerName: string, singerId?: number) => void;
 	handleClose: () => void;
 }
 
 const RequestModalForm = ({ title, url, show, handleSubmit, handleClose }: iProps) => {
 	const [singerName, setSingerName] = useState('');
-	const [singerId, setSingerId] = useState(0);
+	const [singerId, setSingerId] = useState<number | undefined>();
 	const [showNameWarning, setShowNameWarning] = useState(false);
 	const userName = useSelector(selectUserName);
 	const isDj = useSelector(selectUserIsDj);
 	const singerList = useSelector(selectSingerList);
+	// setSingerId(undefined);
 
 	useEffect(() => {
 		if (!isDj) {

@@ -93,7 +93,7 @@ const selectSingerPerformances = createSelector(
 export const selectSingerDetailsById = createSelector(
 	[selectSingerById, selectSingerPerformances],
 	(singer, performances): SingerDetails => {
-		console.log('getting singer details');
+		console.log('getting singer details', singer?.singerId);
 		return {
 			singerId: singer?.singerId,
 			name: singer?.name ?? '',

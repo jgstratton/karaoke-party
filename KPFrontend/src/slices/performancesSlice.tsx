@@ -35,6 +35,13 @@ export const performancesSlice = createSlice({
 			});
 		},
 
+		deletePerformance: (state: iPerformancesState, action: PayloadAction<number>) => {
+			state.performances.splice(
+				state.performances.findIndex((p) => p.performanceId === action.payload),
+				1
+			);
+		},
+
 		addRequest: (state, action: PayloadAction<PerformanceDTO>) => {
 			state.performances.push(action.payload);
 		},
@@ -77,6 +84,7 @@ export const selectCompleted = createSelector(selectPerformances, (performances)
 export const {
 	populatePerformances,
 	addRequest,
+	deletePerformance,
 	resetPerformances,
 	updatePerformancesSubset,
 	startNextPerformance,

@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import { Badge } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { selectQueuedSorted } from '../../../slices/combinedSelectors';
 import { selectCompleted, selectLive, selectRequests } from '../../../slices/performancesSlice';
@@ -10,7 +9,6 @@ const SongList = () => {
 	const completed = useSelector(selectCompleted);
 	const queued = useSelector(selectQueuedSorted);
 	const live = useSelector(selectLive);
-	const requests = useSelector(selectRequests);
 
 	return (
 		<>
@@ -19,11 +17,7 @@ const SongList = () => {
 				<span>Song List</span>
 				<span></span>
 				<span></span>
-				<span>
-					<Badge bg="success">
-						<span className="pl-2">{requests.length} New Requests</span>
-					</Badge>
-				</span>
+				<span></span>
 			</div>
 			<div className={styles.listContents}>
 				{completed.map((s, i) => (
@@ -39,12 +33,6 @@ const SongList = () => {
 				{queued.map((s, i) => (
 					<div className={styles.listContainer}>
 						<SongListItem performance={s} index={completed.length + live.length + 1 + i} />
-					</div>
-				))}
-				<hr />
-				{requests.map((s, i) => (
-					<div key={s.performanceId} className={styles.listContainer}>
-						<SongListItem performance={s} index={completed.length + live.length + queued.length + 1 + i} />
 					</div>
 				))}
 			</div>

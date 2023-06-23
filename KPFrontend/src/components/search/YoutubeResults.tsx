@@ -7,7 +7,7 @@ import Col from 'react-bootstrap/Col';
 import '../../css/table-classes.css';
 import Loading from '../common/Loading';
 import Overlay from '../common/Overlay';
-import VideoPreview from './VideoPreview';
+import VideoPreview from '../common/VideoPreview';
 import YTService from '../../services/YTService';
 import ApiService from '../../api/ApiService';
 import { YtdlpSongDTO } from '../../dtoTypes/YtdlpSongDTO';
@@ -16,9 +16,9 @@ import RequestModalForm from './RequestModalForm';
 interface iProps {
 	results: YtdlpSongDTO[];
 	loading: boolean;
-	addToQueue: (filename: string, singerName: string, singerId: number) => Promise<void>;
+	handleNewPerformance: (filename: string, singerName: string, singerId?: number) => Promise<void>;
 }
-const YouTubeResults = ({ results, loading, addToQueue }: iProps) => {
+const YouTubeResults = ({ results, loading, handleNewPerformance }: iProps) => {
 	const [downloadInProgress, setDownloadInProgress] = useState(false);
 	const [selectedSong, setSelectedSong] = useState<YtdlpSongDTO>();
 	const [showRequestForm, setShowRequestForm] = useState(false);
@@ -28,7 +28,7 @@ const YouTubeResults = ({ results, loading, addToQueue }: iProps) => {
 		setShowRequestForm(true);
 	};
 
-	const handleSubmitForm = async (singerName: string, singerId: number) => {
+	const handleSubmitForm = async (singerName: string, singerId?: number) => {
 		setDownloadInProgress(true);
 		let fileName = await YTService.downloadYoutube(selectedSong?.url ?? '');
 		if (fileName.length === 0) {
@@ -43,7 +43,7 @@ const YouTubeResults = ({ results, loading, addToQueue }: iProps) => {
 		});
 		setDownloadInProgress(false);
 		setShowRequestForm(false);
-		addToQueue(fileName, singerName, singerId);
+		handleNewPerformance(fileName, singerName, singerId);
 	};
 
 	return (
