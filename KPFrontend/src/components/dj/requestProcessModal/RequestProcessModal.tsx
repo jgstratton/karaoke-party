@@ -5,10 +5,11 @@ import { Alert, Button, Modal, Pagination } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import PerformanceApi from '../../../api/PerformanceApi';
 import { selectPartyKey } from '../../../slices/partySlice';
-import { deletePerformance, selectRequests } from '../../../slices/performancesSlice';
+import { deletePerformance, selectRequests, updatePerformancesSubset } from '../../../slices/performancesSlice';
 import ConfirmModal from '../../common/ConfirmModal';
 import Overlay from '../../common/Overlay';
 import RequestProcessForm from './RequestProcessForm';
+import StatusService from '../../../services/StatusService';
 
 interface iProps {
 	show: boolean;
@@ -23,7 +24,20 @@ const RequestProcessModal = ({ show, handleClose }: iProps) => {
 	const partyKey = useSelector(selectPartyKey);
 	const [errorMessage, setErrorMessage] = useState('');
 	const [showConfirmDelete, setShowConfirmDelete] = useState(false);
-	const submitForm = () => {};
+
+	const submitForm = async (singerName: string, singerId: number) => {
+		const clonedPerformance = { ...requests[currentReqIndex] };
+		clonedPerformance.singerId = singerId;
+		clonedPerformance.singerName = singerName;
+		clonedPerformance.status = StatusService.queued;
+		const updatedPerformance = await PerformanceApi.updatePerformance(partyKey, clonedPerformance);
+
+		if (!updatedPerformance.ok) {
+			setErrorMessage(updatedPerformance.error);
+			return;
+		}
+		dispatch(updatePerformancesSubset([updatedPerformance.value]));
+	};
 
 	const deleteRequest = async () => {
 		const deleteResult = await PerformanceApi.deletePerformance(partyKey, requests[currentReqIndex]);

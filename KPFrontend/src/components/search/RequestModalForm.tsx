@@ -66,7 +66,7 @@ const RequestModalForm = ({ title, url, show, handleSubmit, handleClose }: iProp
 						<Form.Select aria-label="Default select example" onChange={handleSelectSinger}>
 							<option value="0">New - Add new singer to rotation</option>
 							{singerList.map((s, i) => (
-								<option value={s.singerId}>
+								<option key={s.singerId} value={s.singerId}>
 									{i + 1} - {s.name}
 								</option>
 							))}

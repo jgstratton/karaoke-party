@@ -162,7 +162,6 @@ const SingerModal = ({ show, singerId, handleClose }: props) => {
 							<Form.Label>Rotation Position</Form.Label>
 							<Form.Select
 								value={singerPosition}
-								aria-label="Default select example"
 								onChange={(e) => {
 									console.log('Singer Position', e.target.value);
 									setSingerPosition(parseInt(e.target.value));

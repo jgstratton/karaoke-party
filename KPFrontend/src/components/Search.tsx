@@ -26,15 +26,17 @@ const Search = () => {
 	const party = useSelector((state: RootState) => state.party);
 	const user = useSelector((state: RootState) => state.user);
 	const dispatch = useDispatch();
+	const [isKaraoke, setIsKaraoke] = useState(1);
 
 	async function submitSearch() {
+		const actualSearchString = isKaraoke === 1 ? searchString + ' karaoke' : searchString;
 		setSearchSubmitted(true);
 		setLocalLoading(true);
-		const tempLocalResults = await ApiService.searchSongs(searchString);
+		const tempLocalResults = await ApiService.searchSongs(actualSearchString);
 		setLocalResults(tempLocalResults);
 		setLocalLoading(false);
 		setYoutubeLoading(true);
-		const tempYoutubeResults = await YTService.searchYoutube(searchString);
+		const tempYoutubeResults = await YTService.searchYoutube(actualSearchString);
 		// @ts-ignore
 		setYoutubeResults(tempYoutubeResults.filter((x) => !tempLocalResults.map((lr) => lr.url).includes(x.url)));
 		setYoutubeLoading(false);
@@ -79,7 +81,13 @@ const Search = () => {
 				''
 			)}
 			<Menu />
-			<SearchCard submitSearch={submitSearch} searchString={searchString} setSearchString={setSearchString} />
+			<SearchCard
+				submitSearch={submitSearch}
+				searchString={searchString}
+				setSearchString={setSearchString}
+				isKaraoke={isKaraoke}
+				setIsKaraoke={setIsKaraoke}
+			/>
 			{searchSubmitted && (
 				<>
 					<LocalResults

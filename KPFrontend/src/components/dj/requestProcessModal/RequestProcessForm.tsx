@@ -15,21 +15,28 @@ interface iProps {
 
 const RequestProcessForm = ({ performance, handleDelete, handleSubmit }: iProps) => {
 	const [singerName, setSingerName] = useState(performance.singerName);
-	const [singerId, setSingerId] = useState(0);
-	const [showNameWarning, setShowNameWarning] = useState(false);
+	const [singerId, setSingerId] = useState(-1);
+	const [nameWarning, setNameWarning] = useState('');
+	const [singerWarning, setSingerWarning] = useState('');
 	const singerList = useSelector(selectSingerList);
 
 	const submitForm = () => {
+		console.log(singerId);
 		if (singerName.trim().length === 0) {
-			setShowNameWarning(true);
+			setNameWarning('We need to know who is singing this song');
 			return;
 		}
-		setShowNameWarning(false);
+		if (singerId < 0) {
+			setSingerWarning('You must choose a singer in the rotation (or add new)');
+			return;
+		}
+		setNameWarning('');
+		setSingerWarning('');
 		handleSubmit(singerName, singerId);
 	};
 
 	useEffect(() => {
-		setSingerId(0);
+		setSingerId(-1);
 		setSingerName(performance.singerName);
 	}, [performance]);
 
@@ -78,7 +85,8 @@ const RequestProcessForm = ({ performance, handleDelete, handleSubmit }: iProps)
 			<hr />
 			<Form.Group className="mb-3">
 				<Form.Label>Select Singer in Rotation</Form.Label>
-				<Form.Select aria-label="Default select example" onChange={handleSelectSinger}>
+				<Form.Select value={singerId} onChange={handleSelectSinger}>
+					<option value="-1">-- Select --</option>
 					<option value="0">New - Add new singer to rotation</option>
 					{singerList.map((s, i) => (
 						<option value={s.singerId}>
@@ -90,9 +98,7 @@ const RequestProcessForm = ({ performance, handleDelete, handleSubmit }: iProps)
 					If it's a duet or group, you could choose to add it to a singer's slot, or create a new slot in the
 					rotation.
 				</Form.Text>
-				{showNameWarning && (
-					<p className="text-danger">You must provide a singer's name to add to the rotation</p>
-				)}
+				{singerWarning.length > 0 && <p className="text-danger">{singerWarning}</p>}
 			</Form.Group>
 
 			<Form.Group className="mb-3">
@@ -106,11 +112,9 @@ const RequestProcessForm = ({ performance, handleDelete, handleSubmit }: iProps)
 				<Form.Text className="text-muted">
 					If different than the singer in rotation, like a duet or a group.
 				</Form.Text>
-				{showNameWarning && (
-					<p className="text-danger">You must provide a singer's name... this isn't karaoke roulette!</p>
-				)}
+				{nameWarning.length > 0 && <p className="text-danger">{nameWarning}</p>}
 			</Form.Group>
-			<Button variant="primary">
+			<Button variant="primary" onClick={() => submitForm()}>
 				<FontAwesomeIcon icon={faPlusCircle} className="mr-2" />
 				Add To Queue
 			</Button>
