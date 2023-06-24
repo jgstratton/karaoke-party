@@ -39,7 +39,9 @@ const SearchCard = (props) => {
 								}}
 							>
 								<option value="1">Karaoke Versions Only</option>
-								<option value="0">Include Non-Karaoke Versions</option>
+								<option value="0">
+									Want a break from Karaoke? Find something else to add to the queue.
+								</option>
 							</Form.Select>
 							<Form.Text className="text-muted">Select the type of video you want</Form.Text>
 						</Form.Group>
