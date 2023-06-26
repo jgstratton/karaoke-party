@@ -20,7 +20,6 @@ const RequestModalForm = ({ title, url, show, handleSubmit, handleClose }: iProp
 	const userName = useSelector(selectUserName);
 	const isDj = useSelector(selectUserIsDj);
 	const singerList = useSelector(selectSingerList);
-	// setSingerId(undefined);
 
 	useEffect(() => {
 		if (!isDj) {
@@ -44,7 +43,7 @@ const RequestModalForm = ({ title, url, show, handleSubmit, handleClose }: iProp
 			setSingerId(0);
 		} else {
 			setSingerName(e.nativeEvent.target[index].text.split('-').slice(-1)[0].trim());
-			setSingerId(e.nativeEvent.target[index].value);
+			setSingerId(parseInt(e.nativeEvent.target[index].value));
 		}
 	};
 

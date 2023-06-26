@@ -36,7 +36,7 @@ namespace KaraokeParty.Controllers {
 					return BadRequest("Name is already used in this party");
 				}
 
-				if (dto.RotationNumber < 0) {
+				if (dto.RotationNumber <= 0) {
 					dto.RotationNumber = party.Singers.Count() + 1;
 				}
 				Singer dbSinger = dto.ToDb();

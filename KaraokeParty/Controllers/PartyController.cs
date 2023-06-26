@@ -139,6 +139,11 @@ namespace KaraokeParty.Controllers
 				{
 					singer = party.Singers.Where(s => s.SingerId == dto.SingerId).FirstOrDefault();
 				}
+				else {
+					if (dto.Status != (int)PerformanceStatus.Requested) {
+						return BadRequest("A singer must be selected for a request to move passed 'requested' status.");
+					}
+				}
 				// if sort order isn't set, then add it to the end
 				if (singer is not null && dto.SortOrder is null)
 				{

@@ -32,7 +32,6 @@ const RequestProcessModal = ({ show, handleClose }: iProps) => {
 		clonedPerformance.singerId = singerId;
 		clonedPerformance.singerName = singerName;
 		clonedPerformance.status = StatusService.queued;
-
 		if (singerId === 0) {
 			const newSinger = await SingerApi.addSinger(partyKey, {
 				name: singerName,
@@ -56,6 +55,7 @@ const RequestProcessModal = ({ show, handleClose }: iProps) => {
 			setErrorMessage(updatedPerformance.error);
 			return;
 		}
+		setErrorMessage('');
 		dispatch(updatePerformancesSubset([updatedPerformance.value]));
 	};
 

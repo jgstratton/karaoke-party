@@ -45,7 +45,7 @@ const RequestProcessForm = ({ performance, handleDelete, handleSubmit }: iProps)
 		if (index === 0) {
 			setSingerId(0);
 		} else {
-			setSingerId(e.nativeEvent.target[index].value);
+			setSingerId(parseInt(e.nativeEvent.target[index].value));
 		}
 	};
 
