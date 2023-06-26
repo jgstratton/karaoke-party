@@ -30,14 +30,17 @@ const signalRMiddleware = (store) => {
 	};
 
 	connection.on('ReceivePosition', (value) => {
+		console.log('ReceivePosition');
 		store.dispatch(signalActionCreator(setPosition(value)));
 	});
 
 	connection.on('ReceiveVideoLength', (valueInMs) => {
+		console.log('ReceiveVideoLength');
 		store.dispatch(signalActionCreator(setLength(valueInMs)));
 	});
 
 	connection.on('ReceiveNewPerformanceStarted', async (value) => {
+		console.log('ReceiveNewPerformanceStarted');
 		const curParty = await PartyApi.fetchPartyOrThrow(store.getState().party.partyKey);
 		store.dispatch(signalActionCreator(populatePerformances(curParty.performances)));
 		store.dispatch(signalActionCreator(populateSingers(curParty.singers)));
@@ -45,6 +48,7 @@ const signalRMiddleware = (store) => {
 	});
 
 	connection.on('ReceivePreviousSong', async (value) => {
+		console.log('ReceivePreviousSong');
 		const curParty = await PartyApi.fetchPartyOrThrow(store.getState().party.partyKey);
 		store.dispatch(signalActionCreator(populatePerformances(curParty.performances)));
 		store.dispatch(signalActionCreator(populateSingers(curParty.singers)));
@@ -52,18 +56,22 @@ const signalRMiddleware = (store) => {
 	});
 
 	connection.on('ReceivePause', async () => {
+		console.log('ReceivePause');
 		store.dispatch(signalActionCreator(pause()));
 	});
 
 	connection.on('ReceivePlay', async () => {
+		console.log('ReceivePlay');
 		store.dispatch(signalActionCreator(play()));
 	});
 
 	connection.on('ReceivePlayerSettings', async (playerSettings) => {
+		console.log('ReceivePlayerSettings');
 		store.dispatch(signalActionCreator(populateSettings(playerSettings)));
 	});
 
 	connection.on('ReceivePerformances', async (performances) => {
+		console.log('ReceivePerformances');
 		store.dispatch(signalActionCreator(populatePerformances(performances)));
 	});
 
