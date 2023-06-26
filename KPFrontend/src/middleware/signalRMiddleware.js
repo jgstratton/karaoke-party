@@ -42,17 +42,23 @@ const signalRMiddleware = (store) => {
 	connection.on('ReceiveNewPerformanceStarted', async (value) => {
 		console.log('ReceiveNewPerformanceStarted');
 		const curParty = await PartyApi.fetchPartyOrThrow(store.getState().party.partyKey);
+		let player = curParty.player;
+		player.showSplash = true;
+		player.videoPosition = 0;
 		store.dispatch(signalActionCreator(populatePerformances(curParty.performances)));
 		store.dispatch(signalActionCreator(populateSingers(curParty.singers)));
-		store.dispatch(signalActionCreator(populatePlayer(curParty.player)));
+		store.dispatch(signalActionCreator(populatePlayer(player)));
 	});
 
 	connection.on('ReceivePreviousSong', async (value) => {
 		console.log('ReceivePreviousSong');
 		const curParty = await PartyApi.fetchPartyOrThrow(store.getState().party.partyKey);
+		let player = curParty.player;
+		player.showSplash = true;
+		player.videoPosition = 0;
 		store.dispatch(signalActionCreator(populatePerformances(curParty.performances)));
 		store.dispatch(signalActionCreator(populateSingers(curParty.singers)));
-		store.dispatch(signalActionCreator(populatePlayer(curParty.player)));
+		store.dispatch(signalActionCreator(populatePlayer(player)));
 	});
 
 	connection.on('ReceivePause', async () => {

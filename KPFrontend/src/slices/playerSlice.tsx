@@ -12,6 +12,7 @@ interface playerSettings {
 const initialState = {
 	enabled: true,
 	playing: false,
+	showSplash: false,
 	url: '',
 	title: '',
 	position: 0,
@@ -34,6 +35,7 @@ export const playerSlice = createSlice({
 		populatePlayer: (state, action: PayloadAction<PlayerDTO>) => {
 			state.enabled = true;
 			state.playing = action.payload.playerState === 1;
+			state.showSplash = action.payload.showSplash ?? false;
 			state.url = `./song/${action.payload.fileName}`;
 			state.title = action.payload.title;
 			state.position = action.payload.videoPosition;
@@ -62,6 +64,9 @@ export const playerSlice = createSlice({
 				state.settings = action.payload;
 			}
 		},
+		disableSplash: (state) => {
+			state.showSplash = false;
+		},
 		broadcastSettings: (state, action: PayloadAction<playerSettings>) => {},
 	},
 });
@@ -72,6 +77,7 @@ export const selectPlayerSettings = (state: RootState) => {
 
 export const {
 	broadcastSettings,
+	disableSplash,
 	pause,
 	play,
 	populatePlayer,

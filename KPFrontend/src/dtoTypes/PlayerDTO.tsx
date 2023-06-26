@@ -4,4 +4,5 @@ export default interface PlayerDTO {
 	videoLength: number;
 	fileName: string;
 	title: string;
+	showSplash?: boolean;
 }
