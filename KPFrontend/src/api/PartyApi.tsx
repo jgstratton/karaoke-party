@@ -9,7 +9,6 @@ const fetchParty = async (partyKey: string): Promise<Result<PartyDTO>> => {
 				partyKey: partyKey,
 			})
 	);
-	console.log('fetched', response);
 	let partyReponse = await response.json();
 	if (!response.ok || !partyReponse.partyKey) {
 		return { ok: false, error: partyReponse };

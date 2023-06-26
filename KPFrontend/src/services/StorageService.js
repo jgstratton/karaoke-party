@@ -3,7 +3,13 @@ import PartyApi from '../api/PartyApi';
 async function loadParty() {
 	const partyKey = localStorage.getItem('partyKey');
 	if (partyKey) {
-		return await PartyApi.fetchPartyOrThrow(partyKey);
+		const partyResponse = await PartyApi.fetchParty(partyKey);
+		// if the party key was not valid then remove saved settings
+		if (!partyResponse.ok) {
+			localStorage.clear();
+			return null;
+		}
+		return partyResponse.value;
 	}
 	return null;
 }

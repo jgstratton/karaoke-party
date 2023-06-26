@@ -10,6 +10,8 @@ import ConfirmModal from '../../common/ConfirmModal';
 import Overlay from '../../common/Overlay';
 import RequestProcessForm from './RequestProcessForm';
 import StatusService from '../../../services/StatusService';
+import SingerApi from '../../../api/SingerApi';
+import { addSinger } from '../../../slices/singerSlice';
 
 interface iProps {
 	show: boolean;
@@ -30,6 +32,24 @@ const RequestProcessModal = ({ show, handleClose }: iProps) => {
 		clonedPerformance.singerId = singerId;
 		clonedPerformance.singerName = singerName;
 		clonedPerformance.status = StatusService.queued;
+
+		if (singerId === 0) {
+			const newSinger = await SingerApi.addSinger(partyKey, {
+				name: singerName,
+				rotationNumber: 0,
+			});
+			if (!newSinger.ok) {
+				setErrorMessage(newSinger.error);
+				return;
+			}
+			if (!newSinger.value.singerId) {
+				setErrorMessage('Issue creating new singer');
+				return;
+			}
+			dispatch(addSinger(newSinger.value));
+			clonedPerformance.singerId = newSinger.value.singerId;
+		}
+
 		const updatedPerformance = await PerformanceApi.updatePerformance(partyKey, clonedPerformance);
 
 		if (!updatedPerformance.ok) {
