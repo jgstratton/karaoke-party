@@ -34,6 +34,10 @@ namespace KaraokeParty.Hubs {
 			await Clients.Group(partyKey).ReceivePerformances(performances);
 		}
 
+		public async Task NotifyNewRequest(string partyKey, PerformanceDTO dto) {
+			await Clients.Group(partyKey).ReceiveNewRequest(dto);
+		}
+
 		public async Task StartNewPerformance(string partyKey) {
 			PerformanceDTO? dto = partyService.StartNextSong(partyKey);
 			if (dto != null) {

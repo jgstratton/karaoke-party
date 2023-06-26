@@ -10,7 +10,7 @@ import ApiService from '../api/ApiService';
 import { useNavigate } from 'react-router-dom';
 import Overlay from './common/Overlay';
 import Button from 'react-bootstrap/Button';
-import { addRequest } from '../slices/performancesSlice';
+import { addRequest, sendNotifyRequest } from '../slices/performancesSlice';
 import { RootState } from '../store';
 import PerformanceApi from '../api/PerformanceApi';
 
@@ -48,19 +48,24 @@ const Search = () => {
 	}
 
 	async function submitNewPerformance(filename: string, singerName: string, singerId?: number) {
-		const newPerforamance = await PerformanceApi.addPerformance(party.partyKey, {
+		const newPerformance = await PerformanceApi.addPerformance(party.partyKey, {
 			fileName: filename,
 			userId: user.userId ?? 0,
 			singerName: singerName,
 			singerId: singerId,
 			createNewSinger: typeof singerId !== 'undefined',
 		});
-		if (!newPerforamance.ok) {
-			alert(newPerforamance.error.toString());
+		if (!newPerformance.ok) {
+			alert(newPerformance.error.toString());
 			return;
 		}
 
-		dispatch(addRequest(newPerforamance.value));
+		if (newPerformance.value.singerId == null) {
+			dispatch(sendNotifyRequest(newPerformance.value));
+		} else {
+			dispatch(addRequest(newPerformance.value));
+		}
+
 		setAddedToQueue(true);
 	}
 

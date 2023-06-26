@@ -54,6 +54,7 @@ export const performancesSlice = createSlice({
 		},
 		resetPerformances: () => initialState,
 		sendMovePerformance: (state, action: PayloadAction<MovePerformanceDTO>) => {},
+		sendNotifyRequest: (state, action: PayloadAction<PerformanceDTO>) => {},
 	},
 });
 
@@ -90,6 +91,7 @@ export const {
 	startNextPerformance,
 	startPreviousPerformance,
 	sendMovePerformance,
+	sendNotifyRequest,
 } = performancesSlice.actions;
 
 export default performancesSlice.reducer;

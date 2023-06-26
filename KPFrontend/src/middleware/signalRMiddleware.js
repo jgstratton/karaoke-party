@@ -1,6 +1,6 @@
 import { HubConnectionBuilder, HubConnectionState } from '@microsoft/signalr';
 import { setPosition, setLength } from '../slices/playerSlice';
-import { populatePerformances } from '../slices/performancesSlice';
+import { populatePerformances, addRequest } from '../slices/performancesSlice';
 import { populatePlayer, pause, play } from '../slices/playerSlice';
 import { populateSettings } from '../slices/playerSlice';
 import { populateSingers } from '../slices/singerSlice';
@@ -75,6 +75,11 @@ const signalRMiddleware = (store) => {
 		store.dispatch(signalActionCreator(populatePerformances(performances)));
 	});
 
+	connection.on('ReceiveNewRequest', async (performance) => {
+		console.log('ReceiveNewRequest');
+		store.dispatch(signalActionCreator(addRequest(performance)));
+	});
+
 	const queueMessageSender = (sendMessage) => {
 		// hub is connected and nothing queued? then just run the method
 		if (messageQueue.length === 0 && connection.state === HubConnectionState.Connected) {
@@ -145,6 +150,10 @@ const signalRMiddleware = (store) => {
 					queueMessageSender(() =>
 						connection.invoke('MovePerformance', currentStorePartyKey, action.payload)
 					);
+					break;
+				}
+				case 'performances/sendNotifyRequest': {
+					queueMessageSender(() => connection.invoke('NotifyRequest', currentStorePartyKey, action.payload));
 					break;
 				}
 				default:

@@ -1,6 +1,7 @@
 using KaraokeParty.DataStore;
 using KaraokeParty.Hubs;
 using KaraokeParty.Services;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
@@ -45,11 +46,22 @@ foreach (var clientRoute in new List<string> { "Search","Home","NoParty","Player
 }
 app.UseRewriter(options);
 
-app.UseFileServer(new FileServerOptions {
+var fsOptions = new FileServerOptions {
 	FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "FrontEndSpa")),
 	RequestPath = "",
 	EnableDefaultFiles = true
-});
+};
+
+fsOptions.StaticFileOptions.OnPrepareResponse = (ctx) => {
+	if (ctx.File.Name.Contains(".html")) {
+		ctx.Context.Response.Headers
+					.Add("Cache-Control", "no-cache, no-store, must-revalidate");
+		ctx.Context.Response.Headers.Add("Pragma", "no-cache");
+		ctx.Context.Response.Headers.Add("Expires", "0");
+	}
+};
+
+app.UseFileServer(fsOptions);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()) {

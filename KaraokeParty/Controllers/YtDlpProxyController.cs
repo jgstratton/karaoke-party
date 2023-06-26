@@ -8,12 +8,13 @@ namespace KaraokeParty.Controllers {
 		private string ytdlpConnectionString { get; set; }
 		private HttpProxyOptions _httpOptions = HttpProxyOptionsBuilder.Instance
 		  .WithShouldAddForwardedHeaders(false).Build();
-		
+
 		public YtDlpProxyController(IConfiguration config) {
 			ytdlpConnectionString = config.GetSection("YTDLPServiceConnectionString").Value ?? "";
 		}
 
 		[Route("yt-dlp/{**rest}")]
+		[HttpGet]
 		public Task ProxyCatchAll(string rest) {
 			var queryString = this.Request.QueryString.Value;
 			return this.HttpProxyAsync($"{ytdlpConnectionString}/{rest}{queryString}", _httpOptions);
