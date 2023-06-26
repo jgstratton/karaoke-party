@@ -1,4 +1,4 @@
-import NextSong from './singer/Upcoming';
+import Upcoming from './singer/Upcoming';
 import Menu from './common/Menu';
 import Player from './singer/Player';
 import Card from 'react-bootstrap/Card';
@@ -19,7 +19,7 @@ const SingerDashboard = (props) => {
 				<Card.Body>
 					<Card.Title>On Deck</Card.Title>
 					<Card.Text>
-						<NextSong />
+						<Upcoming />
 					</Card.Text>
 				</Card.Body>
 			</Card>

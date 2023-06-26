@@ -153,7 +153,9 @@ const signalRMiddleware = (store) => {
 					break;
 				}
 				case 'performances/sendNotifyRequest': {
-					queueMessageSender(() => connection.invoke('NotifyRequest', currentStorePartyKey, action.payload));
+					queueMessageSender(() =>
+						connection.invoke('NotifyNewRequest', currentStorePartyKey, action.payload)
+					);
 					break;
 				}
 				default:

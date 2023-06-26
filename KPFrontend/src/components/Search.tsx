@@ -59,7 +59,6 @@ const Search = () => {
 			alert(newPerformance.error.toString());
 			return;
 		}
-
 		if (newPerformance.value.singerId == null) {
 			dispatch(sendNotifyRequest(newPerformance.value));
 		} else {

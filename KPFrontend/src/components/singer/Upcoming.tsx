@@ -4,7 +4,7 @@ import { selectQueuedSorted } from '../../slices/combinedSelectors';
 
 const Upcoming = () => {
 	const performances = useSelector(selectQueuedSorted);
-	const performanceList = performances.slice(0, 5);
+	const performanceList = performances.slice(0, 3);
 	return (
 		<ListGroup>
 			{performanceList.length > 0 ? (
