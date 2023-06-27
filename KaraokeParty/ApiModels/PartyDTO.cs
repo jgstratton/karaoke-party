@@ -26,6 +26,8 @@ namespace KaraokeParty.ApiModels {
 
 			PerformanceDTO? currentPerformance = performances.Where(p => p.Status == PerformanceStatus.Live).FirstOrDefault();
 
+			List<SingerDTO> singers = party.Singers.Select(s => SingerDTO.FromDb(s)).ToList();
+
 			return new PartyDTO {
 				PartyId = party.PartyId,
 				Title = party.Title,
@@ -38,7 +40,7 @@ namespace KaraokeParty.ApiModels {
 					Title = currentPerformance?.SongTitle ?? ""
 				},
 				Performances = performances,
-				Singers = party.Singers.Select(s => SingerDTO.FromDb(s)).ToList(),
+				Singers = singers,
 				PlayerSettings = new PlayerSettingsDTO {
 					MarqueeEnabled = party.MarqueeEnabled,
 					MarqueeSize = party.MarqueeSize,
