@@ -16,7 +16,7 @@ namespace KaraokeParty.Controllers {
 
 		[HttpGet]
 		[Route("party/{partyKey}/singer/{singerId}")]
-		public ActionResult<SingerDTO> Get(string partyKey, string singerId) {
+		public ActionResult<SingerDTO> Get(string partyKey, int singerId) {
 			Party? party = partyService.GetPartyByKey(partyKey);
 			if (party == null) {
 				return NotFound();

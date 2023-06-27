@@ -24,6 +24,8 @@ const RequestModalForm = ({ title, url, show, handleSubmit, handleClose }: iProp
 	useEffect(() => {
 		if (!isDj) {
 			setSingerName(userName);
+		} else {
+			setSingerId(0);
 		}
 	}, [isDj, userName]);
 
@@ -62,7 +64,7 @@ const RequestModalForm = ({ title, url, show, handleSubmit, handleClose }: iProp
 				{isDj && (
 					<Form.Group className="mb-3">
 						<Form.Label>Select Singer in Rotation</Form.Label>
-						<Form.Select aria-label="Default select example" onChange={handleSelectSinger}>
+						<Form.Select value={singerId} onChange={handleSelectSinger}>
 							<option value="0">New - Add new singer to rotation</option>
 							{singerList.map((s, i) => (
 								<option key={s.singerId} value={s.singerId}>

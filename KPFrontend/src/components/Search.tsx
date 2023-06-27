@@ -13,6 +13,8 @@ import Button from 'react-bootstrap/Button';
 import { addRequest, sendNotifyRequest } from '../slices/performancesSlice';
 import { RootState } from '../store';
 import PerformanceApi from '../api/PerformanceApi';
+import { addSinger, selectSingerList } from '../slices/singerSlice';
+import SingerApi from '../api/SingerApi';
 
 const Search = () => {
 	const navigate = useNavigate();
@@ -27,6 +29,7 @@ const Search = () => {
 	const user = useSelector((state: RootState) => state.user);
 	const dispatch = useDispatch();
 	const [isKaraoke, setIsKaraoke] = useState(1);
+	const currentSingers = useSelector(selectSingerList);
 
 	async function submitSearch() {
 		const actualSearchString = isKaraoke === 1 ? searchString + ' karaoke' : searchString;
@@ -63,6 +66,14 @@ const Search = () => {
 			dispatch(sendNotifyRequest(newPerformance.value));
 		} else {
 			dispatch(addRequest(newPerformance.value));
+			if (!currentSingers.find((s) => s.singerId === newPerformance.value.singerId)) {
+				const newSinger = await SingerApi.getSinger(party.partyKey, newPerformance.value.singerId);
+				if (!newSinger.ok) {
+					alert(newSinger.error.toString());
+					return;
+				}
+				dispatch(addSinger(newSinger.value));
+			}
 		}
 
 		setAddedToQueue(true);

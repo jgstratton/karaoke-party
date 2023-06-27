@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 import { selectQueuedSorted } from '../../../slices/combinedSelectors';
-import { selectCompleted, selectLive, selectRequests } from '../../../slices/performancesSlice';
+import { selectCompleted, selectLive } from '../../../slices/performancesSlice';
 import styles from './SongList.module.css';
 import SongListItem from './SongListItem';
 
@@ -21,17 +21,17 @@ const SongList = () => {
 			</div>
 			<div className={styles.listContents}>
 				{completed.map((s, i) => (
-					<div className={styles.listContainer}>
+					<div key={s.performanceId} className={styles.listContainer}>
 						<SongListItem performance={s} index={i + 1} className="text-muted" />
 					</div>
 				))}
 				{live.map((s, i) => (
-					<div className={classNames([styles.listContainer, 'text-warning'])}>
+					<div key={s.performanceId} className={classNames([styles.listContainer, 'text-warning'])}>
 						<SongListItem performance={s} index={completed.length + 1 + i} className="text-warning" />
 					</div>
 				))}
 				{queued.map((s, i) => (
-					<div className={styles.listContainer}>
+					<div key={s.performanceId} className={styles.listContainer}>
 						<SongListItem performance={s} index={completed.length + live.length + 1 + i} />
 					</div>
 				))}
