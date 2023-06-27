@@ -1,12 +1,12 @@
-import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+import { faExclamationTriangle, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect, useState } from 'react';
-import { Alert, Button, Col, Form, Modal, Row } from 'react-bootstrap';
+import { Alert, Button, Col, Dropdown, Form, Modal, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import SingerApi from '../../../api/SingerApi';
 import StatusService from '../../../services/StatusService';
 import { selectPartyKey } from '../../../slices/partySlice';
-import { selectRotationSize, selectSingerDetailsById, updateSinger } from '../../../slices/singerSlice';
+import { deleteSinger, selectRotationSize, selectSingerDetailsById, updateSinger } from '../../../slices/singerSlice';
 import { RootState } from '../../../store';
 import styles from './SingerModal.module.css';
 import SingerModalPerformance from './SingerModalPerformance';
@@ -16,6 +16,8 @@ import PerformanceApi from '../../../api/PerformanceApi';
 import { updatePerformancesSubset } from '../../../slices/performancesSlice';
 import Overlay from '../../common/Overlay';
 import Loading from '../../common/Loading';
+import EllipsisToggle from '../../common/EllipsisToggle';
+import ConfirmModal from '../../common/ConfirmModal';
 interface props {
 	show: boolean;
 	singerId: number;
@@ -34,6 +36,7 @@ const SingerModal = ({ show, singerId, handleClose }: props) => {
 	const partyKey = useSelector(selectPartyKey);
 	const singerDetails = useSelector((state: RootState) => selectSingerDetailsById(state, singerId));
 	const rotationSize = useSelector(selectRotationSize);
+	const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
 	const resetForm = () => {
 		setIsLoading(false);
@@ -123,11 +126,24 @@ const SingerModal = ({ show, singerId, handleClose }: props) => {
 		setPerformances(clonePerformances);
 	};
 
-	const handleDelete = (performanceId: number) => {
+	const handleDeletePerformance = (performanceId: number) => {
 		let clonePerformances: PerformanceDTO[] = performances.map((p) => ({ ...p }));
 		const targetIndex = clonePerformances.findIndex((p) => p.performanceId === performanceId);
 		clonePerformances[targetIndex].deleteFlag = true;
 		setPerformances(clonePerformances);
+	};
+
+	const handleDeleteSinger = async () => {
+		const deleteSingerResponse = await SingerApi.deleteSinger(partyKey, singerId);
+		if (!deleteSingerResponse.ok) {
+			alert('Error Deleting singer');
+			return;
+		}
+		setShowDeleteConfirmation(false);
+		let clonePerformances: PerformanceDTO[] = performances.map((p) => Object.assign({ deleteFlag: true }, p));
+		dispatch(updatePerformancesSubset(clonePerformances));
+		dispatch(deleteSinger(singerId));
+		handleCancel();
 	};
 
 	return (
@@ -137,11 +153,38 @@ const SingerModal = ({ show, singerId, handleClose }: props) => {
 					<Loading>Saving changes... </Loading>
 				</Overlay>
 			)}
+
 			<Modal className={styles.settingsModal} size="lg" show={show} backdrop="static">
 				<Modal.Header>
-					<Modal.Title>Singer Details</Modal.Title>
+					<Modal.Title style={{ width: '100%' }}>
+						<Dropdown className="float-right">
+							<Dropdown.Toggle
+								as={EllipsisToggle}
+								variant="success"
+								id="dropdown-basic"
+							></Dropdown.Toggle>
+
+							<Dropdown.Menu>
+								<Dropdown.Item as="button" onClick={() => setShowDeleteConfirmation(true)}>
+									<FontAwesomeIcon icon={faTrash} /> Delete
+								</Dropdown.Item>
+							</Dropdown.Menu>
+						</Dropdown>
+						Singer Details
+					</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
+					{showDeleteConfirmation && (
+						<Overlay>
+							<ConfirmModal
+								handleConfirm={handleDeleteSinger}
+								show={showDeleteConfirmation}
+								handleCancel={() => setShowDeleteConfirmation(false)}
+							>
+								<p>Delete this singer and all of their songs?</p>
+							</ConfirmModal>
+						</Overlay>
+					)}
 					<Row>
 						<Form.Group as={Col} className="mb-3">
 							<Form.Label>Singer's Name</Form.Label>
@@ -168,7 +211,9 @@ const SingerModal = ({ show, singerId, handleClose }: props) => {
 								}}
 							>
 								{[...Array(rotationSize)].map((x, i) => (
-									<option value={i + 1}>{i + 1}</option>
+									<option key={x} value={i + 1}>
+										{i + 1}
+									</option>
 								))}
 							</Form.Select>
 							{showNameWarning && (
@@ -197,7 +242,7 @@ const SingerModal = ({ show, singerId, handleClose }: props) => {
 											allowDelete={allowDelete}
 											handleMoveDown={handleMoveDown}
 											handleMoveUp={handleMoveUp}
-											handleDelete={handleDelete}
+											handleDelete={handleDeletePerformance}
 										/>
 									</div>
 								)

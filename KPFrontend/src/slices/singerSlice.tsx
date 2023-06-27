@@ -50,10 +50,17 @@ export const singerSlice = createSlice({
 				console.error('Attempted to update singer detail for singer not found in store');
 			}
 		},
+		deleteSinger: (state, action: PayloadAction<number>) => {
+			const targetIndex = state.singerList.findIndex((s) => s.singerId === action.payload);
+			if (targetIndex >= 0) {
+				state.singerList.splice(targetIndex, 1);
+			}
+			state.singerList.forEach((s, i) => (s.rotationNumber = i + 1));
+		},
 	},
 });
 
-export const { populateSingers, addSinger, updateSinger } = singerSlice.actions;
+export const { populateSingers, addSinger, updateSinger, deleteSinger } = singerSlice.actions;
 
 export type SingerSummary = {
 	singerId?: number;
