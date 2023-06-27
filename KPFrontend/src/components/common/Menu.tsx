@@ -1,7 +1,7 @@
 import { Nav, Navbar } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { reset as resetUser } from '../../slices/userSlice';
+import { reset as resetUser, selectUserIsDj } from '../../slices/userSlice';
 import { reset as resetParty, selectIsPartyInitialized } from '../../slices/partySlice';
 import { resetPerformances, selectRequests } from '../../slices/performancesSlice';
 import { resetPlayer } from '../../slices/playerSlice';
@@ -21,6 +21,7 @@ const Menu = () => {
 	const party = useSelector((state: RootState) => state.party);
 	const requests = useSelector(selectRequests);
 	const isPartyInitialized = useSelector(selectIsPartyInitialized);
+	const isDj = useSelector(selectUserIsDj);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
@@ -105,10 +106,17 @@ const Menu = () => {
 			>
 				<p>You sure you want to exit the party?</p>
 				<br />
-				<p className="text-warning">
-					As the DJ, if you exit the party you won't be able to regain control of the requests or the video
-					player. Make sure this is what you want to do.
-				</p>
+				{isDj ? (
+					<p className="text-warning">
+						As the DJ, if you exit the party you won't be able to regain control of the requests or the
+						video player. Make sure this is what you want to do.
+					</p>
+				) : (
+					<p className="text-warning">
+						Leaving so soon? If you have songs queued up, let the DJ know you're heading out so they can
+						clear up the queue. Or stick around... you don't have anywhere important to be.
+					</p>
+				)}
 			</ConfirmModal>
 		</>
 	);

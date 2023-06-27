@@ -10,8 +10,11 @@ const fetchParty = async (partyKey: string): Promise<Result<PartyDTO>> => {
 			})
 	);
 	let partyReponse = await response.json();
+	if (response.status === 404) {
+		return { ok: false, error: '404 - Party not found' };
+	}
 	if (!response.ok || !partyReponse.partyKey) {
-		return { ok: false, error: partyReponse };
+		return { ok: false, error: 'No party' };
 	}
 	return { ok: true, value: partyReponse };
 };

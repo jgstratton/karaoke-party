@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import ApiService from '../api/ApiService';
-import { Form, Button, Card } from 'react-bootstrap';
+import { Form, Button, Card, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { populateUser } from '../slices/userSlice';
 import { populateParty } from '../slices/partySlice';
@@ -12,12 +12,14 @@ import Menu from './common/Menu';
 import { RootState } from '../store';
 import PartyApi from '../api/PartyApi';
 import { populateSingers } from '../slices/singerSlice';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 
 const NoParty = () => {
 	const dispatch = useDispatch();
 	const user = useSelector((state: RootState) => state.user);
 	const party = useSelector((state: RootState) => state.party);
-
+	const [errorMessage, setErrorMessage] = useState('');
 	const [loading, setLoading] = useState(true);
 	const [mode, setMode] = useState('Join');
 	const [form, setForm] = useState({
@@ -51,8 +53,14 @@ const NoParty = () => {
 	}
 
 	async function handleJoin() {
-		const curParty = await PartyApi.fetchPartyOrThrow(form.joinCode);
-		let newUser = await ApiService.joinParty(form.joinCode, form.singerName);
+		const curPartyResponse = await PartyApi.fetchParty(form.joinCode.toUpperCase());
+		if (!curPartyResponse.ok) {
+			setErrorMessage(curPartyResponse.error);
+			return;
+		}
+		const curParty = curPartyResponse.value;
+		setErrorMessage('');
+		let newUser = await ApiService.joinParty(form.joinCode.toUpperCase(), form.singerName);
 		dispatch(populateParty(curParty));
 		dispatch(populatePlayer(curParty.player));
 		dispatch(populateSettings(curParty.playerSettings));
@@ -68,6 +76,7 @@ const NoParty = () => {
 			navigate('/home');
 		}
 		setLoading(false);
+		setErrorMessage('');
 	}, [user, party, navigate]);
 
 	return loading ? (
@@ -157,6 +166,12 @@ const NoParty = () => {
 						</Card.Text>
 					</Card.Body>
 				</Card>
+			)}
+			{errorMessage.length > 0 && (
+				<Alert variant={'danger'} className="mt-3">
+					<FontAwesomeIcon icon={faExclamationTriangle} className="mr-2" />
+					{errorMessage}
+				</Alert>
 			)}
 		</div>
 	);

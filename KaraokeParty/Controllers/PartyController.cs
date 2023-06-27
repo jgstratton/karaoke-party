@@ -26,7 +26,7 @@ namespace KaraokeParty.Controllers
 		public ActionResult<PartyDTO> Get(string partyKey)
 		{
 			Party? party = context.Parties.Where(p =>
-				!p.IsExpired && p.PartyKey == partyKey
+				!p.IsExpired && p.PartyKey == partyKey.ToUpper()
 			).OrderByDescending(p => p.DateTimeCreated).FirstOrDefault();
 
 			if (party == null)
@@ -62,7 +62,7 @@ namespace KaraokeParty.Controllers
 
 			if (party == null || user == null || song == null)
 			{
-				return NotFound();
+				return NotFound("404 - Party not found");
 			}
 			Performance performance = new Performance
 			{
