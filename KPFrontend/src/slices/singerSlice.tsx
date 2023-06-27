@@ -14,6 +14,11 @@ const initialState: iSingerState = {
 
 const cmp = (a: number, b: number) => +(a > b) - +(a < b);
 
+interface iSingerTogglePayload {
+	singerId: number;
+	isPaused: boolean;
+}
+
 export const singerSlice = createSlice({
 	name: 'singer',
 	initialState: initialState,
@@ -57,10 +62,14 @@ export const singerSlice = createSlice({
 			}
 			state.singerList.forEach((s, i) => (s.rotationNumber = i + 1));
 		},
+		toggleSinger: (state, action: PayloadAction<iSingerTogglePayload>) => {
+			const targetIndex = state.singerList.findIndex((s) => s.singerId === action.payload.singerId);
+			state.singerList[targetIndex].isPaused = action.payload.isPaused;
+		},
 	},
 });
 
-export const { populateSingers, addSinger, updateSinger, deleteSinger } = singerSlice.actions;
+export const { populateSingers, addSinger, updateSinger, deleteSinger, toggleSinger } = singerSlice.actions;
 
 export type SingerSummary = {
 	singerId?: number;
@@ -69,6 +78,7 @@ export type SingerSummary = {
 	completedCount: number;
 	liveCount: number;
 	queuedCount: number;
+	isPaused: boolean;
 };
 
 export type SingerDetails = {
@@ -76,6 +86,7 @@ export type SingerDetails = {
 	name: string;
 	rotationNumber: number;
 	performances: PerformanceDTO[];
+	isPaused: boolean;
 };
 
 export const selectSingerList = (state: RootState) => {
@@ -108,6 +119,7 @@ export const selectSingerDetailsById = createSelector(
 			performances: performances
 				.filter((p) => p.singerId === singer?.singerId)
 				.sort((a, b) => cmp(a.sortOrder, b.sortOrder)),
+			isPaused: singer?.isPaused ?? false,
 		};
 	}
 );

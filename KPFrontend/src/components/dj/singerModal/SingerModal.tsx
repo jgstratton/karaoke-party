@@ -1,12 +1,18 @@
 import { faExclamationTriangle, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect, useState } from 'react';
-import { Alert, Button, Col, Dropdown, Form, Modal, Row } from 'react-bootstrap';
+import { Alert, Badge, Button, Col, Dropdown, Form, Modal, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import SingerApi from '../../../api/SingerApi';
 import StatusService from '../../../services/StatusService';
 import { selectPartyKey } from '../../../slices/partySlice';
-import { deleteSinger, selectRotationSize, selectSingerDetailsById, updateSinger } from '../../../slices/singerSlice';
+import {
+	deleteSinger,
+	selectRotationSize,
+	selectSingerDetailsById,
+	toggleSinger,
+	updateSinger,
+} from '../../../slices/singerSlice';
 import { RootState } from '../../../store';
 import styles from './SingerModal.module.css';
 import SingerModalPerformance from './SingerModalPerformance';
@@ -68,6 +74,7 @@ const SingerModal = ({ show, singerId, handleClose }: props) => {
 			singerId: singerDetails.singerId,
 			name: singerName,
 			rotationNumber: singerPosition,
+			isPaused: singerDetails.isPaused,
 		});
 
 		if (!updatedSinger.ok) {
@@ -146,6 +153,21 @@ const SingerModal = ({ show, singerId, handleClose }: props) => {
 		handleCancel();
 	};
 
+	const handleToggleSinger = async () => {
+		const updatedSinger = await SingerApi.updateSinger(partyKey, {
+			singerId: singerDetails.singerId,
+			name: singerName,
+			rotationNumber: singerPosition,
+			isPaused: !singerDetails.isPaused,
+		});
+		if (!updatedSinger.ok || updatedSinger.value.singerId == null) {
+			alert('Error Updating singer');
+			return;
+		}
+		dispatch(toggleSinger({ singerId: updatedSinger.value.singerId ?? 0, isPaused: updatedSinger.value.isPaused }));
+		handleCancel();
+	};
+
 	return (
 		<>
 			{isLoading && (
@@ -165,8 +187,12 @@ const SingerModal = ({ show, singerId, handleClose }: props) => {
 							></Dropdown.Toggle>
 
 							<Dropdown.Menu>
+								<Dropdown.Item as="button" onClick={handleToggleSinger}>
+									<FontAwesomeIcon icon={faTrash} />{' '}
+									{singerDetails.isPaused ? 'Unpause Singer' : 'Pause Singer'}
+								</Dropdown.Item>
 								<Dropdown.Item as="button" onClick={() => setShowDeleteConfirmation(true)}>
-									<FontAwesomeIcon icon={faTrash} /> Delete
+									<FontAwesomeIcon icon={faTrash} /> Delete Singer
 								</Dropdown.Item>
 							</Dropdown.Menu>
 						</Dropdown>
@@ -174,6 +200,15 @@ const SingerModal = ({ show, singerId, handleClose }: props) => {
 					</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
+					{singerDetails.isPaused && (
+						<>
+							<Badge bg="danger" className="mr-3">
+								PAUSED
+							</Badge>
+							<span className="text-muted">Singer will be skipped in rotation</span>
+							<hr />
+						</>
+					)}
 					{showDeleteConfirmation && (
 						<Overlay>
 							<ConfirmModal

@@ -46,6 +46,7 @@ const NewSingerModal = ({ show, handleClose }: props) => {
 		const newSinger = await SingerApi.addSinger(partyKey, {
 			name: singerName,
 			rotationNumber: singerPosition,
+			isPaused: false,
 		});
 		if (newSinger.ok) {
 			dispatch(addSinger(newSinger.value));

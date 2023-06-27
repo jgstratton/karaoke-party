@@ -38,7 +38,7 @@ const SingerListItem = ({ singer, index, className = '', handleSelectSinger }: i
 
 				{singer.queuedCount > 0 && (
 					<span
-						className="bg-success"
+						className={singer.isPaused ? 'bg-danger' : 'bg-success'}
 						style={{ display: 'inline-block', width: `${singer.queuedCount * 10}px` }}
 					>
 						&nbsp;

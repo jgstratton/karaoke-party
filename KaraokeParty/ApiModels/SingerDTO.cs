@@ -5,6 +5,7 @@ namespace KaraokeParty.ApiModels {
 		public int? SingerId { get; set; }
 		public string Name { get; set; } = "";
 		public int RotationNumber { get; set; } = 0;
+		public bool IsPaused { get; set; } = false;
 
 		public Singer ToDb() {
 			return new Singer {
@@ -22,13 +23,15 @@ namespace KaraokeParty.ApiModels {
 			}
 
 			singer.RotationNumber = RotationNumber;
+			singer.IsPaused = IsPaused;
 		}
 
 		public static SingerDTO FromDb(Singer singer) {
 			return new SingerDTO {
 				SingerId = singer.SingerId,
 				Name = singer.Name,
-				RotationNumber = singer.RotationNumber
+				RotationNumber = singer.RotationNumber,
+				IsPaused = singer.IsPaused
 			};
 		}
 	}

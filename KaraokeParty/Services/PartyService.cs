@@ -48,7 +48,7 @@ namespace KaraokeParty.Services {
 
 			while (nextPerformance == null) {
 				nextSinger = party.Singers.Where(s => s.RotationNumber == nextRotationNumber).FirstOrDefault();
-				if (nextSinger != null) {
+				if (nextSinger != null && !nextSinger.IsPaused) {
 					nextPerformance = party.Queue
 						.Where(p => p.Singer?.SingerId == nextSinger.SingerId && p.Status == PerformanceStatus.Queued)
 						.OrderBy(p => p.SortOrder)

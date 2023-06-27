@@ -36,6 +36,7 @@ const RequestProcessModal = ({ show, handleClose }: iProps) => {
 			const newSinger = await SingerApi.addSinger(partyKey, {
 				name: singerName,
 				rotationNumber: 0,
+				isPaused: false,
 			});
 			if (!newSinger.ok) {
 				setErrorMessage(newSinger.error);

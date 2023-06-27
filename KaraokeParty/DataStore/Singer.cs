@@ -14,5 +14,6 @@ namespace KaraokeParty.DataStore {
 
 		public int RotationNumber { get; set; }
 
+		public bool IsPaused { get; set; }
 	}
 }

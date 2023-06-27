@@ -19,6 +19,7 @@ export const selectSingerSummaryList = createSelector(
 				.length,
 			queuedCount: queued.filter((p) => p.singerId === s.singerId && p.status === StatusService.queued).length,
 			liveCount: live.filter((p) => p.singerId === s.singerId && p.status === StatusService.live).length,
+			isPaused: s.isPaused,
 		}));
 	}
 );
@@ -38,7 +39,7 @@ export const selectQueuedSorted = createSelector(
 				};
 				return singerDetails;
 			})
-			.filter((details) => details.performances.length > 0);
+			.filter((details) => details.performances.length > 0 && !details.singer.isPaused);
 		const targetPerformances = [];
 
 		let lastRotationNumber = 0;
