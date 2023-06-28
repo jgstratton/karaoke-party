@@ -11,11 +11,13 @@ import useBodyClass from '../../utilities/useBodyClass';
 import { RootState } from '../../store';
 import { selectPartyKey } from '../../slices/partySlice';
 import Splash from './Splash';
+import { selectUserIsDj } from '../../slices/userSlice';
 
 const Player = () => {
 	useBodyClass('player-open');
 	const settings = useSelector(selectPlayerSettings);
 	const dispatch = useDispatch();
+	const isDj = useSelector(selectUserIsDj);
 	const player = useSelector((state: RootState) => state.player);
 	const partyKey = useSelector(selectPartyKey);
 	const playerSettings = useSelector(selectPlayerSettings);
@@ -47,7 +49,9 @@ const Player = () => {
 
 	return (
 		<>
-			{player.showSplash && settings.splashScreenEnabled ? (
+			{isDj ? (
+				<div>You're not the DJ... what are you doing here?</div>
+			) : player.showSplash && settings.splashScreenEnabled ? (
 				<Splash />
 			) : (
 				<div style={{ height: `calc(100vh)`, overflowY: 'hidden' }}>

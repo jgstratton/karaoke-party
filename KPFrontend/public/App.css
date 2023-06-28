@@ -1,3 +1,6 @@
+html {
+	font-size:14px;
+}
 body{
 	background-size:100%;
 	background-attachment: fixed;
@@ -30,4 +33,10 @@ body.player-open {
 	height:100%;
 	overflow:hidden;
 	background-color:black;
+}
+
+.no-wrap{
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }

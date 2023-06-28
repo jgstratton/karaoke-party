@@ -49,6 +49,7 @@ const SingerListItem = ({ singer, index, className = '', handleSelectSinger }: i
 					</span>
 				)}
 			</span>
+			<span>&nbsp;</span>
 		</>
 	);
 };

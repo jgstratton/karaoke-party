@@ -14,12 +14,31 @@
 
 .listContainer {
 	display: grid;
-    grid-gap: 5px;
-	padding:10px;
-    grid-template-columns: 50px auto 100px;
+    grid-gap: 3px;
+	padding:6px;
+    grid-template-columns: 30px auto 100px 30px;
 	color:white;
+	border-bottom:1px solid rgb(25,25,25);
 }
 
+.list-container > :globa(*) {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
 .borderBottom {
 	border-bottom: 1px solid rgb(75,75,75);
+}
+
+@media (max-width: 1300px) {
+	.listContainer {
+		grid-gap: 2px;
+		padding:5px;
+		grid-template-columns: 25px auto 100px 30px;
+		font-size:12px;
+	}
+
+	.listContainer :global(.btn-link) {
+		font-size:12px !important;
+	}
 }

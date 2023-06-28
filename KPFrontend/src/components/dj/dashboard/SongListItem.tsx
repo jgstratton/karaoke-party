@@ -4,6 +4,7 @@ import { faYoutube } from '@fortawesome/free-brands-svg-icons';
 import { Badge } from 'react-bootstrap';
 import PerformanceDTO from '../../../dtoTypes/PerformanceDTO';
 import StatusService from '../../../services/StatusService';
+import classNames from 'classnames';
 
 interface iProps {
 	performance: PerformanceDTO;
@@ -46,7 +47,7 @@ const SongListItem = ({ performance, index, className = '' }: iProps) => {
 					performance?.userName.length &&
 					`(Submitted by ${performance?.userName})`}
 			</span>
-			<span className={className}>
+			<span className={classNames([className, 'no-wrap'])}>
 				<a
 					href={performance?.url}
 					target="_blank"
@@ -60,6 +61,7 @@ const SongListItem = ({ performance, index, className = '' }: iProps) => {
 			</span>
 
 			<span>{renderSwitch()}</span>
+			<span>{/** put progressive discolure edit menu here */}</span>
 		</>
 	);
 };
