@@ -49,7 +49,7 @@ const Player = () => {
 
 	return (
 		<>
-			{isDj ? (
+			{!isDj ? (
 				<div>You're not the DJ... what are you doing here?</div>
 			) : player.showSplash && settings.splashScreenEnabled ? (
 				<Splash />
