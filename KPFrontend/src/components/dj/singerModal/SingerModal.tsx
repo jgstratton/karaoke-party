@@ -1,18 +1,12 @@
-import { faExclamationTriangle, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect, useState } from 'react';
-import { Alert, Badge, Button, Col, Dropdown, Form, Modal, Row } from 'react-bootstrap';
+import { Alert, Badge, Button, Col, Form, Modal, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import SingerApi from '../../../api/SingerApi';
 import StatusService from '../../../services/StatusService';
 import { selectPartyKey } from '../../../slices/partySlice';
-import {
-	deleteSinger,
-	selectRotationSize,
-	selectSingerDetailsById,
-	toggleSinger,
-	updateSinger,
-} from '../../../slices/singerSlice';
+import { selectRotationSize, selectSingerDetailsById, updateSinger } from '../../../slices/singerSlice';
 import { RootState } from '../../../store';
 import styles from './SingerModal.module.css';
 import SingerModalPerformance from './SingerModalPerformance';
@@ -22,8 +16,6 @@ import PerformanceApi from '../../../api/PerformanceApi';
 import { updatePerformancesSubset } from '../../../slices/performancesSlice';
 import Overlay from '../../common/Overlay';
 import Loading from '../../common/Loading';
-import EllipsisToggle from '../../common/EllipsisToggle';
-import ConfirmModal from '../../common/ConfirmModal';
 interface props {
 	show: boolean;
 	singerId: number;
@@ -42,7 +34,6 @@ const SingerModal = ({ show, singerId, handleClose }: props) => {
 	const partyKey = useSelector(selectPartyKey);
 	const singerDetails = useSelector((state: RootState) => selectSingerDetailsById(state, singerId));
 	const rotationSize = useSelector(selectRotationSize);
-	const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
 	const resetForm = () => {
 		setIsLoading(false);
@@ -140,34 +131,6 @@ const SingerModal = ({ show, singerId, handleClose }: props) => {
 		setPerformances(clonePerformances);
 	};
 
-	const handleDeleteSinger = async () => {
-		const deleteSingerResponse = await SingerApi.deleteSinger(partyKey, singerId);
-		if (!deleteSingerResponse.ok) {
-			alert('Error Deleting singer');
-			return;
-		}
-		setShowDeleteConfirmation(false);
-		let clonePerformances: PerformanceDTO[] = performances.map((p) => Object.assign({ deleteFlag: true }, p));
-		dispatch(updatePerformancesSubset(clonePerformances));
-		dispatch(deleteSinger(singerId));
-		handleCancel();
-	};
-
-	const handleToggleSinger = async () => {
-		const updatedSinger = await SingerApi.updateSinger(partyKey, {
-			singerId: singerDetails.singerId,
-			name: singerName,
-			rotationNumber: singerPosition,
-			isPaused: !singerDetails.isPaused,
-		});
-		if (!updatedSinger.ok || updatedSinger.value.singerId == null) {
-			alert('Error Updating singer');
-			return;
-		}
-		dispatch(toggleSinger({ singerId: updatedSinger.value.singerId ?? 0, isPaused: updatedSinger.value.isPaused }));
-		handleCancel();
-	};
-
 	return (
 		<>
 			{isLoading && (
@@ -179,47 +142,20 @@ const SingerModal = ({ show, singerId, handleClose }: props) => {
 			<Modal className={styles.settingsModal} size="lg" show={show} backdrop="static">
 				<Modal.Header>
 					<Modal.Title style={{ width: '100%' }}>
-						<Dropdown className="float-right">
-							<Dropdown.Toggle
-								as={EllipsisToggle}
-								variant="success"
-								id="dropdown-basic"
-							></Dropdown.Toggle>
-
-							<Dropdown.Menu>
-								<Dropdown.Item as="button" onClick={handleToggleSinger}>
-									<FontAwesomeIcon icon={faTrash} />{' '}
-									{singerDetails.isPaused ? 'Unpause Singer' : 'Pause Singer'}
-								</Dropdown.Item>
-								<Dropdown.Item as="button" onClick={() => setShowDeleteConfirmation(true)}>
-									<FontAwesomeIcon icon={faTrash} /> Delete Singer
-								</Dropdown.Item>
-							</Dropdown.Menu>
-						</Dropdown>
 						Singer Details
+						<div className="float-right" style={{ fontSize: '16px' }}>
+							{singerDetails.isPaused && (
+								<>
+									<Badge bg="danger" className="mr-3">
+										PAUSED
+									</Badge>
+									<span className="text-muted">(Singer will be skipped in rotation)</span>
+								</>
+							)}
+						</div>
 					</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
-					{singerDetails.isPaused && (
-						<>
-							<Badge bg="danger" className="mr-3">
-								PAUSED
-							</Badge>
-							<span className="text-muted">Singer will be skipped in rotation</span>
-							<hr />
-						</>
-					)}
-					{showDeleteConfirmation && (
-						<Overlay>
-							<ConfirmModal
-								handleConfirm={handleDeleteSinger}
-								show={showDeleteConfirmation}
-								handleCancel={() => setShowDeleteConfirmation(false)}
-							>
-								<p>Delete this singer and all of their songs?</p>
-							</ConfirmModal>
-						</Overlay>
-					)}
 					<Row>
 						<Form.Group as={Col} className="mb-3">
 							<Form.Label>Singer's Name</Form.Label>

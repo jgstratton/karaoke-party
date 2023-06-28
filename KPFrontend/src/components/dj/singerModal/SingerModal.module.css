@@ -21,7 +21,7 @@
 	display: grid;
     grid-gap: 5px;
 	padding:10px;
-    grid-template-columns: 20px auto 150px 40px;
+    grid-template-columns: 20px 150px auto 100px 40px;
 	color:white;
 	border-top:1px solid gray;
 }

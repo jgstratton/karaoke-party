@@ -42,6 +42,10 @@ export const performancesSlice = createSlice({
 			);
 		},
 
+		deleteSingerPerformances: (state: iPerformancesState, action: PayloadAction<number>) => {
+			state.performances = state.performances.filter((p) => p.singerId !== action.payload);
+		},
+
 		addRequest: (state, action: PayloadAction<PerformanceDTO>) => {
 			state.performances.push(action.payload);
 		},
@@ -86,6 +90,7 @@ export const {
 	populatePerformances,
 	addRequest,
 	deletePerformance,
+	deleteSingerPerformances,
 	resetPerformances,
 	updatePerformancesSubset,
 	startNextPerformance,

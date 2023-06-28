@@ -21,11 +21,19 @@
 	border-bottom:1px solid rgb(25,25,25);
 }
 
-.list-container > :globa(*) {
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow: ellipsis;
+.listContainer:hover {
+	background-color: rgb(25,25,25);
 }
+
+.showOnHover {
+	visibility: hidden;
+}
+
+.listContainer:hover > .showOnHover {
+	visibility: visible;
+}
+
+
 .borderBottom {
 	border-bottom: 1px solid rgb(75,75,75);
 }

@@ -1,10 +1,12 @@
-import { faCheck, faDownLong, faEllipsis, faMusic, faTrash, faUpLong } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faDownLong, faMusic, faTrash, faUpLong } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faYoutube } from '@fortawesome/free-brands-svg-icons';
 import { Badge, Dropdown } from 'react-bootstrap';
 import PerformanceDTO from '../../../dtoTypes/PerformanceDTO';
 import StatusService from '../../../services/StatusService';
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
+import classNames from 'classnames';
+import EllipsisToggle from '../../common/EllipsisToggle';
 
 interface iProps {
 	children?: ReactNode;
@@ -55,30 +57,13 @@ const SongListItem = ({
 		}
 	};
 
-	type CustomToggleProps = {
-		children?: React.ReactNode;
-		onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {};
-	};
-
-	const CustomToggle = React.forwardRef((props: CustomToggleProps, ref: React.Ref<HTMLButtonElement>) => (
-		<button
-			className="btn btn-link"
-			ref={ref}
-			onClick={(e) => {
-				e.preventDefault();
-				if (props.onClick) {
-					props.onClick(e);
-				}
-			}}
-		>
-			<FontAwesomeIcon icon={faEllipsis} />
-		</button>
-	));
-
 	return (
 		<>
 			<span className={className}>{index + 1}</span>
-			<span className={className} style={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+			<span className={className}>
+				<span className="text-warning">{performance.singerName}</span>
+			</span>
+			<span className={classNames([className, 'no-wrap'])}>
 				<span>
 					<a
 						href={performance?.url}
@@ -90,10 +75,6 @@ const SongListItem = ({
 						<FontAwesomeIcon icon={faYoutube} />
 					</a>
 					<span style={{ textOverflow: 'ellipsis' }}>{performance?.songTitle}</span>
-					<>
-						<br />
-						<span className="text-warning">{performance.singerName}</span>
-					</>
 				</span>
 			</span>
 
@@ -101,7 +82,7 @@ const SongListItem = ({
 			<span className="text-right">
 				{(allowMoveUp || allowMoveDown || allowDelete) && (
 					<Dropdown>
-						<Dropdown.Toggle as={CustomToggle} variant="success" id="dropdown-basic"></Dropdown.Toggle>
+						<Dropdown.Toggle as={EllipsisToggle} variant="success" id="dropdown-basic"></Dropdown.Toggle>
 
 						<Dropdown.Menu>
 							{allowMoveUp && (

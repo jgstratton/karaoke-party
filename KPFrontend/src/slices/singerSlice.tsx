@@ -2,7 +2,7 @@ import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import PerformanceDTO from '../dtoTypes/PerformanceDTO';
 import SingerDTO from '../dtoTypes/SingerDTO';
 import { RootState } from '../store';
-import { selectCompleted, selectLive, selectQueued } from './performancesSlice';
+import performancesSlice, { selectCompleted, selectLive, selectQueued } from './performancesSlice';
 
 interface iSingerState {
 	singerList: SingerDTO[];

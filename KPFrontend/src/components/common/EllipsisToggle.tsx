@@ -10,6 +10,7 @@ type CustomToggleProps = {
 const EllipsisToggle = React.forwardRef((props: CustomToggleProps, ref: React.Ref<HTMLButtonElement>) => (
 	<button
 		className="btn btn-link"
+		style={{ fontSize: '16px', lineHeight: '1px' }}
 		ref={ref}
 		onClick={(e) => {
 			e.preventDefault();
