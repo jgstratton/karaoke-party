@@ -61,37 +61,35 @@ const Menu = () => {
 				<Navbar.Toggle aria-controls="responsive-navbar-nav" />
 				{isPartyInitialized && (
 					<>
-						<Navbar.Collapse id="responsive-navbar-nav">
-							<Nav className="me-auto">
-								<Nav.Link onClick={() => navigate('/home')}>Home</Nav.Link>
-								<Nav.Link onClick={() => navigate('/search')}>
-									{user.isDj ? 'Add Request' : 'Request a song'}
-								</Nav.Link>
-								{user.isDj && (
-									<>
-										<Nav.Link onClick={handleShowNewSingerModal}>Add Singer</Nav.Link>
-									</>
+						{isDj ? (
+							<Navbar.Collapse id="responsive-navbar-nav">
+								<Nav className="me-auto">
+									<Nav.Link onClick={() => navigate('/home')}>Home</Nav.Link>
+									<Nav.Link onClick={() => navigate('/search')}>Add Request</Nav.Link>
+									<Nav.Link onClick={handleShowNewSingerModal}>Add Singer</Nav.Link>
+									<Nav.Link onClick={() => setShowConfirmLeave(true)}>Leave Party</Nav.Link>
+									<Nav.Link onClick={handleShowDjSettings}>Open DJ Settings</Nav.Link>
+								</Nav>
+								{requests.length > 0 && (
+									<button
+										className="btn btn-success"
+										onClick={handleShowRequestProcessModal}
+										style={{
+											boxShadow:
+												'0px 1px 2px 0px rgba(0,255,255,0.7),1px 2px 4px 0px rgba(0,255,255,0.7),2px 4px 8px 0px rgba(0,255,255,0.7),2px 4px 16px 0px rgba(0,255,255,0.7);',
+										}}
+									>
+										{requests.length} New Requests <FontAwesomeIcon icon={faExclamation} />
+									</button>
 								)}
-								<Nav.Link onClick={() => setShowConfirmLeave(true)}>Leave Party</Nav.Link>
-								{user.isDj && (
-									<>
-										<Nav.Link onClick={handleShowDjSettings}>Open DJ Settings</Nav.Link>
-									</>
-								)}
-							</Nav>
-							{user.isDj && requests.length > 0 && (
-								<button
-									className="btn btn-success"
-									onClick={handleShowRequestProcessModal}
-									style={{
-										boxShadow:
-											'0px 1px 2px 0px rgba(0,255,255,0.7),1px 2px 4px 0px rgba(0,255,255,0.7),2px 4px 8px 0px rgba(0,255,255,0.7),2px 4px 16px 0px rgba(0,255,255,0.7);',
-									}}
-								>
-									{requests.length} New Requests <FontAwesomeIcon icon={faExclamation} />
-								</button>
-							)}
-						</Navbar.Collapse>
+							</Navbar.Collapse>
+						) : (
+							<Navbar.Collapse id="responsive-navbar-nav">
+								<Nav className="me-auto">
+									<Nav.Link onClick={() => setShowConfirmLeave(true)}>Leave Party</Nav.Link>
+								</Nav>
+							</Navbar.Collapse>
+						)}
 					</>
 				)}
 			</Navbar>

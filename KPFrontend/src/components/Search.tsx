@@ -15,6 +15,7 @@ import { RootState } from '../store';
 import PerformanceApi from '../api/PerformanceApi';
 import { addSinger, selectSingerList } from '../slices/singerSlice';
 import SingerApi from '../api/SingerApi';
+import { selectUserIsDj } from '../slices/userSlice';
 
 const Search = () => {
 	const navigate = useNavigate();
@@ -30,6 +31,7 @@ const Search = () => {
 	const dispatch = useDispatch();
 	const [isKaraoke, setIsKaraoke] = useState(1);
 	const currentSingers = useSelector(selectSingerList);
+	const isDj = useSelector(selectUserIsDj);
 
 	async function submitSearch() {
 		const actualSearchString = isKaraoke === 1 ? searchString + ' karaoke' : searchString;
@@ -96,6 +98,14 @@ const Search = () => {
 				''
 			)}
 			<Menu />
+			{!isDj && (
+				<div className="mb-2 text-right">
+					<Button className="btn-link" onClick={() => navigate('/home')}>
+						Back
+					</Button>
+				</div>
+			)}
+
 			<SearchCard
 				submitSearch={submitSearch}
 				searchString={searchString}
