@@ -34,7 +34,7 @@ namespace KaraokeParty.Controllers {
 				}
 
 				if (dto.RotationNumber != singer.RotationNumber) {
-					List<Singer> allSingers = context.Singers.OrderBy(s => s.RotationNumber).ToList();
+					List<Singer> allSingers = party.Singers.OrderBy(s => s.RotationNumber).ToList();
 					allSingers.RemoveAt(allSingers.FindIndex(s => s.SingerId == dto.SingerId));
 					allSingers.Insert(dto.RotationNumber - 1, singer);
 					for (var i = 0; i < allSingers.Count; i++) {
