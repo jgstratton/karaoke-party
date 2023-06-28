@@ -125,6 +125,10 @@ namespace KaraokeParty.Services {
 			party.MarqueeText = settings.MarqueeText;
 			party.MarqueeEnabled = settings.MarqueeEnabled;
 			party.MarqueeSpeed = settings.MarqueeSpeed;
+			party.SplashScreenEnabled = settings.SplashScreenEnabled;
+			party.SplashScreenSeconds = settings.SplashScreenSeconds;
+			party.SplashScreenUpcomingCount = settings.SplashScreenUpcomingCount;
+
 			context.SaveChanges();
 		}
 

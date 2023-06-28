@@ -1,13 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import PlayerDTO from '../dtoTypes/PlayerDTO';
 import { RootState } from '../store';
-
-interface playerSettings {
-	marqueeEnabled: boolean;
-	marqueeText: string;
-	marqueeSpeed: number;
-	marqueeSize: number;
-}
+import { PlayerSettingsDTO } from '../dtoTypes/PlayerSettingsDTO';
 
 const initialState = {
 	enabled: true,
@@ -22,6 +16,9 @@ const initialState = {
 		marqueeText: '',
 		marqueeSpeed: 20,
 		marqueeSize: 40,
+		splashScreenEnabled: false,
+		splashScreenSeconds: 10,
+		splashScreenUpcomingCount: 3,
 	},
 };
 
@@ -59,7 +56,7 @@ export const playerSlice = createSlice({
 		resetPlayer: () => initialState,
 		sendPosition: () => {},
 		sendDuration: (state, action: PayloadAction<number>) => {},
-		populateSettings: (state, action: PayloadAction<playerSettings>) => {
+		populateSettings: (state, action: PayloadAction<PlayerSettingsDTO>) => {
 			if (action.payload) {
 				state.settings = action.payload;
 			}
@@ -67,7 +64,7 @@ export const playerSlice = createSlice({
 		disableSplash: (state) => {
 			state.showSplash = false;
 		},
-		broadcastSettings: (state, action: PayloadAction<playerSettings>) => {},
+		broadcastSettings: (state, action: PayloadAction<PlayerSettingsDTO>) => {},
 	},
 });
 

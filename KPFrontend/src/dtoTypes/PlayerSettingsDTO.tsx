@@ -3,4 +3,7 @@ export interface PlayerSettingsDTO {
 	marqueeText: string;
 	marqueeSpeed: number;
 	marqueeSize: number;
+	splashScreenEnabled: boolean;
+	splashScreenSeconds: number;
+	splashScreenUpcomingCount: number;
 }

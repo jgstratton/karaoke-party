@@ -6,6 +6,7 @@ import { Button, Form, Modal } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { broadcastSettings, selectPlayerSettings } from '../../slices/playerSlice';
 import styles from './SettingsModal.module.css';
+import { PlayerSettingsDTO } from '../../dtoTypes/PlayerSettingsDTO';
 interface props {
 	show: boolean;
 	handleClose: () => void;
@@ -19,11 +20,18 @@ const SettingsModal = ({ show, handleClose }: props) => {
 	const [marqueeSpeed, setMarqueeSpeed] = useState(20);
 	const [marqueeSize, setMarqueeSize] = useState(40);
 
+	const [splashScreenEnabled, setSplashScreenEnabled] = useState(false);
+	const [splashScreenSeconds, setSplashScreenSeconds] = useState(10);
+	const [splashScreenUpcomingCount, setSplashScreenUpcomingCount] = useState(3);
+
 	const resetSettings = useCallback(() => {
 		setMarqueeEnabled(playerStoreSettings.marqueeEnabled);
 		setMarqueeText(playerStoreSettings.marqueeText);
 		setMarqueeSpeed(playerStoreSettings.marqueeSpeed);
 		setMarqueeSize(playerStoreSettings.marqueeSize);
+		setSplashScreenEnabled(playerStoreSettings.splashScreenEnabled);
+		setSplashScreenSeconds(playerStoreSettings.splashScreenSeconds);
+		setSplashScreenUpcomingCount(playerStoreSettings.splashScreenUpcomingCount);
 	}, [playerStoreSettings]);
 
 	useEffect(() => {
@@ -42,6 +50,9 @@ const SettingsModal = ({ show, handleClose }: props) => {
 				marqueeText,
 				marqueeSpeed,
 				marqueeSize,
+				splashScreenEnabled,
+				splashScreenSeconds,
+				splashScreenUpcomingCount,
 			})
 		);
 		handleClose();
@@ -103,6 +114,44 @@ const SettingsModal = ({ show, handleClose }: props) => {
 								<li> %Url% : Show's the Karaoke Party url</li>
 							</ul>
 						</Form.Text>
+					</Form.Group>
+					<hr />
+					<Form.Group className="mb-3">
+						<Form.Label>
+							Splash Screen Settings ({splashScreenEnabled ? 'enabled' : 'splash screen disabled'})
+						</Form.Label>
+						{!splashScreenEnabled && (
+							<div className={classNames(['float-right', styles.faToggle])}>
+								<FontAwesomeIcon icon={faToggleOff} onClick={() => setSplashScreenEnabled(true)} />
+							</div>
+						)}
+						{splashScreenEnabled && (
+							<div className={classNames(['float-right', styles.faToggle])}>
+								<FontAwesomeIcon icon={faToggleOn} onClick={() => setSplashScreenEnabled(false)} />
+							</div>
+						)}
+					</Form.Group>
+					<Form.Group className="mb-3">
+						<Form.Label>Display Time (seconds)</Form.Label>
+						<span className="float-right text-muted">{splashScreenSeconds}</span>
+						<Form.Range
+							disabled={!splashScreenEnabled}
+							value={splashScreenSeconds}
+							min={5}
+							max={60}
+							onChange={(e) => setSplashScreenSeconds(parseInt(e.target.value))}
+						/>
+					</Form.Group>
+					<Form.Group className="mb-3">
+						<Form.Label>Number of upcoming singers to show</Form.Label>
+						<span className="float-right text-muted">{splashScreenUpcomingCount}</span>
+						<Form.Range
+							disabled={!splashScreenEnabled}
+							value={splashScreenUpcomingCount}
+							min={0}
+							max={5}
+							onChange={(e) => setSplashScreenUpcomingCount(parseInt(e.target.value))}
+						/>
 					</Form.Group>
 				</Modal.Body>
 				<Modal.Footer>

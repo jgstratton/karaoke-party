@@ -45,7 +45,10 @@ namespace KaraokeParty.ApiModels {
 					MarqueeEnabled = party.MarqueeEnabled,
 					MarqueeSize = party.MarqueeSize,
 					MarqueeSpeed = party.MarqueeSpeed,
-					MarqueeText = party.MarqueeText
+					MarqueeText = party.MarqueeText,
+					SplashScreenEnabled = party.SplashScreenEnabled,
+					SplashScreenSeconds = party.SplashScreenSeconds,
+					SplashScreenUpcomingCount = party.SplashScreenUpcomingCount
 				}
 			};
 		}

@@ -14,6 +14,7 @@ import Splash from './Splash';
 
 const Player = () => {
 	useBodyClass('player-open');
+	const settings = useSelector(selectPlayerSettings);
 	const dispatch = useDispatch();
 	const player = useSelector((state: RootState) => state.player);
 	const partyKey = useSelector(selectPartyKey);
@@ -29,8 +30,8 @@ const Player = () => {
 			// @ts-ignore:
 			playerRef.current.seekTo(player.position);
 		}
-		if (player.showSplash) {
-			setTimeout(() => dispatch(disableSplash()), 10000);
+		if (player.showSplash && settings.splashScreenEnabled) {
+			setTimeout(() => dispatch(disableSplash()), settings.splashScreenSeconds * 1000);
 		}
 	}, [lastReportedPosition, setLastReportedPosition, player]);
 
@@ -46,7 +47,7 @@ const Player = () => {
 
 	return (
 		<>
-			{player.showSplash ? (
+			{player.showSplash && settings.splashScreenEnabled ? (
 				<Splash />
 			) : (
 				<div style={{ height: `calc(100vh)`, overflowY: 'hidden' }}>

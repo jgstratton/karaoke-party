@@ -4,12 +4,15 @@ import { selectQueuedSorted } from '../../slices/combinedSelectors';
 import { selectLive } from '../../slices/performancesSlice';
 import styles from './Splash.module.css';
 import classNames from 'classnames';
+import { selectPlayerSettings } from '../../slices/playerSlice';
 
 const Splash = () => {
+	const settings = useSelector(selectPlayerSettings);
 	const queued = useSelector(selectQueuedSorted);
 	const live = useSelector(selectLive);
-	const queuedList = queued.slice(0, 3);
+	const queuedList = queued.slice(0, settings.splashScreenUpcomingCount);
 	const livePerformance = live[0];
+
 	return (
 		<>
 			<div

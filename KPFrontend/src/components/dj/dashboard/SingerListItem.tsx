@@ -1,5 +1,6 @@
 import { Button } from 'react-bootstrap';
 import { SingerSummary } from '../../../slices/singerSlice';
+import classNames from 'classnames';
 
 interface iProps {
 	singer: SingerSummary;
@@ -13,7 +14,10 @@ const SingerListItem = ({ singer, index, className = '', handleSelectSinger }: i
 		<>
 			<span className={className}>{index}</span>
 			<span className={className}>
-				<Button className="btn btn-link p-0" onClick={() => handleSelectSinger(singer.singerId ?? 0)}>
+				<Button
+					className={classNames(['btn', 'btn-link', 'p-0', singer.isPaused ? 'text-danger' : ''])}
+					onClick={() => handleSelectSinger(singer.singerId ?? 0)}
+				>
 					{singer.name}
 				</Button>
 			</span>

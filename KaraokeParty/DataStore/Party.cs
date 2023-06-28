@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace KaraokeParty.DataStore {
 	public class Party {
@@ -37,5 +36,11 @@ namespace KaraokeParty.DataStore {
 		public int MarqueeSpeed { get; set; } = 20;
 
 		public int MarqueeSize { get; set; } = 40;
+
+		public Boolean SplashScreenEnabled { get; set; } = false;
+
+		public int SplashScreenSeconds { get; set; } = 10;
+
+		public int SplashScreenUpcomingCount { get; set; } = 3;
 	}
 }
