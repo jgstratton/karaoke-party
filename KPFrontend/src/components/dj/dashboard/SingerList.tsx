@@ -15,7 +15,7 @@ const SingerList = () => {
 		<>
 			<SingerModal singerId={singerId} show={showSingerModal} handleClose={() => setShowSingerModal(false)} />
 
-			<div className={classNames([styles.listContainer, styles.borderBottom, 'text-muted'])}>
+			<div className={classNames([styles.listContainer, styles.borderBottom, styles.header, 'text-muted'])}>
 				<span>#</span>
 				<span>Singer Rotation</span>
 				<span></span>

@@ -12,7 +12,7 @@ const SongList = () => {
 
 	return (
 		<>
-			<div className={classNames([styles.listContainer, styles.borderBottom, 'text-muted'])}>
+			<div className={classNames([styles.listContainer, styles.borderBottom, styles.header, 'text-muted'])}>
 				<span>#</span>
 				<span>Song List</span>
 				<span></span>

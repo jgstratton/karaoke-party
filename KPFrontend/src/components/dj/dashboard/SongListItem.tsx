@@ -1,11 +1,12 @@
-import { faCheck, faMusic, faPlay } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faMusic, faPencil, faPlay } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faYoutube } from '@fortawesome/free-brands-svg-icons';
-import { Badge } from 'react-bootstrap';
+import { Badge, Dropdown } from 'react-bootstrap';
 import PerformanceDTO from '../../../dtoTypes/PerformanceDTO';
 import StatusService from '../../../services/StatusService';
 import classNames from 'classnames';
-
+import EllipsisToggle from '../../common/EllipsisToggle';
+import styles from './SongList.module.css';
 interface iProps {
 	performance: PerformanceDTO;
 	index: number;
@@ -61,7 +62,17 @@ const SongListItem = ({ performance, index, className = '' }: iProps) => {
 			</span>
 
 			<span>{renderSwitch()}</span>
-			<span>{/** put progressive discolure edit menu here */}</span>
+			<span className={classNames([styles.showOnHover, 'text-right'])}>
+				<Dropdown className="float-right">
+					<Dropdown.Toggle as={EllipsisToggle} variant="success" id="dropdown-basic"></Dropdown.Toggle>
+
+					<Dropdown.Menu>
+						<Dropdown.Item as="button">
+							<FontAwesomeIcon icon={faPencil} /> Song Details
+						</Dropdown.Item>
+					</Dropdown.Menu>
+				</Dropdown>
+			</span>
 		</>
 	);
 };
