@@ -1,4 +1,4 @@
-import { Button, Dropdown } from 'react-bootstrap';
+import { Dropdown } from 'react-bootstrap';
 import { SingerSummary, deleteSinger, toggleSinger } from '../../../slices/singerSlice';
 import classNames from 'classnames';
 import styles from './SingerList.module.css';
@@ -11,7 +11,6 @@ import SingerApi from '../../../api/SingerApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectPartyKey } from '../../../slices/partySlice';
 import { deleteSingerPerformances } from '../../../slices/performancesSlice';
-import Overlay from '../../common/Overlay';
 
 interface iProps {
 	singer: SingerSummary;

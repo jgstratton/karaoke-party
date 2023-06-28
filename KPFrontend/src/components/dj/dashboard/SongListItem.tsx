@@ -1,4 +1,4 @@
-import { faCheck, faMusic, faPencil, faPlay } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faMusic, faPencil } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faYoutube } from '@fortawesome/free-brands-svg-icons';
 import { Badge, Dropdown } from 'react-bootstrap';
