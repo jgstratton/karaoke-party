@@ -1,4 +1,4 @@
-import { HubConnectionBuilder, HubConnectionState } from '@microsoft/signalr';
+import { HubConnection, HubConnectionBuilder, HubConnectionState } from '@microsoft/signalr';
 import { setPosition, setLength } from '../slices/playerSlice';
 import { populatePerformances, addRequest } from '../slices/performancesSlice';
 import { populatePlayer, pause, play } from '../slices/playerSlice';
@@ -6,8 +6,19 @@ import { populateSettings } from '../slices/playerSlice';
 import { populateSingers } from '../slices/singerSlice';
 
 import PartyApi from '../api/PartyApi';
+import { AnyAction, Middleware } from 'redux';
 
-const messageQueue = [];
+const messageQueue: { (): void }[] = [];
+
+const startSignalRConnection = (_connection: HubConnection) =>
+	_connection
+		.start()
+		.then(() => console.info('SignalR Connected'))
+		.catch((err) => {
+			console.error('SignalR Connection Error: ', err);
+			setTimeout(() => startSignalRConnection(connection), 5000);
+		});
+
 const connection = new HubConnectionBuilder().withUrl('/hubs/player').withAutomaticReconnect().build();
 
 connection
@@ -17,13 +28,15 @@ connection
 		while (messageQueue.length > 0) {
 			console.log(`Getting caught up on ${messageQueue.length} signalR messages.`);
 			const messageSender = messageQueue.shift();
-			messageSender();
+			if (messageSender) {
+				messageSender();
+			}
 		}
 	})
 	.catch((e) => console.log('Connection failed: ', e));
 
-const signalRMiddleware = (store) => {
-	const signalActionCreator = function (action) {
+const signalRMiddleware: Middleware = (store) => {
+	const signalActionCreator = function (action: AnyAction) {
 		action.signalR = true;
 		console.log('SignalR action dispatched', action);
 		return action;
@@ -86,7 +99,7 @@ const signalRMiddleware = (store) => {
 		store.dispatch(signalActionCreator(addRequest(performance)));
 	});
 
-	const queueMessageSender = (sendMessage) => {
+	const queueMessageSender = (sendMessage: { (): void }) => {
 		// hub is connected and nothing queued? then just run the method
 		if (messageQueue.length === 0 && connection.state === HubConnectionState.Connected) {
 			sendMessage();

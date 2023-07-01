@@ -5,7 +5,6 @@ import userReducer from './slices/userSlice';
 import playerReducer from './slices/playerSlice';
 import signalRMiddleware from './middleware/signalRMiddleware';
 import singersReducer from './slices/singerSlice';
-import { TypedUseSelectorHook, useSelector } from 'react-redux';
 
 // create the store with the reducer function
 const store = configureStore({

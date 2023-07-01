@@ -3,10 +3,22 @@ import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import './css/bootstrap.min.css';
 import './css/bootstrap-spacing-utilities.css';
-import { register as registerServiceWorker } from './serviceWorkerRegistration';
+import { register, unregister } from './serviceWorkerRegistration';
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 import store from './store';
+
+register({
+	onUpdate: () => {
+		// auto-reload when new service worker is installed (don't change service worker during a live performance or the player will restart)
+		if (!window.refreshing) {
+			console.warn('New service worker installed. Refreshing all tabs.');
+			caches.keys().then((keyList) => Promise.all(keyList.map((key) => caches.delete(key))));
+			window.location.reload();
+			window.refreshing = true;
+		}
+	},
+});
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -16,4 +28,3 @@ root.render(
 		</Provider>
 	</BrowserRouter>
 );
-registerServiceWorker();

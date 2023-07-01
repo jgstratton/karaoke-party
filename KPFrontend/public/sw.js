@@ -1,5 +1,5 @@
 // Establish a cache name
-const cacheName = 'MyFancyCacheName_v4';
+const cacheName = 'KaraokePartyCache_V5';
 const searchKeys = ['/party', '/song', '/images', 'sw.js'];
 
 self.addEventListener('fetch', (event) => {
@@ -28,3 +28,6 @@ self.addEventListener('fetch', (event) => {
 		);
 	}
 });
+
+self.skipWaiting();
+//making change 2
