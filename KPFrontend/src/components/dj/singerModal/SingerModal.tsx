@@ -182,7 +182,7 @@ const SingerModal = ({ show, singerId, handleClose }: props) => {
 								}}
 							>
 								{[...Array(rotationSize)].map((x, i) => (
-									<option key={x} value={i + 1}>
+									<option key={i} value={i + 1}>
 										{i + 1}
 									</option>
 								))}
