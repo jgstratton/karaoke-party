@@ -117,6 +117,18 @@ const SettingsModal = ({ show, handleClose }: props) => {
 					</Form.Group>
 					<hr />
 					<Form.Group className="mb-3">
+						<Form.Label>Number of upcoming singers to show</Form.Label>
+						<span className="float-right text-muted">{splashScreenUpcomingCount}</span>
+						<Form.Range
+							value={splashScreenUpcomingCount}
+							min={0}
+							max={5}
+							onChange={(e) => setSplashScreenUpcomingCount(parseInt(e.target.value))}
+						/>
+						<Form.Text className="text-muted">Applies to user devices and splash screen.</Form.Text>
+					</Form.Group>
+					<hr />
+					<Form.Group className="mb-3">
 						<Form.Label>
 							Splash Screen Settings ({splashScreenEnabled ? 'enabled' : 'splash screen disabled'})
 						</Form.Label>
@@ -140,17 +152,6 @@ const SettingsModal = ({ show, handleClose }: props) => {
 							min={5}
 							max={60}
 							onChange={(e) => setSplashScreenSeconds(parseInt(e.target.value))}
-						/>
-					</Form.Group>
-					<Form.Group className="mb-3">
-						<Form.Label>Number of upcoming singers to show</Form.Label>
-						<span className="float-right text-muted">{splashScreenUpcomingCount}</span>
-						<Form.Range
-							disabled={!splashScreenEnabled}
-							value={splashScreenUpcomingCount}
-							min={0}
-							max={5}
-							onChange={(e) => setSplashScreenUpcomingCount(parseInt(e.target.value))}
 						/>
 					</Form.Group>
 				</Modal.Body>

@@ -1,10 +1,12 @@
 import { useSelector } from 'react-redux';
 import ListGroup from 'react-bootstrap/ListGroup';
 import { selectQueuedSorted } from '../../slices/combinedSelectors';
+import { selectPlayerSettings } from '../../slices/playerSlice';
 
 const Upcoming = () => {
 	const performances = useSelector(selectQueuedSorted);
-	const performanceList = performances.slice(0, 3);
+	const playerSettings = useSelector(selectPlayerSettings);
+	const performanceList = performances.slice(0, playerSettings.splashScreenUpcomingCount);
 	return (
 		<ListGroup>
 			{performanceList.length > 0 ? (

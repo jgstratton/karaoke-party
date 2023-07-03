@@ -1,12 +1,15 @@
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import Upcoming from './singer/Upcoming';
 import Menu from './common/Menu';
 import Player from './singer/Player';
 import Card from 'react-bootstrap/Card';
 import { Button } from 'react-bootstrap';
+import { selectPlayerSettings } from '../slices/playerSlice';
 
 const SingerDashboard = (props) => {
 	const navigate = useNavigate();
+	const playerSettings = useSelector(selectPlayerSettings);
 	return (
 		<div className="container" style={{ padding: '5px', maxWidth: '900px' }}>
 			<Menu />
@@ -23,14 +26,16 @@ const SingerDashboard = (props) => {
 					</Card.Text>
 				</Card.Body>
 			</Card>
-			<Card>
-				<Card.Body>
-					<Card.Title>On Deck</Card.Title>
-					<Card.Text>
-						<Upcoming />
-					</Card.Text>
-				</Card.Body>
-			</Card>
+			{playerSettings.splashScreenUpcomingCount > 0 && (
+				<Card>
+					<Card.Body>
+						<Card.Title>On Deck</Card.Title>
+						<Card.Text>
+							<Upcoming />
+						</Card.Text>
+					</Card.Body>
+				</Card>
+			)}
 		</div>
 	);
 };
