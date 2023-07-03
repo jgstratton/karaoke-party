@@ -78,7 +78,7 @@ namespace KaraokeParty.Services {
 
 			List<Performance> allCompletedDb = party.Queue.Where(p => p.Status == PerformanceStatus.Completed).ToList();
 			Performance? lastCompleted = allCompletedDb
-				.Where(p => p.SortOrder == allCompletedDb.Max(p => p.SortOrder))
+				.Where(p => p.CompletedOrder == allCompletedDb.Max(p => p.CompletedOrder))
 				.FirstOrDefault();
 
 			if (lastCompleted is null) {
