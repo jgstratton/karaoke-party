@@ -97,7 +97,7 @@ const Player = () => {
 								<span className="p-2">
 									{playerSettings.marqueeText
 										.replace(/%code%/gi, partyKey)
-										.replace(/%url%/gi, window.location.href)
+										.replace(/%url%/gi, window.location.host)
 										.replaceAll(' ', '\u00A0')}
 								</span>
 							</Marquee>
