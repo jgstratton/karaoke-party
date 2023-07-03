@@ -14,3 +14,15 @@ export async function fetchOrAlertResult<Type>(result: Result<Type>): Promise<Ty
 	}
 	return result.value;
 }
+
+export async function validateResult<Type>(
+	response: Response,
+	validator: (obj: any) => boolean,
+	errorMessage: string
+): Promise<Result<Type>> {
+	let responseBody = await response.json();
+	if (response.ok && validator(responseBody)) {
+		return { ok: true, value: responseBody };
+	}
+	return { ok: false, error: typeof responseBody === 'string' ? responseBody : errorMessage };
+}

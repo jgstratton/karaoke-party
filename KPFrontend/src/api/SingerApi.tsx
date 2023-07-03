@@ -1,86 +1,93 @@
 import SingerDTO from '../dtoTypes/SingerDTO';
-import { Result } from './Result';
+import { Result, validateResult } from './Result';
 
-const addSinger = async (partyKey: string, singer: SingerDTO): Promise<Result<SingerDTO>> => {
-	let response = await fetch(`party/${partyKey}/singer`, {
-		method: 'POST',
-		headers: {
-			Accept: 'application/json',
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify(singer),
-	});
+const addSinger = async (partyKey: string, singer: SingerDTO): Promise<Result<SingerDTO>> =>
+	await validateResult(
+		await fetch(`party/${partyKey}/singer`, {
+			method: 'POST',
+			headers: {
+				Accept: 'application/json',
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(singer),
+		}),
+		(body) => body.singerId > 0,
+		'Something went wrong when trying to add the singer'
+	);
 
-	let responseSinger = await response.json();
-	if (!response.ok) {
-		return { ok: false, error: responseSinger };
-	}
-	if (responseSinger.singerId) {
-		return { ok: true, value: responseSinger };
-	}
-	return { ok: false, error: 'Something went wrong when trying to add the singer' };
-};
+const getSinger = async (partyKey: string, singerId: number): Promise<Result<SingerDTO>> =>
+	await validateResult(
+		await fetch(`party/${partyKey}/singer/${singerId}`, {
+			method: 'GET',
+			headers: {
+				Accept: 'application/json',
+				'Content-Type': 'application/json',
+			},
+		}),
+		(body) => body.singerId > 0,
+		'Something went wrong when trying to get the singer details'
+	);
 
-const updateSinger = async (partyKey: string, singer: SingerDTO): Promise<Result<SingerDTO>> => {
-	let response = await fetch(`party/${partyKey}/singer/${singer.singerId}`, {
-		method: 'PUT',
-		headers: {
-			Accept: 'application/json',
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify(singer),
-	});
+const getSingers = async (partyKey: string): Promise<Result<SingerDTO[]>> =>
+	await validateResult(
+		await fetch(`party/${partyKey}/singers`, {
+			method: 'GET',
+			headers: {
+				Accept: 'application/json',
+				'Content-Type': 'application/json',
+			},
+		}),
+		(body) => Array.isArray(body),
+		'Something went wrong when trying to fetch the singers list'
+	);
 
-	let responseSinger = await response.json();
-	if (!response.ok) {
-		return { ok: false, error: responseSinger };
-	}
-	if (responseSinger.singerId) {
-		return { ok: true, value: responseSinger };
-	}
-	return { ok: false, error: 'Something went wrong when trying to update the singer' };
-};
+const updateSinger = async (partyKey: string, singer: SingerDTO): Promise<Result<SingerDTO>> =>
+	await validateResult(
+		await fetch(`party/${partyKey}/singer/${singer.singerId}`, {
+			method: 'PUT',
+			headers: {
+				Accept: 'application/json',
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(singer),
+		}),
+		(body) => body.singerId > 0,
+		'Something went wrong when trying to update the singer'
+	);
 
-const getSinger = async (partyKey: string, singerId: number): Promise<Result<SingerDTO>> => {
-	let response = await fetch(`party/${partyKey}/singer/${singerId}`, {
-		method: 'GET',
-		headers: {
-			Accept: 'application/json',
-			'Content-Type': 'application/json',
-		},
-	});
+const deleteSinger = async (partyKey: string, singerId: number): Promise<Result<boolean>> =>
+	await validateResult(
+		await fetch(`party/${partyKey}/singer/${singerId}`, {
+			method: 'DELETE',
+			headers: {
+				Accept: 'application/json',
+				'Content-Type': 'application/json',
+			},
+		}),
+		() => true,
+		'Error deleting singer'
+	);
 
-	let responseSinger = await response.json();
-	if (!response.ok) {
-		return { ok: false, error: responseSinger };
-	}
-	if (responseSinger.singerId) {
-		return { ok: true, value: responseSinger };
-	}
-	return { ok: false, error: 'Something went wrong when trying to get the singer details' };
-};
-
-const deleteSinger = async (partyKey: string, singerId: number): Promise<Result<SingerDTO>> => {
-	let response = await fetch(`party/${partyKey}/singer/${singerId}`, {
-		method: 'DELETE',
-		headers: {
-			Accept: 'application/json',
-			'Content-Type': 'application/json',
-		},
-	});
-
-	let responseSinger = await response.json();
-	if (!response.ok) {
-		return { ok: false, error: 'Error deleting singer' };
-	}
-	return { ok: true, value: responseSinger };
-};
+const moveToLast = async (partyKey: string, singerId: number): Promise<Result<SingerDTO[]>> =>
+	await validateResult(
+		await fetch(`party/${partyKey}/singer/${singerId}/moveToLast`, {
+			method: 'PUT',
+			headers: {
+				Accept: 'application/json',
+				'Content-Type': 'application/json',
+			},
+		}),
+		() => true,
+		'Error moving singer in rotation'
+	);
 
 const SingerApi = {
 	addSinger,
-	updateSinger,
 	getSinger,
+	getSingers,
+	updateSinger,
 	deleteSinger,
+	moveToLast,
 };
 
 export default SingerApi;

@@ -2,25 +2,24 @@ import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect, useState } from 'react';
 import { Alert, Button, Form, Modal } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
-import SingerApi from '../../api/SingerApi';
-import { selectPartyKey } from '../../slices/partySlice';
-import { addSinger, selectRotationSize } from '../../slices/singerSlice';
+import { useSelector } from 'react-redux';
+import { selectRotationSize } from '../../slices/singerSlice';
 import styles from './NewSingerModal.module.css';
+import { selectCurrentSinger } from '../../slices/combinedSelectors';
+import { AddNewSinger } from '../../mediators/SingerMediator';
 interface props {
 	show: boolean;
 	handleClose: () => void;
 }
 
 const NewSingerModal = ({ show, handleClose }: props) => {
-	const dispatch = useDispatch();
 	const [singerName, setSingerName] = useState('');
 	const [singerPosition, setSingerPosition] = useState(1);
 	const [showNameWarning, setShowNameWarning] = useState(false);
 	const [showErrorMessage, setShowErrorMessage] = useState(false);
 	const [errorMessage, setErrorMessage] = useState('');
-	const partyKey = useSelector(selectPartyKey);
 	const rotationSize = useSelector(selectRotationSize);
+	const curSinger = useSelector(selectCurrentSinger);
 
 	useEffect(() => {
 		setSingerPosition(rotationSize + 1);
@@ -43,18 +42,18 @@ const NewSingerModal = ({ show, handleClose }: props) => {
 			setShowNameWarning(true);
 			return;
 		}
-		const newSinger = await SingerApi.addSinger(partyKey, {
+		const newSingerResult = await AddNewSinger({
 			name: singerName,
 			rotationNumber: singerPosition,
 			isPaused: false,
 		});
-		if (newSinger.ok) {
-			dispatch(addSinger(newSinger.value));
-			handleCancel();
-		} else {
+
+		if (!newSingerResult.ok) {
 			setShowErrorMessage(true);
-			setErrorMessage(newSinger.error);
+			setErrorMessage(newSingerResult.error);
+			return;
 		}
+		handleCancel();
 	};
 
 	return (
@@ -84,7 +83,12 @@ const NewSingerModal = ({ show, handleClose }: props) => {
 						onChange={(e) => setSingerPosition(parseInt(e.target.value))}
 					>
 						{[...Array(rotationSize)].map((x, i) => (
-							<option value={i + 1}>{i + 1}</option>
+							<option value={i + 1}>
+								{i + 1}
+								{1 === i + 1 && ' (Add to start of the rotation)'}
+								{!!curSinger && curSinger.rotationNumber === i + 1 && ' (Add before current singer)'}
+								{!!curSinger && curSinger.rotationNumber === i && ' (Add after current singer)'}
+							</option>
 						))}
 						<option value={rotationSize + 1}>{rotationSize + 1} - (Add to end of the rotation)</option>
 					</Form.Select>

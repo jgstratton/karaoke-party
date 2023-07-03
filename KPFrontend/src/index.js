@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import './css/bootstrap.min.css';
 import './css/bootstrap-spacing-utilities.css';
-import { register, unregister } from './serviceWorkerRegistration';
+import { register } from './serviceWorkerRegistration';
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 import store from './store';
@@ -18,6 +18,16 @@ register({
 			window.refreshing = true;
 		}
 	},
+});
+
+window.onerror = (e) => {
+	console.error('Unhandled error:', e);
+	alert('OH NO! AN ERROR! Who wrote this trash!?');
+};
+
+window.addEventListener('unhandledrejection', function (promiseRejectionEvent) {
+	console.error('Unhandled error:', promiseRejectionEvent);
+	alert('OH NO! AN ERROR!  Who wrote this trash!?');
 });
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

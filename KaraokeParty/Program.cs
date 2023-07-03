@@ -31,6 +31,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => options.CustomSchemaIds(type => type.FullName));
 
 builder.Services.AddTransient<IPartyService, PartyService>();
+builder.Services.AddTransient<ISingerService, SingerService>();
 builder.Services.AddTransient<PlayerHub>();
 builder.Services.AddScoped<KPContext, KPContext>();
 

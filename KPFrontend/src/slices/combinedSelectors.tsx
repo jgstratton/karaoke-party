@@ -70,3 +70,16 @@ export const selectQueuedSorted = createSelector(
 		return targetPerformances;
 	}
 );
+
+export const selectCurrentSinger = createSelector(selectSingerList, selectLive, (singers, live) => {
+	if (live.length === 0) {
+		return null;
+	}
+
+	const curSingerId = live[0].singerId;
+	const searchSinger = singers.filter((s) => s.singerId === curSingerId);
+	if (searchSinger.length === 0) {
+		return null;
+	}
+	return searchSinger[0];
+});

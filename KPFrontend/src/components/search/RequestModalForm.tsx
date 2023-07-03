@@ -72,6 +72,10 @@ const RequestModalForm = ({ title, url, show, handleSubmit, handleClose }: iProp
 								</option>
 							))}
 						</Form.Select>
+						<Form.Text className="text-muted">
+							By default, user will be added right before the current singer so as not to jump anyone in
+							line.
+						</Form.Text>
 						{showNameWarning && (
 							<p className="text-danger">You must provide a singer's name to add to the rotation</p>
 						)}

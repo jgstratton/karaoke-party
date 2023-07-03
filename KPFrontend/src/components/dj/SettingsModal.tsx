@@ -6,7 +6,6 @@ import { Button, Form, Modal } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { broadcastSettings, selectPlayerSettings } from '../../slices/playerSlice';
 import styles from './SettingsModal.module.css';
-import { PlayerSettingsDTO } from '../../dtoTypes/PlayerSettingsDTO';
 interface props {
 	show: boolean;
 	handleClose: () => void;

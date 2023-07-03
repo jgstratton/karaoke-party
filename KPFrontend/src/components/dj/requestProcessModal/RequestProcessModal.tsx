@@ -2,16 +2,17 @@ import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
 import { Alert, Button, Modal, Pagination } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
-import PerformanceApi from '../../../api/PerformanceApi';
-import { selectPartyKey } from '../../../slices/partySlice';
-import { deletePerformance, selectRequests, updatePerformancesSubset } from '../../../slices/performancesSlice';
+import { useSelector } from 'react-redux';
+import { selectRequests } from '../../../slices/performancesSlice';
 import ConfirmModal from '../../common/ConfirmModal';
 import Overlay from '../../common/Overlay';
 import RequestProcessForm from './RequestProcessForm';
-import StatusService from '../../../services/StatusService';
-import SingerApi from '../../../api/SingerApi';
-import { addSinger } from '../../../slices/singerSlice';
+import { selectSingerList } from '../../../slices/singerSlice';
+import {
+	AssignRequestToExistingSinger,
+	AssignRequestToNewSinger,
+	DeleteRequest,
+} from '../../../mediators/AssignRequestMediator';
 
 interface iProps {
 	show: boolean;
@@ -19,11 +20,9 @@ interface iProps {
 }
 
 const RequestProcessModal = ({ show, handleClose }: iProps) => {
-	const dispatch = useDispatch();
-
+	const singers = useSelector(selectSingerList);
 	const [currentReqIndex, setCurrentReqIndex] = useState(0);
 	const requests = useSelector(selectRequests);
-	const partyKey = useSelector(selectPartyKey);
 	const [errorMessage, setErrorMessage] = useState('');
 	const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
@@ -31,51 +30,36 @@ const RequestProcessModal = ({ show, handleClose }: iProps) => {
 		const clonedPerformance = { ...requests[currentReqIndex] };
 		clonedPerformance.singerId = singerId;
 		clonedPerformance.singerName = singerName;
-		clonedPerformance.status = StatusService.queued;
-		if (singerId === 0) {
-			const newSinger = await SingerApi.addSinger(partyKey, {
-				name: singerName,
-				rotationNumber: 0,
-				isPaused: false,
-			});
-			if (!newSinger.ok) {
-				setErrorMessage(newSinger.error);
-				return;
-			}
-			if (!newSinger.value.singerId) {
-				setErrorMessage('Issue creating new singer');
-				return;
-			}
-			dispatch(addSinger(newSinger.value));
-			clonedPerformance.singerId = newSinger.value.singerId;
-		}
 
-		const updatedPerformance = await PerformanceApi.updatePerformance(partyKey, clonedPerformance);
+		const assignResult =
+			singerId === 0
+				? await AssignRequestToNewSinger(clonedPerformance, singerName)
+				: await AssignRequestToExistingSinger(
+						clonedPerformance,
+						singers.filter((s) => s.singerId === singerId)[0]
+				  );
 
-		if (!updatedPerformance.ok) {
-			setErrorMessage(updatedPerformance.error);
+		if (!assignResult.ok) {
+			setErrorMessage(assignResult.error);
 			return;
 		}
 		setErrorMessage('');
-		dispatch(updatePerformancesSubset([updatedPerformance.value]));
 	};
 
 	const deleteRequest = async () => {
-		const deleteResult = await PerformanceApi.deletePerformance(partyKey, requests[currentReqIndex]);
+		const deleteResult = await DeleteRequest(requests[currentReqIndex]);
+		setShowConfirmDelete(false);
 
 		if (!deleteResult.ok) {
 			setErrorMessage(deleteResult.error);
-			setShowConfirmDelete(false);
 			return;
 		}
-		setShowConfirmDelete(false);
+
 		if (currentReqIndex === requests.length - 1) {
 			setCurrentReqIndex(currentReqIndex - 1);
 		} else if (requests.length === 1) {
 			handleClose();
 		}
-		console.log('about to delete', requests.length, currentReqIndex);
-		dispatch(deletePerformance(requests[currentReqIndex].performanceId));
 	};
 
 	return (

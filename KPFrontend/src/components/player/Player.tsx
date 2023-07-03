@@ -35,7 +35,15 @@ const Player = () => {
 		if (player.showSplash && settings.splashScreenEnabled) {
 			setTimeout(() => dispatch(disableSplash()), settings.splashScreenSeconds * 1000);
 		}
-	}, [lastReportedPosition, setLastReportedPosition, player]);
+	}, [
+		dispatch,
+		lastReportedPosition,
+		setLastReportedPosition,
+		player.showSplash,
+		player.position,
+		settings.splashScreenEnabled,
+		settings.splashScreenSeconds,
+	]);
 
 	const enablePlayer = () => {
 		setUserInteraction(true);

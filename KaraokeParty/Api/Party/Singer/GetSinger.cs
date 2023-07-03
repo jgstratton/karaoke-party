@@ -27,5 +27,15 @@ namespace KaraokeParty.Controllers {
 			}
 			return SingerDTO.FromDb(singer);
 		}
+
+		[HttpGet]
+		[Route("party/{partyKey}/singers")]
+		public ActionResult<List<SingerDTO>> GetSingers(string partyKey) {
+			Party? party = partyService.GetPartyByKey(partyKey);
+			if (party == null) {
+				return NotFound();
+			}
+			return party.Singers.Select(s => SingerDTO.FromDb(s)).ToList();
+		}
 	}
 }

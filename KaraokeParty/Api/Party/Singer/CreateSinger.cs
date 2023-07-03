@@ -7,10 +7,12 @@ namespace KaraokeParty.Controllers {
 	[ApiController]
 	public class ApiSingerCreate : ControllerBase {
 		private readonly IPartyService partyService;
+		private readonly ISingerService singerService;
 		private readonly KPContext context;
 
-		public ApiSingerCreate(KPContext context, IPartyService partyService) {
+		public ApiSingerCreate(KPContext context, IPartyService partyService, ISingerService singerService) {
 			this.partyService = partyService;
+			this.singerService = singerService;
 			this.context = context;
 		}
 
@@ -36,10 +38,13 @@ namespace KaraokeParty.Controllers {
 					return BadRequest("Name is already used in this party");
 				}
 
+				Singer dbSinger = dto.ToDb();
 				if (dto.RotationNumber <= 0) {
 					dto.RotationNumber = party.Singers.Count() + 1;
+				} else {
+					singerService.MoveSingerInRotation(party, dbSinger, dto.RotationNumber);
 				}
-				Singer dbSinger = dto.ToDb();
+
 				dbSinger.Party = party;
 				context.Singers.Add(dbSinger);
 				context.SaveChanges();

@@ -13,7 +13,7 @@ import Button from 'react-bootstrap/Button';
 import { addRequest, sendNotifyRequest } from '../slices/performancesSlice';
 import { RootState } from '../store';
 import PerformanceApi from '../api/PerformanceApi';
-import { addSinger, selectSingerList } from '../slices/singerSlice';
+import { populateSingers } from '../slices/singerSlice';
 import SingerApi from '../api/SingerApi';
 import { selectUserIsDj } from '../slices/userSlice';
 
@@ -25,12 +25,12 @@ const Search = () => {
 	const [searchSubmitted, setSearchSubmitted] = useState(false);
 	const [localLoading, setLocalLoading] = useState(false);
 	const [youtubeLoading, setYoutubeLoading] = useState(false);
+	const [loading, setLoading] = useState(false);
 	const [addedToQueue, setAddedToQueue] = useState(false);
 	const party = useSelector((state: RootState) => state.party);
 	const user = useSelector((state: RootState) => state.user);
 	const dispatch = useDispatch();
 	const [isKaraoke, setIsKaraoke] = useState(1);
-	const currentSingers = useSelector(selectSingerList);
 	const isDj = useSelector(selectUserIsDj);
 
 	async function submitSearch() {
@@ -53,46 +53,58 @@ const Search = () => {
 	}
 
 	async function submitNewPerformance(filename: string, singerName: string, singerId?: number) {
+		setLoading(true);
+		const createNewSinger = typeof singerId !== 'undefined';
 		const newPerformance = await PerformanceApi.addPerformance(party.partyKey, {
 			fileName: filename,
 			userId: user.userId ?? 0,
 			singerName: singerName,
 			singerId: singerId,
-			createNewSinger: typeof singerId !== 'undefined',
+			createNewSinger: createNewSinger,
 		});
+
 		if (!newPerformance.ok) {
+			setLoading(false);
 			alert(newPerformance.error.toString());
 			return;
 		}
+
+		// a new request was submitted, let the DJ know so they can approve
 		if (newPerformance.value.singerId == null) {
 			dispatch(sendNotifyRequest(newPerformance.value));
 		} else {
 			dispatch(addRequest(newPerformance.value));
-			if (!currentSingers.find((s) => s.singerId === newPerformance.value.singerId)) {
-				const newSinger = await SingerApi.getSinger(party.partyKey, newPerformance.value.singerId);
-				if (!newSinger.ok) {
-					alert(newSinger.error.toString());
+			if (createNewSinger) {
+				const updatedSingerList = await SingerApi.moveToLast(party.partyKey, newPerformance.value.singerId);
+				if (!updatedSingerList.ok) {
+					alert(updatedSingerList.error.toString());
+					setLoading(false);
 					return;
 				}
-				dispatch(addSinger(newSinger.value));
+				dispatch(populateSingers(updatedSingerList.value));
 			}
 		}
-
+		setLoading(false);
 		setAddedToQueue(true);
 	}
 
 	return (
 		<div className="container" style={{ padding: '5px', maxWidth: '900px' }}>
-			{addedToQueue ? (
+			{loading || addedToQueue ? (
 				<Overlay>
-					<div>Your song request has been received!</div>
-					<br />
-					<div className="mb-3">
-						<Button onClick={() => navigate('/home')}>Done for now</Button>
-					</div>
-					<div className="mb-3">
-						<Button onClick={() => resetSearch()}>Search for another song</Button>
-					</div>
+					{loading && <div>saving...</div>}
+					{addedToQueue && (
+						<>
+							<div>Your song request has been received!</div>
+							<br />
+							<div className="mb-3">
+								<Button onClick={() => navigate('/home')}>Done for now</Button>
+							</div>
+							<div className="mb-3">
+								<Button onClick={() => resetSearch()}>Search for another song</Button>
+							</div>
+						</>
+					)}
 				</Overlay>
 			) : (
 				''
