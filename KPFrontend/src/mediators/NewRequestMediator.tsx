@@ -10,7 +10,7 @@ import { PerformanceRequestDTO } from '../dtoTypes/PerformanceRequestDTO';
 export const CreateNewUserRequest = async (performance: PerformanceRequestDTO): Promise<Result<PerformanceDTO>> => {
 	const partyKey = store.getState().party.partyKey;
 
-	if (performance.singerId ?? 0 > 0) {
+	if ((performance.singerId ?? 0) > 0) {
 		return {
 			ok: false,
 			error: 'User requests are not automatically assigned to singer in rotation. Unexpected singer id.',
@@ -33,7 +33,7 @@ export const CreateNewRequestForExistingSinger = async (
 ): Promise<Result<PerformanceDTO>> => {
 	const partyKey = store.getState().party.partyKey;
 
-	if (performance.singerId ?? 0 === 0) {
+	if ((performance.singerId ?? 0) === 0) {
 		return { ok: false, error: 'Singer Id is not set, unable to update for existing singer.' };
 	}
 
@@ -52,7 +52,7 @@ export const CreateNewRequestForNewSinger = async (
 ): Promise<Result<PerformanceDTO>> => {
 	const partyKey = store.getState().party.partyKey;
 
-	if (performance.singerId ?? 0 > 0) {
+	if ((performance.singerId ?? 0) > 0) {
 		return { ok: false, error: 'Singer Id is set, unable to add new singer.' };
 	}
 
