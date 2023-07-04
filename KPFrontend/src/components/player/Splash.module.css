@@ -1,5 +1,5 @@
 .logoText {
-	font-size: 3em;
+	font-size: 3.5em;
 	font-family: "Yellowtail", sans-serif;
 	color: #fff;
 	text-shadow:
@@ -14,7 +14,7 @@
 }
 
 .logoTextSmall {
-	font-size: 2em;
+	font-size: 2.5em;
 	font-family: "Yellowtail", sans-serif;
 	color: #fff;
 	text-shadow:
@@ -30,5 +30,5 @@
 
 .container :global(.card) {
 	background-color:black;
-	font-size: 20px;
+	font-size: 30px;
 }

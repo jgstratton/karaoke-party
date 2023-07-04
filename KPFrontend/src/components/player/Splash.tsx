@@ -26,28 +26,31 @@ const Splash = () => {
 						{livePerformance.songTitle}
 					</Card.Body>
 				</Card>
-				<div className={styles.logoText}>On Deck</div>
-
-				{queuedList.length > 0 ? (
-					queuedList.map((s, i) => (
-						<Card key={s.performanceId} className="mb-2">
-							<Card.Body>
-								<Card.Text>
-									<div className="text-warning">{s.singerName}</div>
-									{s.songTitle}
-								</Card.Text>
-							</Card.Body>
-						</Card>
-					))
-				) : (
+				{settings.splashScreenUpcomingCount > 0 && (
 					<>
-						<Card className="mb-2">
-							<Card.Body>
-								<Card.Text>
-									<div className="text-warning">No additional peformances queued up.</div>
-								</Card.Text>
-							</Card.Body>
-						</Card>
+						<div className={styles.logoText}>On Deck</div>
+						{queuedList.length > 0 ? (
+							queuedList.map((s, i) => (
+								<Card key={s.performanceId} className="mb-2">
+									<Card.Body>
+										<Card.Text>
+											<div className="text-warning">{s.singerName}</div>
+											{s.songTitle}
+										</Card.Text>
+									</Card.Body>
+								</Card>
+							))
+						) : (
+							<>
+								<Card className="mb-2">
+									<Card.Body>
+										<Card.Text>
+											<div className="text-warning">No additional peformances queued up.</div>
+										</Card.Text>
+									</Card.Body>
+								</Card>
+							</>
+						)}
 					</>
 				)}
 			</div>

@@ -20,10 +20,12 @@ register({
 	},
 });
 
-window.onerror = (e) => {
-	console.error('Unhandled error:', e);
-	alert('OH NO! AN ERROR! Who wrote this trash!?');
-};
+if (!window.location.pathname.toLowerCase().includes('player')) {
+	window.onerror = (e) => {
+		console.error('Unhandled error:', e);
+		alert('OH NO! AN ERROR! Who wrote this trash!?');
+	};
+}
 
 window.addEventListener('unhandledrejection', function (promiseRejectionEvent) {
 	console.error('Unhandled error:', promiseRejectionEvent);
