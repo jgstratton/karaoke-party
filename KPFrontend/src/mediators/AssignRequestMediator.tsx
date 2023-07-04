@@ -13,7 +13,6 @@ export const AssignRequestToExistingSinger = async (
 	singer: SingerDTO
 ): Promise<Result<PerformanceDTO>> => {
 	const partyKey = store.getState().party.partyKey;
-
 	if (singer.singerId == null) {
 		return { ok: false, error: 'null singer id' };
 	}
@@ -44,8 +43,12 @@ export const AssignRequestToNewSinger = async (
 	});
 
 	//validate
-	if (!newSingerResult.ok || newSingerResult.value.singerId == null) {
-		return { ok: false, error: 'Error creating new singer.' };
+	if (!newSingerResult.ok) {
+		return newSingerResult;
+	}
+
+	if (newSingerResult.value.singerId == null) {
+		return { ok: false, error: 'Error occured when creating singer.' };
 	}
 
 	// move new singer to the back

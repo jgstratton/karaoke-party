@@ -1,6 +1,6 @@
 import { HubConnection, HubConnectionBuilder, HubConnectionState } from '@microsoft/signalr';
 import { setPosition, setLength } from '../slices/playerSlice';
-import { populatePerformances, addRequest } from '../slices/performancesSlice';
+import { populatePerformances, addPerformance } from '../slices/performancesSlice';
 import { populatePlayer, pause, play } from '../slices/playerSlice';
 import { populateSettings } from '../slices/playerSlice';
 import { populateSingers } from '../slices/singerSlice';
@@ -96,7 +96,7 @@ const signalRMiddleware: Middleware = (store) => {
 
 	connection.on('ReceiveNewRequest', async (performance) => {
 		console.log('ReceiveNewRequest');
-		store.dispatch(signalActionCreator(addRequest(performance)));
+		store.dispatch(signalActionCreator(addPerformance(performance)));
 	});
 
 	const queueMessageSender = (sendMessage: { (): void }) => {

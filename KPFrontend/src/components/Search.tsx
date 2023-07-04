@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Menu from './common/Menu';
 import LocalResults from './search/LocalResults';
 import YoutubeResults from './search/YoutubeResults';
@@ -10,12 +10,14 @@ import ApiService from '../api/ApiService';
 import { useNavigate } from 'react-router-dom';
 import Overlay from './common/Overlay';
 import Button from 'react-bootstrap/Button';
-import { addRequest, sendNotifyRequest } from '../slices/performancesSlice';
 import { RootState } from '../store';
-import PerformanceApi from '../api/PerformanceApi';
-import { populateSingers } from '../slices/singerSlice';
-import SingerApi from '../api/SingerApi';
 import { selectUserIsDj } from '../slices/userSlice';
+import {
+	CreateNewRequestForExistingSinger,
+	CreateNewRequestForNewSinger,
+	CreateNewUserRequest,
+} from '../mediators/NewRequestMediator';
+import { PerformanceRequestDTO } from '../dtoTypes/PerformanceRequestDTO';
 
 const Search = () => {
 	const navigate = useNavigate();
@@ -27,9 +29,7 @@ const Search = () => {
 	const [youtubeLoading, setYoutubeLoading] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [addedToQueue, setAddedToQueue] = useState(false);
-	const party = useSelector((state: RootState) => state.party);
 	const user = useSelector((state: RootState) => state.user);
-	const dispatch = useDispatch();
 	const [isKaraoke, setIsKaraoke] = useState(1);
 	const isDj = useSelector(selectUserIsDj);
 
@@ -54,36 +54,25 @@ const Search = () => {
 
 	async function submitNewPerformance(filename: string, singerName: string, singerId?: number) {
 		setLoading(true);
-		const createNewSinger = typeof singerId !== 'undefined';
-		const newPerformance = await PerformanceApi.addPerformance(party.partyKey, {
+		const createNewSinger = (singerId ?? 0) === 0;
+		const newRequest: PerformanceRequestDTO = {
 			fileName: filename,
 			userId: user.userId ?? 0,
 			singerName: singerName,
 			singerId: singerId,
-			createNewSinger: createNewSinger,
-		});
+		};
+		const newRequestResult = !isDj
+			? await CreateNewUserRequest(newRequest)
+			: createNewSinger
+			? await CreateNewRequestForNewSinger(newRequest)
+			: await CreateNewRequestForExistingSinger(newRequest);
 
-		if (!newPerformance.ok) {
+		if (!newRequestResult.ok) {
 			setLoading(false);
-			alert(newPerformance.error.toString());
+			alert(newRequestResult.error);
 			return;
 		}
 
-		// a new request was submitted, let the DJ know so they can approve
-		if (newPerformance.value.singerId == null) {
-			dispatch(sendNotifyRequest(newPerformance.value));
-		} else {
-			dispatch(addRequest(newPerformance.value));
-			if (createNewSinger) {
-				const updatedSingerList = await SingerApi.moveToLast(party.partyKey, newPerformance.value.singerId);
-				if (!updatedSingerList.ok) {
-					alert(updatedSingerList.error.toString());
-					setLoading(false);
-					return;
-				}
-				dispatch(populateSingers(updatedSingerList.value));
-			}
-		}
 		setLoading(false);
 		setAddedToQueue(true);
 	}
