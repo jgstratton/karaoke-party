@@ -66,7 +66,7 @@ namespace KaraokeParty.Controllers {
 						.Select(s => s.RotationNumber).FirstOrDefault();
 				}
 				if (newRotationNumber <= 0) {
-					newRotationNumber = party.Singers.Count + 1;
+					newRotationNumber = party.Singers.Count;
 				}
 				singer.RotationNumber = newRotationNumber;
 

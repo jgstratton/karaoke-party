@@ -40,7 +40,7 @@ namespace KaraokeParty.Controllers {
 
 				Singer dbSinger = dto.ToDb();
 				if (dto.RotationNumber <= 0) {
-					dto.RotationNumber = party.Singers.Count() + 1;
+					dbSinger.RotationNumber = party.Singers.Count() + 1;
 				} else {
 					singerService.MoveSingerInRotation(party, dbSinger, dto.RotationNumber);
 				}
