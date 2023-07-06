@@ -41,6 +41,7 @@ const Player = () => {
 		setLastReportedPosition,
 		player.showSplash,
 		player.position,
+		player.url,
 		settings.splashScreenEnabled,
 		settings.splashScreenSeconds,
 	]);

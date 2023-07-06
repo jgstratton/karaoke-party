@@ -25,6 +25,10 @@ if (!window.location.pathname.toLowerCase().includes('player')) {
 		console.error('Unhandled error:', e);
 		alert('OH NO! AN ERROR! Who wrote this trash!?');
 	};
+} else {
+	window.onerror = (e) => {
+		console.error('Unhandled error:', e);
+	};
 }
 
 window.addEventListener('unhandledrejection', function (promiseRejectionEvent) {
