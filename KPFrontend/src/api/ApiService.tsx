@@ -1,4 +1,3 @@
-import { CreatePartyResponse } from '../dtoTypes/CreatePartyResponse';
 import { SongDTO } from '../dtoTypes/SongDTO';
 
 async function joinParty(partyKey: string, singerName: string) {
@@ -13,25 +12,6 @@ async function joinParty(partyKey: string, singerName: string) {
 		return user;
 	}
 	alert('error joining party');
-}
-
-async function createParty(title: string, djName: string) {
-	let response = await fetch('party', {
-		method: 'POST',
-		headers: {
-			Accept: 'application/json',
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({
-			title: title,
-			djName: djName,
-		}),
-	});
-	let createPartyResponse: CreatePartyResponse = await response.json();
-	if (createPartyResponse.party.partyKey) {
-		return createPartyResponse;
-	}
-	alert('error creating party');
 }
 
 async function addSong(song: SongDTO) {
@@ -61,7 +41,6 @@ async function searchSongs(searchString: string) {
 }
 
 const ApiService = {
-	createParty,
 	joinParty,
 	addSong,
 	searchSongs,

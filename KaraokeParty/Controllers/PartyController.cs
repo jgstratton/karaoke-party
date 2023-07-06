@@ -138,26 +138,5 @@ namespace KaraokeParty.Controllers {
 			context.SaveChanges();
 			return true;
 		}
-
-		[HttpPost]
-		public CreatePartyResponse Post(CreatePartyPost postParty) {
-			Party newParty = new Party {
-				Title = postParty.Title,
-				PartyKey = KeyGenerator.CreateAlphaKey(4),
-			};
-			User newUser = new User {
-				Name = postParty.DJName,
-				IsDj = true
-			};
-			partyService.ApllyDefaultPlayerSettings(newParty);
-			context.Parties.Add(newParty);
-			context.Users.Add(newUser);
-			context.SaveChanges();
-
-			return new CreatePartyResponse {
-				Party = PartyDTO.FromDb(newParty),
-				Dj = UserDTO.FromDb(newUser)
-			};
-		}
 	}
 }

@@ -14,6 +14,7 @@ import PartyApi from '../api/PartyApi';
 import { populateSingers } from '../slices/singerSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+import { CreateParty } from '../mediators/PartyMediator';
 
 const NoParty = () => {
 	const dispatch = useDispatch();
@@ -26,6 +27,7 @@ const NoParty = () => {
 		partyName: '',
 		joinCode: '',
 		djName: '',
+		password: '',
 		singerName: '',
 		mode: 'Join',
 	});
@@ -40,16 +42,13 @@ const NoParty = () => {
 	}
 
 	async function handleCreate() {
-		let partyResponse = await ApiService.createParty(form.partyName, form.djName);
-		if (partyResponse) {
-			let { party, dj } = partyResponse;
-			dispatch(populateUser(dj));
-			dispatch(populateParty(party));
-			dispatch(populateSettings(party.playerSettings));
-			StorageService.storeUser(dj);
-			StorageService.storeParty(party);
-			navigate('/redirectHome');
+		const createPartyResult = await CreateParty(form.partyName, form.djName, form.password);
+		if (!createPartyResult.ok) {
+			setErrorMessage(createPartyResult.error);
+			return;
 		}
+		setErrorMessage('');
+		navigate('/redirectHome');
 	}
 
 	async function handleJoin() {
@@ -84,6 +83,12 @@ const NoParty = () => {
 	) : (
 		<div className="container" style={{ padding: '5px', maxWidth: '450px' }}>
 			<Menu />
+			{errorMessage.length > 0 && (
+				<Alert variant={'danger'} className="mt-3">
+					<FontAwesomeIcon icon={faExclamationTriangle} className="mr-2" />
+					{errorMessage}
+				</Alert>
+			)}
 			{mode === 'Join' ? (
 				<Card>
 					<Card.Body>
@@ -155,6 +160,19 @@ const NoParty = () => {
 									You are the DJ for the night, pick a name so people know who you are
 								</Form.Text>
 							</Form.Group>
+							<Form.Group className="mb-3">
+								<Form.Label>Password</Form.Label>
+								<Form.Control
+									type="password"
+									placeholder="Password"
+									name="password"
+									value={form.password}
+									onChange={handleInputChange}
+								/>
+								<Form.Text className="text-muted">
+									This app is reserved for private use, password will be provided prior to event.
+								</Form.Text>
+							</Form.Group>
 							<Button variant="primary" type="submit" onClick={handleCreate}>
 								Start the party
 							</Button>
@@ -166,12 +184,6 @@ const NoParty = () => {
 						</Card.Text>
 					</Card.Body>
 				</Card>
-			)}
-			{errorMessage.length > 0 && (
-				<Alert variant={'danger'} className="mt-3">
-					<FontAwesomeIcon icon={faExclamationTriangle} className="mr-2" />
-					{errorMessage}
-				</Alert>
 			)}
 		</div>
 	);

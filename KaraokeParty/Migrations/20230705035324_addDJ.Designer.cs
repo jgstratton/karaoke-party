@@ -3,6 +3,7 @@ using System;
 using KaraokeParty.DataStore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KaraokeParty.Migrations
 {
     [DbContext(typeof(KPContext))]
-    partial class KPContextModelSnapshot : ModelSnapshot
+    [Migration("20230705035324_addDJ")]
+    partial class addDJ
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,14 +28,14 @@ namespace KaraokeParty.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("KaraokeParty.DataStore.Dj", b =>
+            modelBuilder.Entity("KaraokeParty.DataStore.DJ", b =>
                 {
-                    b.Property<int>("DjId")
+                    b.Property<int>("DJid")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("dj_id");
+                        .HasColumnName("d_jid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("DjId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("DJid"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -45,10 +48,10 @@ namespace KaraokeParty.Migrations
                         .HasColumnType("text")
                         .HasColumnName("password");
 
-                    b.HasKey("DjId")
-                        .HasName("pk_djs");
+                    b.HasKey("DJid")
+                        .HasName("pk_d_js");
 
-                    b.ToTable("djs", (string)null);
+                    b.ToTable("d_js", (string)null);
                 });
 
             modelBuilder.Entity("KaraokeParty.DataStore.Party", b =>

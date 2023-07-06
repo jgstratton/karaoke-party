@@ -1,5 +1,24 @@
+import { CreatePartyResponse } from '../dtoTypes/CreatePartyResponse';
 import PartyDTO from '../dtoTypes/PartyDTO';
-import { fetchOrThrowResult, Result } from './Result';
+import { fetchOrThrowResult, Result, validateResult } from './Result';
+
+const createParty = async (title: string, djName: string, password: string): Promise<Result<CreatePartyResponse>> =>
+	await validateResult(
+		await fetch('party', {
+			method: 'POST',
+			headers: {
+				Accept: 'application/json',
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				title: title,
+				djName: djName,
+				password: password,
+			}),
+		}),
+		(body) => body.party && body.party.partyKey,
+		'error creating party'
+	);
 
 const fetchParty = async (partyKey: string): Promise<Result<PartyDTO>> => {
 	console.log('fetching party');
@@ -22,6 +41,7 @@ const fetchParty = async (partyKey: string): Promise<Result<PartyDTO>> => {
 const fetchPartyOrThrow = async (partyKey: string): Promise<PartyDTO> => fetchOrThrowResult(await fetchParty(partyKey));
 
 const PartyApi = {
+	createParty,
 	fetchParty,
 	fetchPartyOrThrow,
 };

@@ -9,6 +9,7 @@ namespace KaraokeParty.DataStore {
 		public DbSet<Song> Songs { get; set; } = null!;
 		public DbSet<Performance> Performances { get; set; }
 		public DbSet<Singer> Singers { get; set; } = null!;
+		public DbSet<Dj> Djs { get; set; } = null!;
 
 		public KPContext(IConfiguration iConfig) {
 			configuration = iConfig;
