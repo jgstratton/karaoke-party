@@ -37,6 +37,11 @@ builder.Services.AddScoped<KPContext, KPContext>();
 
 // Need to register IHTTPClientFactory for the Proxy to work
 builder.Services.AddHttpClient();
+
+builder.Services.AddHttpClient("yt-dlp", c => {
+	c.BaseAddress = new Uri(builder.Configuration["YTDLPServiceConnectionString"] ?? "");
+});
+
 var app = builder.Build();
 
 // rewrite client-side routes to return index.html
