@@ -17,10 +17,10 @@ export async function fetchOrAlertResult<Type>(result: Result<Type>): Promise<Ty
 
 export async function validateResult<Type>(
 	response: Response,
-	validator: (obj: any) => boolean,
+	validator: (obj: Type) => boolean,
 	errorMessage: string
 ): Promise<Result<Type>> {
-	let responseBody = await response.json();
+	let responseBody: Type = await response.json();
 	if (response.ok && validator(responseBody)) {
 		return { ok: true, value: responseBody };
 	}

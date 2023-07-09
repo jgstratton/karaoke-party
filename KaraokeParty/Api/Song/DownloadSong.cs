@@ -15,7 +15,7 @@ namespace KaraokeParty.Controllers {
 
 		[HttpPost]
 		[Route("song/download")]
-		public async Task<ActionResult<SongDTO>> Search(SongDTO dto) {
+		public async Task<ActionResult<SongDTO>> Download(SongDTO dto) {
 			if (dto.Url.Length == 0) {
 				return BadRequest("URL is required to download file");
 			}
@@ -27,18 +27,18 @@ namespace KaraokeParty.Controllers {
 			}
 
 			var ytClient = clientFactory.CreateClient("yt-dlp");
-			var request = new HttpRequestMessage(HttpMethod.Get, $"song/download?url={dto.Url}");
+			var request = new HttpRequestMessage(HttpMethod.Get, $"download?url={dto.Url}");
 			var response = await ytClient.SendAsync(request);
 
 			if (!response.IsSuccessStatusCode) {
 				return BadRequest("Error trying to get song");
 			}
 
-			var fileName = await response.Content.ReadAsAsync<string>();
-			if (fileName.Length == 0) {
+			var fileName = await response.Content.ReadAsAsync<DownloadResult>();
+			if (fileName.status != "success" || fileName.file.Length == 0) {
 				return BadRequest("Error while trying to get song");
 			}
-			dto.FileName = fileName;
+			dto.FileName = fileName.file;
 
 			Song? song = context.Songs.Find(dto.FileName);
 			if (song is null) {
@@ -50,6 +50,11 @@ namespace KaraokeParty.Controllers {
 
 			context.SaveChanges();
 			return SongDTO.FromDb(song);
+		}
+
+		private class DownloadResult {
+			public string status { get; set; }
+			public string file { get; set; }
 		}
 	}
 }

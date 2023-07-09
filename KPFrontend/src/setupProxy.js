@@ -2,7 +2,7 @@
 
 module.exports = function (app) {
 	app.use(
-		createProxyMiddleware(['/party', '/singer', '/song', '/user'], {
+		createProxyMiddleware(['/party', '/singer', '/song', '/songs', '/user'], {
 			target: 'https://localhost:7049',
 			secure: false,
 			ws: true,
@@ -14,15 +14,6 @@ module.exports = function (app) {
 			target: 'https://localhost:7049',
 			secure: false,
 			ws: true,
-		})
-	);
-
-	app.use(
-		'/yt-dlp',
-		createProxyMiddleware({
-			target: 'http://127.0.0.1:5000',
-			pathRewrite: { '^/yt-dlp': '' },
-			secure: false,
 		})
 	);
 };

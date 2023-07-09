@@ -4,16 +4,16 @@ import { useSelector } from 'react-redux';
 import { selectSingerList } from '../../slices/singerSlice';
 import { selectUserIsDj, selectUserName } from '../../slices/userSlice';
 import VideoPreview from '../common/VideoPreview';
+import { SongDTO } from '../../dtoTypes/SongDTO';
 
 interface iProps {
-	title: string;
-	url: string;
+	song?: SongDTO;
 	show: boolean;
 	handleSubmit: (singerName: string, singerId?: number) => void;
 	handleClose: () => void;
 }
 
-const RequestModalForm = ({ title, url, show, handleSubmit, handleClose }: iProps) => {
+const RequestModalForm = ({ song, show, handleSubmit, handleClose }: iProps) => {
 	const [singerName, setSingerName] = useState('');
 	const [singerId, setSingerId] = useState<number | undefined>();
 	const [showNameWarning, setShowNameWarning] = useState(false);
@@ -57,9 +57,9 @@ const RequestModalForm = ({ title, url, show, handleSubmit, handleClose }: iProp
 			<Modal.Body>
 				<Form.Group className="mb-3">
 					<Form.Label>Selected Song</Form.Label>
-					<VideoPreview url={url} />
-					<div>{title}</div>
-					<a href={url}>{url}</a>
+					<VideoPreview url={song?.url} />
+					<div>{song?.title}</div>
+					<a href={song?.url}>{song?.url}</a>
 				</Form.Group>
 				{isDj && (
 					<Form.Group className="mb-3">

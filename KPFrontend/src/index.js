@@ -22,6 +22,7 @@ register({
 
 if (!window.location.pathname.toLowerCase().includes('player')) {
 	window.onerror = (e) => {
+		debugger;
 		console.error('Unhandled error:', e);
 		alert('OH NO! AN ERROR! Who wrote this trash!?');
 	};

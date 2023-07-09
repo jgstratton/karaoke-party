@@ -11,7 +11,7 @@ const addSinger = async (partyKey: string, singer: SingerDTO): Promise<Result<Si
 			},
 			body: JSON.stringify(singer),
 		}),
-		(body) => body.singerId > 0,
+		(body) => (body.singerId ?? 0) > 0,
 		'Something went wrong when trying to add the singer'
 	);
 
@@ -24,7 +24,7 @@ const getSinger = async (partyKey: string, singerId: number): Promise<Result<Sin
 				'Content-Type': 'application/json',
 			},
 		}),
-		(body) => body.singerId > 0,
+		(body) => (body.singerId ?? 0) > 0,
 		'Something went wrong when trying to get the singer details'
 	);
 
@@ -51,7 +51,7 @@ const updateSinger = async (partyKey: string, singer: SingerDTO): Promise<Result
 			},
 			body: JSON.stringify(singer),
 		}),
-		(body) => body.singerId > 0,
+		(body) => (body.singerId ?? 0) > 0,
 		'Something went wrong when trying to update the singer'
 	);
 

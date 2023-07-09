@@ -52,9 +52,10 @@ namespace KaraokeParty.Controllers {
 			Song? song = context.Songs.Find(dto.FileName);
 			Singer? singer = context.Singers.Find(dto.SingerId);
 
-			if (party == null || user == null || song == null) {
-				return NotFound("404 - Party not found");
-			}
+			if (party == null) return NotFound("404 - Party not found");
+			if (user == null) return NotFound("404 - User not found");
+			if (song == null) return NotFound("404 - Song not found");
+
 			Performance performance = new Performance {
 				Party = party,
 				User = user,

@@ -16,7 +16,7 @@ const createParty = async (title: string, djName: string, password: string): Pro
 				password: password,
 			}),
 		}),
-		(body) => body.party && body.party.partyKey,
+		(body) => (body?.party?.partyKey ?? '').length > 0,
 		'error creating party'
 	);
 

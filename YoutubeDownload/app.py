@@ -30,7 +30,7 @@ def search():
 def get_search_results(textToSearch):
 	num_results = 10
 	yt_search = 'ytsearch%d:"%s"' % (num_results, unidecode(textToSearch))
-	cmd = [youtubedl_path, "-j", "--no-playlist", "--flat-playlist", yt_search]
+	cmd = [youtubedl_path, "-j", "--no-playlist", "--flat-playlist","--match-filter","url!*=/shorts/", yt_search]
 
 	try:
 		output = subprocess.check_output(cmd).decode("utf-8")

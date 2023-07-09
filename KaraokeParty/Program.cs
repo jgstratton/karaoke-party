@@ -46,7 +46,7 @@ var app = builder.Build();
 
 // rewrite client-side routes to return index.html
 var options = new RewriteOptions();
-foreach (var clientRoute in new List<string> { "Search","Home","NoParty","Player"}) {
+foreach (var clientRoute in new List<string> { "Search", "Home", "NoParty", "Player" }) {
 	options.AddRewrite($"(?i)^{clientRoute}", "index.html", skipRemainingRules: true);
 	options.AddRewrite($"(?i)^{clientRoute}/.*", "index.html", skipRemainingRules: true);
 }
@@ -85,7 +85,7 @@ app.UseEndpoints(endpoints => {
 	endpoints.MapHub<PlayerHub>("/hubs/player");
 	endpoints.MapFallbackToFile("/index.html");
 });
-app.MapControllers();
+//app.MapControllers();
 
 using (var scope = app.Services.CreateScope()) {
 	var services = scope.ServiceProvider;

@@ -8,19 +8,18 @@ namespace KaraokeParty.Controllers {
 		private readonly KPContext context;
 		private readonly IHttpClientFactory clientFactory;
 
-		public ApiSongSearch(KPContext context, IConfiguration config, IHttpClientFactory clientFactory) {
+		public ApiSongSearch(KPContext context, IHttpClientFactory clientFactory) {
 			this.context = context;
 			this.clientFactory = clientFactory;
 		}
 
 		[HttpGet]
-		[Route("song/search")]
-		public async Task<ActionResult<List<SongDTO>>> Search(SongSearchRequestDto searchDto) {
-			var queryString = this.Request.QueryString.Value;
+		[Route("songs")]
+		public async Task<ActionResult<List<SongDTO>>> Search([FromQuery] SongSearchRequestDto searchDto) {
 			var ytClient = clientFactory.CreateClient("yt-dlp");
 
-			var modifiedSearchString = searchDto.KaraokeFlag ? searchDto.SearchString : $"{searchDto.SearchString} karaoke";
-			var request = new HttpRequestMessage(HttpMethod.Get, $"song/search?{modifiedSearchString}");
+			var modifiedSearchString = searchDto.KaraokeFlag ? $"{searchDto.SearchString} karaoke" : searchDto.SearchString;
+			var request = new HttpRequestMessage(HttpMethod.Get, $"search?search_string={modifiedSearchString}");
 
 			var response = await ytClient.SendAsync(request);
 
@@ -44,11 +43,7 @@ namespace KaraokeParty.Controllers {
 		}
 
 		public class SongSearchRequestDto {
-
-			[FromQuery]
 			public string SearchString { get; set; } = "";
-
-			[FromQuery]
 			public bool KaraokeFlag { get; set; } = false;
 
 		}
