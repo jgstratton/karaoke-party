@@ -62,6 +62,11 @@ const Search = () => {
 	const [downloadInProgress, setDownloadInProgress] = useState(false);
 	const [downloadMessage, setDownloadMessage] = useState('Download in progress... this may take a minute...');
 
+	const changeSearchSetting = (isKaraoke: number) => {
+		setSearchSubmitted(false);
+		setIsKaraoke(isKaraoke);
+	};
+
 	async function submitSearch() {
 		setSearchLoading(true);
 		setSearchSubmitted(true);
@@ -184,7 +189,7 @@ const Search = () => {
 					searchString={searchString}
 					setSearchString={setSearchString}
 					isKaraoke={isKaraoke}
-					setIsKaraoke={setIsKaraoke}
+					setIsKaraoke={changeSearchSetting}
 				/>
 				{errorMsg.length > 0 ? (
 					<div className="alert alert-danger">{errorMsg}</div>
@@ -193,6 +198,7 @@ const Search = () => {
 						{searchSubmitted && (
 							<>
 								<SearchResults
+									isKaraoke={isKaraoke === 1}
 									results={searchResults}
 									loading={searchLoading}
 									submitRequest={handleSubmitRequest}

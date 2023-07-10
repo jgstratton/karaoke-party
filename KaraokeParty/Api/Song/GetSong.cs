@@ -17,7 +17,7 @@ namespace KaraokeParty.Controllers {
 			}
 		}
 
-		[HttpPost]
+		[HttpGet]
 		[Route("song/{fileName}")]
 		public IActionResult GetFile(string fileName) {
 			string videoPath = $"{VideoStoragePath}/{fileName}";

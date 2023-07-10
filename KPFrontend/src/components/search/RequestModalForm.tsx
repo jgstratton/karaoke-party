@@ -3,23 +3,28 @@ import { Button, Form, Modal } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { selectSingerList } from '../../slices/singerSlice';
 import { selectUserIsDj, selectUserName } from '../../slices/userSlice';
-import VideoPreview from '../common/VideoPreview';
 import { SongDTO } from '../../dtoTypes/SongDTO';
+import YoutubeEmbed from '../common/VideoEmbed';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import VideoPreview from '../common/VideoPreview';
 
 interface iProps {
 	song?: SongDTO;
 	show: boolean;
+	showKaraokeWarning: boolean;
 	handleSubmit: (singerName: string, singerId?: number) => void;
 	handleClose: () => void;
 }
 
-const RequestModalForm = ({ song, show, handleSubmit, handleClose }: iProps) => {
+const RequestModalForm = ({ song, show, handleSubmit, handleClose, showKaraokeWarning }: iProps) => {
 	const [singerName, setSingerName] = useState('');
 	const [singerId, setSingerId] = useState<number | undefined>();
 	const [showNameWarning, setShowNameWarning] = useState(false);
 	const userName = useSelector(selectUserName);
 	const isDj = useSelector(selectUserIsDj);
 	const singerList = useSelector(selectSingerList);
+	const [useEmbedded, setUseEmbedded] = useState(false);
 
 	useEffect(() => {
 		if (!isDj) {
@@ -28,6 +33,10 @@ const RequestModalForm = ({ song, show, handleSubmit, handleClose }: iProps) => 
 			setSingerId(0);
 		}
 	}, [isDj, userName]);
+
+	useEffect(() => {
+		setUseEmbedded(false);
+	}, [song]);
 
 	const submitForm = () => {
 		if (singerName.trim().length === 0) {
@@ -49,16 +58,40 @@ const RequestModalForm = ({ song, show, handleSubmit, handleClose }: iProps) => 
 		}
 	};
 
+	const ToggleVideo = () =>
+		useEmbedded ? (
+			<Button onClick={() => setUseEmbedded(false)}>Disable Embedded Video Preview</Button>
+		) : (
+			<Button onClick={() => setUseEmbedded(true)}>Load Embedded Video Preview</Button>
+		);
+
 	return (
 		<Modal size="lg" show={show} backdrop="static">
-			<Modal.Header closeButton>
+			<Modal.Header closeButton onHide={() => handleClose()}>
 				<Modal.Title>Verify and submit your request</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
 				<Form.Group className="mb-3">
 					<Form.Label>Selected Song</Form.Label>
-					<VideoPreview url={song?.url} />
+					{song &&
+						(useEmbedded ? (
+							<div style={{ width: '320px' }}>
+								<YoutubeEmbed embedId={song.id} />
+							</div>
+						) : (
+							<VideoPreview url={song?.url} />
+						))}
+					{showKaraokeWarning && (
+						<div className="alert alert-warning mt-2">
+							<FontAwesomeIcon icon={faInfoCircle} /> We cannot verify that this is a karaoke version.
+							Please preview the video and make sure it's the version you want.
+							<br />
+							{ToggleVideo()}
+						</div>
+					)}
+
 					<div>{song?.title}</div>
+
 					<a href={song?.url}>{song?.url}</a>
 				</Form.Group>
 				{isDj && (
