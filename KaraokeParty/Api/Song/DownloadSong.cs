@@ -53,8 +53,8 @@ namespace KaraokeParty.Controllers {
 		}
 
 		private class DownloadResult {
-			public string status { get; set; }
-			public string file { get; set; }
+			public string status { get; set; } = "";
+			public string file { get; set; } = "";
 		}
 	}
 }
