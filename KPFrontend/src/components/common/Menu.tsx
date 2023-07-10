@@ -1,10 +1,9 @@
 import { Nav, Navbar } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { reset as resetUser, selectUserIsDj } from '../../slices/userSlice';
-import { reset as resetParty, selectIsPartyInitialized } from '../../slices/partySlice';
-import { resetPerformances, selectRequests } from '../../slices/performancesSlice';
-import { resetPlayer } from '../../slices/playerSlice';
+import { useSelector } from 'react-redux';
+import { reset as selectUserIsDj } from '../../slices/userSlice';
+import { selectIsPartyInitialized } from '../../slices/partySlice';
+import { selectRequests } from '../../slices/performancesSlice';
 import StorageService from '../../services/StorageService';
 import styles from './Menu.module.css';
 import SettingsModal from '../dj/SettingsModal';
@@ -22,7 +21,6 @@ const Menu = () => {
 	const requests = useSelector(selectRequests);
 	const isPartyInitialized = useSelector(selectIsPartyInitialized);
 	const isDj = useSelector(selectUserIsDj);
-	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
 	// dj settings modals control
@@ -41,10 +39,7 @@ const Menu = () => {
 	function leaveParty() {
 		StorageService.forgetParty();
 		StorageService.forgetUser();
-		dispatch(resetUser());
-		dispatch(resetParty());
-		dispatch(resetPerformances());
-		dispatch(resetPlayer());
+		window.location.href = './home';
 	}
 
 	return (

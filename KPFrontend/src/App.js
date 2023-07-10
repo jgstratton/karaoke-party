@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { populateParty, reset as resetParty } from './slices/partySlice';
-import { populateUser, reset as resetUser, toggleDj } from './slices/userSlice';
+import { populateUser, reset as resetUser } from './slices/userSlice';
 import { populatePlayer, populateSettings } from './slices/playerSlice';
 import { populatePerformances, resetPerformances } from './slices/performancesSlice';
 import { populateSingers } from './slices/singerSlice';
@@ -15,6 +15,7 @@ import Search from './components/Search';
 import Player from './components/player/Player';
 import KeyPressChecker from './services/KeyPressChecker';
 import Offline from './components/common/Offline';
+import { ToggleDj } from './mediators/PartyMediator';
 
 const App = () => {
 	const dispatch = useDispatch();
@@ -23,7 +24,7 @@ const App = () => {
 
 	useEffect(() => {
 		KeyPressChecker(['Shift', 'D', 'J'], () => {
-			dispatch(toggleDj());
+			ToggleDj();
 		});
 
 		async function load() {

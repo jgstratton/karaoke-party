@@ -25,8 +25,8 @@ export const userSlice = createSlice({
 			state.name = action.payload.name;
 		},
 
-		toggleDj: (state) => {
-			state.isDj = !state.isDj;
+		setDj: (state, action: PayloadAction<boolean>) => {
+			state.isDj = action.payload;
 		},
 
 		reset: () => initialState,
@@ -40,6 +40,6 @@ export const selectUserName = (state: RootState) => {
 export const selectUserIsDj = (state: RootState) => {
 	return state.user?.isDj ?? false;
 };
-export const { populateUser, reset, toggleDj } = userSlice.actions;
+export const { populateUser, reset, setDj } = userSlice.actions;
 
 export default userSlice.reducer;

@@ -4,7 +4,7 @@ import { CreatePartyResponse } from '../dtoTypes/CreatePartyResponse';
 import StorageService from '../services/StorageService';
 import { populateParty } from '../slices/partySlice';
 import { populateSettings } from '../slices/playerSlice';
-import { populateUser } from '../slices/userSlice';
+import { populateUser, setDj } from '../slices/userSlice';
 import store from '../store';
 
 export const CreateParty = async (
@@ -29,4 +29,10 @@ export const CreateParty = async (
 	StorageService.storeParty(party);
 
 	return partyResult;
+};
+
+export const ToggleDj = async (): Promise<void> => {
+	const curFlag = StorageService.loadDjFlag();
+	StorageService.setDjFlag(!curFlag);
+	store.dispatch(setDj(!curFlag));
 };

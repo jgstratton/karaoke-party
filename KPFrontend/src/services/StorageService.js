@@ -32,12 +32,20 @@ async function loadUser() {
 		const response = await fetch(`user/${id}`);
 		const userObj = await response.json();
 		const isDj = localStorage.getItem('isDj');
-		if (isDj) {
+		if (isDj == 'true') {
 			userObj.isDj = true;
 		}
 		return await userObj;
 	}
 	return null;
+}
+
+function loadDjFlag() {
+	return (localStorage.getItem('isDj') ?? 'false') === 'true';
+}
+
+function setDjFlag(newFlagStatus) {
+	localStorage.setItem('isDj', newFlagStatus ? 'true' : 'false');
 }
 
 function storeUser(user) {
@@ -60,6 +68,8 @@ const StorageService = {
 	storeUser,
 	forgetUser,
 	getPartyKey,
+	loadDjFlag,
+	setDjFlag,
 };
 
 export default StorageService;

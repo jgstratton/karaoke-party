@@ -97,10 +97,13 @@ const RequestProcessModal = ({ show, handleClose }: iProps) => {
 							>
 								<p>You sure you want to delete this request?</p>
 								<br />
-								<p className="text-warning">
-									You got a problem with {requests[currentReqIndex].singerName} or something? I mean,
-									if you want to delete their request, that's up to you, you're runnin the show.
-								</p>
+								{requests[currentReqIndex] && (
+									<p className="text-warning">
+										You got a problem with {requests[currentReqIndex].singerName} or something? I
+										mean, if you want to delete their request, that's up to you, you're runnin the
+										show.
+									</p>
+								)}
 							</ConfirmModal>
 						</Overlay>
 					)}
