@@ -3,10 +3,8 @@ import { useSelector } from 'react-redux';
 import Upcoming from './singer/Upcoming';
 import Menu from './common/Menu';
 import Player from './singer/Player';
-import Card from 'react-bootstrap/Card';
-import { Button, Tab, Tabs } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import { selectPlayerSettings } from '../slices/playerSlice';
-import MyRequests from './MyRequests/MyRequests';
 
 const SingerDashboard = () => {
 	const navigate = useNavigate();
@@ -34,7 +32,7 @@ const SingerDashboard = () => {
 
 			{playerSettings.splashScreenUpcomingCount > 0 && (
 				<>
-					<h5>On Deck</h5>
+					<h5 className="ml-2">On Deck</h5>
 					<div className="mb-2">
 						<Upcoming />
 					</div>

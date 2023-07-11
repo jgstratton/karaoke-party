@@ -71,22 +71,28 @@ const MyRequests = () => {
 			</div>
 
 			<ListGroup>
-				{performances.map((p, i) => {
-					return (
-						<ListGroup.Item
-							key={p.performanceId}
-							className={classNames([styles.listContainer, textStyle(p)])}
-							style={{ backgroundColor: 'rgba(0,0,0,0.6)' }}
-						>
-							<div>{i + 1}</div>
-							<div>
-								<span className="float-right">{renderSwitch(p)}</span>
-								<div className={classNames(['text-warning', textStyle(p)])}>{p.singerName}</div>
-								{p.songTitle}
-							</div>
-						</ListGroup.Item>
-					);
-				})}
+				{performances.length > 0 ? (
+					performances.map((p, i) => {
+						return (
+							<ListGroup.Item
+								key={p.performanceId}
+								className={classNames([styles.listContainer, textStyle(p)])}
+								style={{ backgroundColor: 'rgba(0,0,0,0.7)' }}
+							>
+								<div>{i + 1}</div>
+								<div>
+									<span className="float-right">{renderSwitch(p)}</span>
+									<div className={classNames(['text-warning', textStyle(p)])}>{p.singerName}</div>
+									{p.songTitle}
+								</div>
+							</ListGroup.Item>
+						);
+					})
+				) : (
+					<ListGroup.Item style={{ backgroundColor: 'rgba(0,0,0,0.7)' }}>
+						No requests have been submitted from this device.... yet.
+					</ListGroup.Item>
+				)}
 			</ListGroup>
 		</div>
 	);

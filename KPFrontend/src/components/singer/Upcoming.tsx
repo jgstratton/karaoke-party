@@ -11,14 +11,14 @@ const Upcoming = () => {
 		<ListGroup>
 			{performanceList.length > 0 ? (
 				performanceList.map((s, i) => (
-					<ListGroup.Item key={s.performanceId} style={{ backgroundColor: 'rgba(0,0,0,0.6)' }}>
+					<ListGroup.Item key={s.performanceId} style={{ backgroundColor: 'rgba(0,0,0,0.7)' }}>
 						<div className="text-warning">{s.singerName}</div>
 						{s.songTitle}
 					</ListGroup.Item>
 				))
 			) : (
 				<>
-					<ListGroup.Item style={{ backgroundColor: 'rgba(0,0,0,0.6)' }}>
+					<ListGroup.Item style={{ backgroundColor: 'rgba(0,0,0,0.7)' }}>
 						<div className="text-warning">No additional peformances queued up.</div>
 					</ListGroup.Item>
 				</>
