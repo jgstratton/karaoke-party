@@ -60,7 +60,7 @@ const SettingsModal = ({ show, handleClose }: props) => {
 	return (
 		<>
 			<Modal className={styles.settingsModal} size="lg" show={show} backdrop="static">
-				<Modal.Header closeButton>
+				<Modal.Header closeButton onHide={handleClose}>
 					<Modal.Title>Settings</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
