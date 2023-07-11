@@ -1,7 +1,9 @@
 import { createSelector } from '@reduxjs/toolkit';
 import StatusService from '../services/StatusService';
-import { selectCompleted, selectLive, selectQueued } from './performancesSlice';
+import { selectCompleted, selectLive, selectPerformances, selectQueued, selectRequests } from './performancesSlice';
 import { selectSingerList } from './singerSlice';
+import { selectUserId } from './userSlice';
+import PerformanceDTO from '../dtoTypes/PerformanceDTO';
 
 const cmp = (a: number, b: number) => +(a > b) - +(a < b);
 
@@ -83,3 +85,18 @@ export const selectCurrentSinger = createSelector(selectSingerList, selectLive, 
 	}
 	return searchSinger[0];
 });
+
+export const selectUserPerformances = createSelector(
+	[selectUserId, selectCompleted, selectLive, selectQueuedSorted, selectRequests],
+	(userid, completed, live, queued, requested): PerformanceDTO[] => {
+		console.log('getting singer song list', userid);
+		const userCompleted = completed.filter((p) => p.userId === userid);
+		const userLive = live.filter((p) => p.userId === userid);
+		const userQueued = queued.filter((p) => p.userId === userid);
+		const userRequested = requested.filter((p) => p.userId === userid);
+
+		const sortedPerformances = userCompleted.concat(userLive).concat(userQueued).concat(userRequested);
+
+		return sortedPerformances;
+	}
+);

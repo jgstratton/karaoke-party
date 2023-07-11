@@ -16,7 +16,7 @@ const Player = () => {
 		<ListGroup>
 			{livePerformance ? (
 				<>
-					<ListGroup.Item>
+					<ListGroup.Item style={{ backgroundColor: 'rgba(0,0,0,0.6)' }}>
 						<div className="text-warning">
 							<FontAwesomeIcon icon={faMicrophone} fixedWidth /> {livePerformance?.singerName}
 						</div>
@@ -29,7 +29,7 @@ const Player = () => {
 				</>
 			) : (
 				<>
-					<ListGroup.Item>
+					<ListGroup.Item style={{ backgroundColor: 'rgba(0,0,0,0.6)' }}>
 						<div className="text-warning">Nothing playing right now</div>
 					</ListGroup.Item>
 				</>

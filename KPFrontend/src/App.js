@@ -16,6 +16,7 @@ import Player from './components/player/Player';
 import KeyPressChecker from './services/KeyPressChecker';
 import Offline from './components/common/Offline';
 import { ToggleDj } from './mediators/PartyMediator';
+import MyRequests from './components/MyRequests/MyRequests';
 
 const App = () => {
 	const dispatch = useDispatch();
@@ -44,7 +45,7 @@ const App = () => {
 				console.log('Loaded User:', loadedUser);
 				dispatch(populateUser(loadedUser));
 			} else {
-				dispatch(resetUser(loadedUser));
+				dispatch(resetUser());
 			}
 
 			if (loadedParty && loadedParty.performances) {
@@ -80,6 +81,14 @@ const App = () => {
 							element={
 								<RequireSession>
 									<Search />
+								</RequireSession>
+							}
+						/>
+						<Route
+							path="MyRequests"
+							element={
+								<RequireSession>
+									<MyRequests />
 								</RequireSession>
 							}
 						/>

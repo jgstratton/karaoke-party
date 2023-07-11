@@ -1,7 +1,7 @@
 import { Nav, Navbar } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { reset as selectUserIsDj } from '../../slices/userSlice';
+import { selectUserIsDj } from '../../slices/userSlice';
 import { selectIsPartyInitialized } from '../../slices/partySlice';
 import { selectRequests } from '../../slices/performancesSlice';
 import StorageService from '../../services/StorageService';

@@ -29,9 +29,15 @@ export const userSlice = createSlice({
 			state.isDj = action.payload;
 		},
 
-		reset: () => initialState,
+		reset: () => {
+			return initialState;
+		},
 	},
 });
+
+export const selectUserId = (state: RootState) => {
+	return state.user?.userId ?? 0;
+};
 
 export const selectUserName = (state: RootState) => {
 	return state.user?.name ?? '';
@@ -40,6 +46,7 @@ export const selectUserName = (state: RootState) => {
 export const selectUserIsDj = (state: RootState) => {
 	return state.user?.isDj ?? false;
 };
+
 export const { populateUser, reset, setDj } = userSlice.actions;
 
 export default userSlice.reducer;

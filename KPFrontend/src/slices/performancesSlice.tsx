@@ -62,7 +62,7 @@ export const performancesSlice = createSlice({
 	},
 });
 
-const selectPerformances = (state: RootState): iPerformancesState => state.performances;
+export const selectPerformances = (state: RootState): iPerformancesState => state.performances;
 
 export const selectRequests = createSelector(selectPerformances, (performances) =>
 	performances.performances
