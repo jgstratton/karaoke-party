@@ -59,15 +59,12 @@ const MyRequests = () => {
 			<Menu />
 			<div className="clearfix">
 				<div className="float-right pb-2">
-					<Button className="btn-link" onClick={() => navigate('/home')}>
-						Back
-					</Button>
 					<Button className="bg-success ml-2" onClick={() => navigate('/search')}>
 						Request a song
 					</Button>
 				</div>
 
-				<h5 className="ml-2 pt-2">Your Requests</h5>
+				<h6 className="ml-2 mb-0 pt-3">Your Requests</h6>
 			</div>
 
 			<ListGroup>
@@ -76,10 +73,9 @@ const MyRequests = () => {
 						return (
 							<ListGroup.Item
 								key={p.performanceId}
-								className={classNames([styles.listContainer, textStyle(p)])}
+								className={classNames([textStyle(p)])}
 								style={{ backgroundColor: 'rgba(0,0,0,0.7)' }}
 							>
-								<div>{i + 1}</div>
 								<div>
 									<span className="float-right">{renderSwitch(p)}</span>
 									<div className={classNames(['text-warning', textStyle(p)])}>{p.singerName}</div>
@@ -94,6 +90,9 @@ const MyRequests = () => {
 					</ListGroup.Item>
 				)}
 			</ListGroup>
+			<Button className="btn-link" onClick={() => navigate(-1)}>
+				Back
+			</Button>
 		</div>
 	);
 };

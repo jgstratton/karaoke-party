@@ -164,7 +164,7 @@ const Search = () => {
 								<div>Your song request has been received!</div>
 								<br />
 								<div className="mb-3">
-									<Button onClick={() => navigate('/home')}>Done for now</Button>
+									<Button onClick={() => navigate(-1)}>Done for now</Button>
 								</div>
 								<div className="mb-3">
 									<Button onClick={() => resetSearch()}>Search for another song</Button>
@@ -178,7 +178,7 @@ const Search = () => {
 				<Menu />
 				{!isDj && (
 					<div className="mb-2 text-right">
-						<Button className="btn-link" onClick={() => navigate('/home')}>
+						<Button className="btn-link" onClick={() => navigate(-1)}>
 							Back
 						</Button>
 					</div>
