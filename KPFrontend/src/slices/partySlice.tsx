@@ -5,11 +5,13 @@ import { RootState } from '../store';
 export interface Party {
 	title: string;
 	partyKey: string;
+	isStale: boolean;
 }
 
 const initialState: Party = {
 	title: '',
 	partyKey: '',
+	isStale: false,
 };
 
 export const partySlice = createSlice({
@@ -22,6 +24,12 @@ export const partySlice = createSlice({
 		},
 
 		reset: () => initialState,
+
+		markAsStale: (state) => {
+			state.isStale = true;
+		},
+
+		notifyDjChanges: () => {},
 	},
 });
 
@@ -33,6 +41,10 @@ export const selectPartyKey = (state: RootState) => {
 	return state.party?.partyKey ?? '';
 };
 
-export const { populateParty, reset } = partySlice.actions;
+export const selectIsStale = (state: RootState) => {
+	return state.party?.isStale ?? false;
+};
+
+export const { populateParty, reset, markAsStale, notifyDjChanges } = partySlice.actions;
 
 export default partySlice.reducer;

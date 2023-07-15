@@ -15,6 +15,11 @@ namespace KaraokeParty.Hubs {
 			await Groups.AddToGroupAsync(Context.ConnectionId, partyKey);
 		}
 
+		public async Task JoinAsDj(string partyKey) {
+			await Groups.AddToGroupAsync(Context.ConnectionId, partyKey);
+			await Groups.AddToGroupAsync(Context.ConnectionId, partyKey + "DJ");
+		}
+
 		public async Task LeaveParty(string partyKey) {
 			await Groups.AddToGroupAsync(Context.ConnectionId, partyKey);
 		}
@@ -36,6 +41,10 @@ namespace KaraokeParty.Hubs {
 
 		public async Task NotifyNewRequest(string partyKey, PerformanceDTO dto) {
 			await Clients.Group(partyKey).ReceiveNewRequest(dto);
+		}
+
+		public async Task NotifyDjChanges(string partyKey) {
+			await Clients.OthersInGroup(partyKey + "DJ").ReceiveDjChanges();
 		}
 
 		public async Task StartNewPerformance(string partyKey) {

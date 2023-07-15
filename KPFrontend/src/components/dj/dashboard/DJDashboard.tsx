@@ -11,11 +11,15 @@ import { useSelector } from 'react-redux';
 import { selectRequests } from '../../../slices/performancesSlice';
 import RequestProcessModal from '../requestProcessModal/RequestProcessModal';
 import { selectUserIsDj } from '../../../slices/userSlice';
+import Overlay from '../../common/Overlay';
+import { Button } from 'react-bootstrap';
+import { selectIsStale } from '../../../slices/partySlice';
 
 const DJDashboard = () => {
 	const requests = useSelector(selectRequests);
 	const [showRequestProcessModal, setShowRequestProcessModal] = useState(false);
 	const isDj = useSelector(selectUserIsDj);
+	const isStale = useSelector(selectIsStale);
 
 	const handleShowRequestProcessModal = () => setShowRequestProcessModal(true);
 	const handleHideRequestProcessModal = () => setShowRequestProcessModal(false);
@@ -23,6 +27,16 @@ const DJDashboard = () => {
 	return (
 		<>
 			<RequestProcessModal show={showRequestProcessModal} handleClose={handleHideRequestProcessModal} />
+			{isStale && (
+				<Overlay>
+					<p className="text-center" style={{ padding: '10px' }}>
+						The DJ has made updates from another device. Refresh to see current changes.
+						<br />
+						<br />
+						<Button onClick={() => window.location.reload()}>Refresh Dashboard</Button>
+					</p>
+				</Overlay>
+			)}
 
 			<div className={classNames([styles.dashboardWrapper])}>
 				<div className={classNames([styles.header])}>

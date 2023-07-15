@@ -1,6 +1,7 @@
 import { Result } from '../api/Result';
 import SingerApi from '../api/SingerApi';
 import SingerDTO from '../dtoTypes/SingerDTO';
+import { notifyDjChanges } from '../slices/partySlice';
 import { populateSingers } from '../slices/singerSlice';
 import store from '../store';
 
@@ -20,5 +21,6 @@ export const AddNewSinger = async (singer: SingerDTO): Promise<Result<SingerDTO>
 	}
 
 	store.dispatch(populateSingers(singersListResult.value));
+	store.dispatch(notifyDjChanges());
 	return newSingerResponse;
 };

@@ -7,6 +7,7 @@ import { populateSingers } from '../slices/singerSlice';
 
 import PartyApi from '../api/PartyApi';
 import { AnyAction, Middleware } from 'redux';
+import { markAsStale } from '../slices/partySlice';
 
 const messageQueue: { (): void }[] = [];
 
@@ -99,6 +100,11 @@ const signalRMiddleware: Middleware = (store) => {
 		store.dispatch(signalActionCreator(addPerformance(performance)));
 	});
 
+	connection.on('ReceiveDjChanges', async (performance) => {
+		console.log('ReceiveDjChanges');
+		store.dispatch(signalActionCreator(markAsStale()));
+	});
+
 	const queueMessageSender = (sendMessage: { (): void }) => {
 		// hub is connected and nothing queued? then just run the method
 		if (messageQueue.length === 0 && connection.state === HubConnectionState.Connected) {
@@ -152,11 +158,17 @@ const signalRMiddleware: Middleware = (store) => {
 					}
 					break;
 				}
+				case 'party/notifyDjChanges':
+					queueMessageSender(() => connection.invoke('NotifyDjChanges', currentStorePartyKey));
+					break;
 				case 'party/populateParty': {
 					queueMessageSender(() => {
 						if (action.payload.partyKey) {
 							console.log(connection, action.payload.partyKey);
-							connection.invoke('JoinParty', action.payload.partyKey);
+							connection.invoke(
+								store.getState().user.isDj ? 'JoinAsDj' : 'JoinParty',
+								action.payload.partyKey
+							);
 						}
 					});
 					break;

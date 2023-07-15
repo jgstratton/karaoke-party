@@ -7,6 +7,7 @@ import store from '../store';
 import { Result } from '../api/Result';
 import { deletePerformance, updatePerformancesSubset } from '../slices/performancesSlice';
 import { populateSingers } from '../slices/singerSlice';
+import { notifyDjChanges } from '../slices/partySlice';
 
 export const AssignRequestToExistingSinger = async (
 	performance: PerformanceDTO,
@@ -26,6 +27,7 @@ export const AssignRequestToExistingSinger = async (
 	}
 
 	store.dispatch(updatePerformancesSubset([updatedPerformance.value]));
+	store.dispatch(notifyDjChanges());
 	return updatedPerformance;
 };
 
@@ -66,6 +68,7 @@ export const AssignRequestToNewSinger = async (
 
 	// update the store
 	store.dispatch(populateSingers(singersList.value));
+	store.dispatch(notifyDjChanges());
 
 	// done with new singer... now assign the performance to them
 	return await AssignRequestToExistingSinger(performance, newSingerResult.value);
@@ -80,5 +83,6 @@ export const DeleteRequest = async (performance: PerformanceDTO): Promise<Result
 	}
 
 	store.dispatch(deletePerformance(performance.performanceId));
+	store.dispatch(notifyDjChanges());
 	return { ok: true, value: true };
 };

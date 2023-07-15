@@ -34,5 +34,5 @@ export const CreateParty = async (
 export const ToggleDj = async (): Promise<void> => {
 	const curFlag = StorageService.loadDjFlag();
 	StorageService.setDjFlag(!curFlag);
-	store.dispatch(setDj(!curFlag));
+	window.location.reload();
 };

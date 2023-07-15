@@ -6,6 +6,7 @@ import { addPerformance, sendNotifyRequest } from '../slices/performancesSlice';
 import SingerApi from '../api/SingerApi';
 import { populateSingers } from '../slices/singerSlice';
 import { PerformanceRequestDTO } from '../dtoTypes/PerformanceRequestDTO';
+import { notifyDjChanges } from '../slices/partySlice';
 
 export const CreateNewUserRequest = async (performance: PerformanceRequestDTO): Promise<Result<PerformanceDTO>> => {
 	const partyKey = store.getState().party.partyKey;
@@ -44,6 +45,7 @@ export const CreateNewRequestForExistingSinger = async (
 	}
 
 	store.dispatch(addPerformance(newPerformanceResult.value));
+	store.dispatch(notifyDjChanges());
 	return newPerformanceResult;
 };
 
@@ -86,5 +88,6 @@ export const CreateNewRequestForNewSinger = async (
 	}
 
 	store.dispatch(addPerformance(newPerformanceResult.value));
+	store.dispatch(notifyDjChanges());
 	return newPerformanceResult;
 };
