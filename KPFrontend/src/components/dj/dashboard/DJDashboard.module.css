@@ -2,9 +2,10 @@
 	display: grid;
     grid-gap: 10px;
     grid-template-columns: 25% auto;
-	grid-template-rows: auto 1fr auto;
+	grid-template-rows: auto auto 1fr auto;
     grid-template-areas:
     "header  header"
+	"requests requests"
     "singerList songList "
     "footer  footer";
     color: #444;
@@ -17,6 +18,16 @@
 .header {
 	grid-area: header;
 }
+.requests {
+	grid-area: requests;
+	height:0px;
+	margin-right: 20px;
+	margin-top: -30px;
+	position: relative;
+	z-index: 100;
+	text-align: right;
+}
+
 .singerList {
 	grid-area: singerList;
 }
@@ -52,4 +63,13 @@
 	-ms-overflow-style: none;
 	/* height: '100%'; */
 	overflow-Y: 'scroll';
+}
+
+@media (max-width: 1000px) {
+	.dashboardWrapper{
+		grid-template-columns: 100% 0%;
+	}
+	.footer {
+		display:none;
+	}
 }

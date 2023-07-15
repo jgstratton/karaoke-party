@@ -97,7 +97,7 @@ const SingerListItem = ({ singer, index, className = '', handleSelectSinger }: i
 					</span>
 				)}
 			</span>
-			<span className={classNames([styles.showOnHover, 'text-right'])}>
+			<span className={classNames([styles.showOnHover, styles.hideOnMobile, 'text-right'])}>
 				<Dropdown className="float-right">
 					<Dropdown.Toggle as={EllipsisToggle} variant="success" id="dropdown-basic"></Dropdown.Toggle>
 
