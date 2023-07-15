@@ -19,33 +19,7 @@ import {
 import { PerformanceRequestDTO } from '../dtoTypes/PerformanceRequestDTO';
 import { SongDTO } from '../dtoTypes/SongDTO';
 import SongApi from '../api/SongApi';
-
-const downloadMessages = [
-	"We're listening to your song to see if it's any good...",
-	"Checking this song to see if it's worthy of your awesomeness...",
-	'I love this song!  Good choice! Hang tight while I jam out...',
-	'You can sing this song?  You got skillz yo...',
-	"Oh I can't wait to hear this one... it's gonna rock!...",
-	'Wait for it... waaaait foooor iiiiit.....',
-	'This is going to be legen ... (wait for it) ... dary!',
-	'Karaoke time!!!...',
-	'Running this song through the awesomeness filter, stand by',
-	'Just a minute...',
-	'Removing ads from this song... cause ads suck...',
-	'Processing... processing... processing...',
-	'Fetching muzic... gathering notes... compiling lyrics...',
-	'This song is restricted to amazing singers only... which you are!...',
-	'In just a few moments this song will be all yours...',
-	'One moment please...',
-	'Analying this song for adequate notes',
-	'Counting the beats in this song...',
-	"Previewing this song to see if it's worth your time...",
-	'How about a country song next time?...',
-	'How about some broadway musical numbers next time?...',
-	"Oh good song! You're gonna rock this!...",
-	"Really... you're gonna sing THIS song?...",
-	"I'm debating on if I'm gonna let you sing this one...",
-];
+import { downloadMessages } from './search/DownloadResponses';
 
 const Search = () => {
 	const navigate = useNavigate();
