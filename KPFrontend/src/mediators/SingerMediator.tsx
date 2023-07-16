@@ -1,8 +1,11 @@
+import PerformanceApi from '../api/PerformanceApi';
 import { Result } from '../api/Result';
 import SingerApi from '../api/SingerApi';
+import PerformanceDTO from '../dtoTypes/PerformanceDTO';
 import SingerDTO from '../dtoTypes/SingerDTO';
 import { notifyDjChanges } from '../slices/partySlice';
-import { populateSingers } from '../slices/singerSlice';
+import { updatePerformancesSubset } from '../slices/performancesSlice';
+import { populateSingers, updateSinger } from '../slices/singerSlice';
 import store from '../store';
 
 export const AddNewSinger = async (singer: SingerDTO): Promise<Result<SingerDTO>> => {
@@ -23,4 +26,40 @@ export const AddNewSinger = async (singer: SingerDTO): Promise<Result<SingerDTO>
 	store.dispatch(populateSingers(singersListResult.value));
 	store.dispatch(notifyDjChanges());
 	return newSingerResponse;
+};
+
+export const SaveSingerChanges = async (
+	singer: SingerDTO,
+	performances: PerformanceDTO[]
+): Promise<Result<boolean>> => {
+	const partyKey = store.getState().party.partyKey;
+	const updatedSingerResult = await SingerApi.updateSinger(partyKey, singer);
+
+	if (!updatedSingerResult.ok) {
+		return updatedSingerResult;
+	}
+
+	for (var i = 0; i < performances.length; i++) {
+		let performanceDto = performances[i];
+		if (performanceDto.deleteFlag) {
+			const updatedPerformanceResult = await PerformanceApi.deletePerformance(partyKey, performanceDto);
+
+			if (!updatedPerformanceResult.ok) {
+				return updatedPerformanceResult;
+			}
+		} else {
+			performanceDto.sortOrder = i + 1;
+			const updatedPerformanceResult = await PerformanceApi.updatePerformance(partyKey, performanceDto);
+
+			if (!updatedPerformanceResult.ok) {
+				return updatedPerformanceResult;
+			}
+		}
+	}
+
+	store.dispatch(updateSinger(updatedSingerResult.value));
+	store.dispatch(updatePerformancesSubset(performances));
+	store.dispatch(notifyDjChanges());
+
+	return { ok: true, value: true };
 };

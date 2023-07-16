@@ -2,7 +2,7 @@ import React from 'react';
 import { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Slider from '../../../lib/react-player-controls/Slide';
-import { setPosition, sendPosition } from '../../../slices/playerSlice';
+import { setPosition, sendChangePlayerPosition } from '../../../slices/playerSlice';
 
 const SliderBar = ({ value, style }) => (
 	<div
@@ -35,7 +35,7 @@ const PlayerSlider = (props) => {
 
 	// prevent sending position when react component loads (which will cause player to "skip")
 	const dispatchNewPosition = (position) => {
-		dispatch(sendPosition(position));
+		dispatch(sendChangePlayerPosition(position));
 		dispatch(setPosition(position));
 	};
 

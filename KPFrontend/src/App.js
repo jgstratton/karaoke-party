@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { populateParty, reset as resetParty } from './slices/partySlice';
+import { populateParty, reset as resetParty, joinHub } from './slices/partySlice';
 import { populateUser, reset as resetUser } from './slices/userSlice';
 import { populatePlayer, populateSettings } from './slices/playerSlice';
 import { populatePerformances, resetPerformances } from './slices/performancesSlice';
@@ -51,6 +51,7 @@ const App = () => {
 			if (loadedParty && loadedParty.performances) {
 				dispatch(populatePerformances(loadedParty.performances));
 				dispatch(populateSingers(loadedParty.singers));
+				dispatch(joinHub());
 			} else {
 				dispatch(resetPerformances());
 			}

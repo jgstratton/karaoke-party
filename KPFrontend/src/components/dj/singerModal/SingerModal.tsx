@@ -16,6 +16,7 @@ import PerformanceApi from '../../../api/PerformanceApi';
 import { updatePerformancesSubset } from '../../../slices/performancesSlice';
 import Overlay from '../../common/Overlay';
 import Loading from '../../common/Loading';
+import { SaveSingerChanges } from '../../../mediators/SingerMediator';
 interface props {
 	show: boolean;
 	singerId: number;
@@ -61,47 +62,24 @@ const SingerModal = ({ show, singerId, handleClose }: props) => {
 			return;
 		}
 		setIsLoading(true);
-		const updatedSinger = await SingerApi.updateSinger(partyKey, {
-			singerId: singerDetails.singerId,
-			name: singerName,
-			rotationNumber: singerPosition,
-			isPaused: singerDetails.isPaused,
-		});
 
-		if (!updatedSinger.ok) {
+		const saveResult = await SaveSingerChanges(
+			{
+				singerId: singerDetails.singerId,
+				name: singerName,
+				rotationNumber: singerPosition,
+				isPaused: singerDetails.isPaused,
+			},
+			performances.map((p) => ({ ...p }))
+		);
+
+		if (!saveResult.ok) {
 			setShowErrorMessage(true);
-			setErrorMessage(updatedSinger.error);
+			setErrorMessage(saveResult.error);
 			setIsLoading(false);
 			return;
 		}
 
-		let clonePerformances = performances.map((p) => ({ ...p }));
-		for (var i = 0; i < clonePerformances.length; i++) {
-			let performanceDto = clonePerformances[i];
-			if (performanceDto.deleteFlag) {
-				const updatedPerformance = await PerformanceApi.deletePerformance(partyKey, performanceDto);
-
-				if (!updatedPerformance.ok) {
-					setShowErrorMessage(true);
-					setErrorMessage(updatedPerformance.error);
-					setIsLoading(false);
-					return;
-				}
-			} else {
-				performanceDto.sortOrder = i + 1;
-				const updatedPerformance = await PerformanceApi.updatePerformance(partyKey, performanceDto);
-
-				if (!updatedPerformance.ok) {
-					setShowErrorMessage(true);
-					setErrorMessage(updatedPerformance.error);
-					setIsLoading(false);
-					return;
-				}
-			}
-		}
-
-		dispatch(updateSinger(updatedSinger.value));
-		dispatch(updatePerformancesSubset(clonePerformances));
 		handleCancel();
 	};
 

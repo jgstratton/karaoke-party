@@ -4,7 +4,7 @@ import ApiService from '../api/ApiService';
 import { Form, Button, Card, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { populateUser } from '../slices/userSlice';
-import { populateParty } from '../slices/partySlice';
+import { joinHub, populateParty } from '../slices/partySlice';
 import { populatePlayer, populateSettings } from '../slices/playerSlice';
 import { populatePerformances } from '../slices/performancesSlice';
 import StorageService from '../services/StorageService';
@@ -66,6 +66,7 @@ const NoParty = () => {
 		dispatch(populateUser(newUser));
 		dispatch(populatePerformances(curParty.performances));
 		dispatch(populateSingers(curParty.singers));
+		dispatch(joinHub());
 		StorageService.storeUser(newUser);
 		StorageService.storeParty(curParty);
 	}

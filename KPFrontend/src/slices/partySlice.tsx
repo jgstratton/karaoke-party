@@ -28,7 +28,7 @@ export const partySlice = createSlice({
 		markAsStale: (state) => {
 			state.isStale = true;
 		},
-
+		joinHub: () => {},
 		notifyDjChanges: () => {},
 	},
 });
@@ -45,6 +45,6 @@ export const selectIsStale = (state: RootState) => {
 	return state.party?.isStale ?? false;
 };
 
-export const { populateParty, reset, markAsStale, notifyDjChanges } = partySlice.actions;
+export const { populateParty, reset, markAsStale, joinHub, notifyDjChanges } = partySlice.actions;
 
 export default partySlice.reducer;

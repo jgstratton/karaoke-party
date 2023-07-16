@@ -2,9 +2,9 @@ import PartyApi from '../api/PartyApi';
 import { Result } from '../api/Result';
 import { CreatePartyResponse } from '../dtoTypes/CreatePartyResponse';
 import StorageService from '../services/StorageService';
-import { populateParty } from '../slices/partySlice';
+import { joinHub, populateParty } from '../slices/partySlice';
 import { populateSettings } from '../slices/playerSlice';
-import { populateUser, setDj } from '../slices/userSlice';
+import { populateUser } from '../slices/userSlice';
 import store from '../store';
 
 export const CreateParty = async (
@@ -23,7 +23,7 @@ export const CreateParty = async (
 	store.dispatch(populateUser(dj));
 	store.dispatch(populateParty(party));
 	store.dispatch(populateSettings(party.playerSettings));
-
+	store.dispatch(joinHub());
 	// store the dj flag and party key
 	StorageService.storeUser(dj);
 	StorageService.storeParty(party);

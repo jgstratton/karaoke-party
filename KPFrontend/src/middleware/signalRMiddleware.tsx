@@ -144,6 +144,13 @@ const signalRMiddleware: Middleware = (store) => {
 				case 'player/songEnded':
 					queueMessageSender(() => connection.invoke('StartNewPerformance', currentStorePartyKey));
 					break;
+				case 'player/sendChangePlayerPosition':
+					if (typeof action.payload != 'undefined') {
+						queueMessageSender(() =>
+							connection.invoke('ChangePlayerPosition', currentStorePartyKey, action.payload)
+						);
+					}
+					break;
 				case 'performances/startNextPerformance':
 					queueMessageSender(() => connection.invoke('StartNewPerformance', currentStorePartyKey));
 					// store.dispatch(resetPlayer());
@@ -161,16 +168,14 @@ const signalRMiddleware: Middleware = (store) => {
 				case 'party/notifyDjChanges':
 					queueMessageSender(() => connection.invoke('NotifyDjChanges', currentStorePartyKey));
 					break;
-				case 'party/populateParty': {
-					queueMessageSender(() => {
-						if (action.payload.partyKey) {
-							console.log(connection, action.payload.partyKey);
-							connection.invoke(
-								store.getState().user.isDj ? 'JoinAsDj' : 'JoinParty',
-								action.payload.partyKey
-							);
-						}
-					});
+				case 'party/joinHub': {
+					const partyKey = store.getState().party.partyKey;
+					let joinType = store.getState().user.isDj ? 'JoinAsDj' : 'JoinParty';
+					if (window.location.pathname.toLowerCase().includes('player')) {
+						joinType = 'JoinAsPlayer';
+					}
+					console.log('Joining party:', joinType);
+					queueMessageSender(() => connection.invoke(joinType, partyKey));
 					break;
 				}
 				case 'player/broadcastSettings': {

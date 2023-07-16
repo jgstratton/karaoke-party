@@ -1,6 +1,6 @@
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useState } from 'react';
+import { MutableRefObject, useRef, useState } from 'react';
 import { Alert, Button, Modal, Pagination } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { selectRequests } from '../../../slices/performancesSlice';
@@ -25,6 +25,7 @@ const RequestProcessModal = ({ show, handleClose }: iProps) => {
 	const requests = useSelector(selectRequests);
 	const [errorMessage, setErrorMessage] = useState('');
 	const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+	const errorRef = useRef<HTMLDivElement>(null);
 
 	const submitForm = async (singerName: string, singerId: number) => {
 		const clonedPerformance = { ...requests[currentReqIndex] };
@@ -41,6 +42,7 @@ const RequestProcessModal = ({ show, handleClose }: iProps) => {
 
 		if (!assignResult.ok) {
 			setErrorMessage(assignResult.error);
+			errorRef.current?.scrollIntoView();
 			return;
 		}
 		setErrorMessage('');
@@ -108,10 +110,12 @@ const RequestProcessModal = ({ show, handleClose }: iProps) => {
 						</Overlay>
 					)}
 					{errorMessage.length > 0 && (
-						<Alert variant={'danger'}>
-							<FontAwesomeIcon icon={faExclamationTriangle} className="mr-2" />
-							{errorMessage}
-						</Alert>
+						<div ref={errorRef}>
+							<Alert variant={'danger'}>
+								<FontAwesomeIcon icon={faExclamationTriangle} className="mr-2" />
+								{errorMessage}
+							</Alert>
+						</div>
 					)}
 					{requests.length > 0 ? (
 						<RequestProcessForm

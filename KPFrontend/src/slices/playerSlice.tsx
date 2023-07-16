@@ -55,6 +55,7 @@ export const playerSlice = createSlice({
 		},
 		resetPlayer: () => initialState,
 		sendPosition: () => {},
+		sendChangePlayerPosition: () => {},
 		sendDuration: (state, action: PayloadAction<number>) => {},
 		populateSettings: (state, action: PayloadAction<PlayerSettingsDTO>) => {
 			if (action.payload) {
@@ -81,6 +82,7 @@ export const {
 	populateSettings,
 	resetPlayer,
 	sendPosition,
+	sendChangePlayerPosition,
 	sendDuration,
 	setLength,
 	setPosition,
