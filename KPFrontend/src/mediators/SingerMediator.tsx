@@ -4,8 +4,8 @@ import SingerApi from '../api/SingerApi';
 import PerformanceDTO from '../dtoTypes/PerformanceDTO';
 import SingerDTO from '../dtoTypes/SingerDTO';
 import { notifyDjChanges } from '../slices/partySlice';
-import { updatePerformancesSubset } from '../slices/performancesSlice';
-import { populateSingers, updateSinger } from '../slices/singerSlice';
+import { deleteSingerPerformances, updatePerformancesSubset } from '../slices/performancesSlice';
+import { deleteSinger, populateSingers, toggleSinger, updateSinger } from '../slices/singerSlice';
 import store from '../store';
 
 export const AddNewSinger = async (singer: SingerDTO): Promise<Result<SingerDTO>> => {
@@ -61,5 +61,43 @@ export const SaveSingerChanges = async (
 	store.dispatch(updatePerformancesSubset(performances));
 	store.dispatch(notifyDjChanges());
 
+	return { ok: true, value: true };
+};
+
+export const DeleteSinger = async (singerId: number): Promise<Result<boolean>> => {
+	const partyKey = store.getState().party.partyKey;
+	const deleteSingerResponse = await SingerApi.deleteSinger(partyKey, singerId);
+	if (!deleteSingerResponse.ok) {
+		alert('Error Deleting singer');
+		return deleteSingerResponse;
+	}
+
+	store.dispatch(deleteSingerPerformances(singerId));
+	store.dispatch(deleteSinger(singerId));
+	store.dispatch(notifyDjChanges());
+	return { ok: true, value: true };
+};
+
+export const ToggleSinger = async (singer: SingerDTO): Promise<Result<boolean>> => {
+	const partyKey = store.getState().party.partyKey;
+	const updatedSingerResult = await SingerApi.updateSinger(partyKey, {
+		singerId: singer.singerId,
+		name: singer.name,
+		rotationNumber: singer.rotationNumber,
+		isPaused: !singer.isPaused,
+	});
+	if (!updatedSingerResult.ok) {
+		return updatedSingerResult;
+	}
+	if (updatedSingerResult.value.singerId == null) {
+		return { ok: false, error: 'Error updating sing' };
+	}
+	store.dispatch(
+		toggleSinger({
+			singerId: updatedSingerResult.value.singerId ?? 0,
+			isPaused: updatedSingerResult.value.isPaused,
+		})
+	);
+	store.dispatch(notifyDjChanges());
 	return { ok: true, value: true };
 };

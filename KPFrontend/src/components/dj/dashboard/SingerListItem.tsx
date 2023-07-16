@@ -1,5 +1,5 @@
 import { Dropdown } from 'react-bootstrap';
-import { SingerSummary, deleteSinger, toggleSinger } from '../../../slices/singerSlice';
+import { SingerSummary } from '../../../slices/singerSlice';
 import classNames from 'classnames';
 import styles from './SingerList.module.css';
 import EllipsisToggle from '../../common/EllipsisToggle';
@@ -7,10 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPencil, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
 import ConfirmModal from '../../common/ConfirmModal';
-import SingerApi from '../../../api/SingerApi';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectPartyKey } from '../../../slices/partySlice';
-import { deleteSingerPerformances } from '../../../slices/performancesSlice';
+import { DeleteSinger, ToggleSinger } from '../../../mediators/SingerMediator';
 
 interface iProps {
 	singer: SingerSummary;
@@ -20,34 +17,23 @@ interface iProps {
 }
 
 const SingerListItem = ({ singer, index, className = '', handleSelectSinger }: iProps) => {
-	const dispatch = useDispatch();
 	const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
-	const partyKey = useSelector(selectPartyKey);
 
 	const handleToggleSinger = async () => {
-		const updatedSinger = await SingerApi.updateSinger(partyKey, {
-			singerId: singer.singerId,
-			name: singer.name,
-			rotationNumber: singer.rotationNumber,
-			isPaused: !singer.isPaused,
-		});
-		if (!updatedSinger.ok || updatedSinger.value.singerId == null) {
+		const updatedSingerResult = await ToggleSinger(singer);
+		if (!updatedSingerResult.ok) {
 			alert('Error Updating singer');
 			return;
 		}
-		dispatch(toggleSinger({ singerId: updatedSinger.value.singerId ?? 0, isPaused: updatedSinger.value.isPaused }));
 	};
 
 	const handleDeleteSinger = async () => {
-		const singerId = singer.singerId ?? 0;
-		const deleteSingerResponse = await SingerApi.deleteSinger(partyKey, singerId);
-		if (!deleteSingerResponse.ok) {
+		const deleteResult = await DeleteSinger(singer.singerId ?? 0);
+		if (!deleteResult.ok) {
 			alert('Error Deleting singer');
 			return;
 		}
 		setShowDeleteConfirmation(false);
-		dispatch(deleteSingerPerformances(singerId));
-		dispatch(deleteSinger(singerId));
 	};
 
 	return (
