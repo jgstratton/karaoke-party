@@ -21,6 +21,10 @@
 	text-overflow: ellipsis;
 }
 
+.nowPlayingTime {
+	float:right;
+	display:none;
+}
 .controls {
 	text-align: center;
 	grid-area: controls;
@@ -88,4 +92,25 @@
 
 .body {
 	overflow-y: hidden;
+}
+
+@media (max-width: 1000px) {
+	.controls {
+		display: none;
+	}
+	.player {
+		grid-template-columns: auto 0 0;
+	}
+	.right {
+		display:none;
+	}
+	.controlsLine2 {
+		grid-template-columns: [first] 50px [line2] auto [col3-start] 50px [end];
+	}
+	.player {
+		border-top:1px solid rgb(75,75,75)
+	}
+	.nowPlayingTime {
+		display: block;
+	}
 }

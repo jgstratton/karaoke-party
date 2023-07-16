@@ -7,7 +7,7 @@ import StatusService from '../../../services/StatusService';
 import { ReactNode } from 'react';
 import classNames from 'classnames';
 import EllipsisToggle from '../../common/EllipsisToggle';
-
+import styles from './SingerModal.module.css';
 interface iProps {
 	children?: ReactNode;
 	performance: PerformanceDTO;
@@ -59,11 +59,11 @@ const SongListItem = ({
 
 	return (
 		<>
-			<span className={className}>{index + 1}</span>
-			<span className={className}>
+			<span className={styles.songNumber}>{index + 1}</span>
+			<span className={styles.singerName}>
 				<span className="text-warning">{performance.singerName}</span>
 			</span>
-			<span className={classNames([className, 'no-wrap'])}>
+			<span className={classNames([styles.performance, 'no-wrap'])}>
 				<span>
 					<a
 						href={performance?.url}
@@ -78,8 +78,10 @@ const SongListItem = ({
 				</span>
 			</span>
 
-			<span>{renderSwitch()}</span>
-			<span className="text-right">
+			<span className={styles.status}>
+				<div className={styles.statusInner}> {renderSwitch()}</div>
+			</span>
+			<span className={classNames([styles.control, 'text-right'])}>
 				{(allowMoveUp || allowMoveDown || allowDelete) && (
 					<Dropdown>
 						<Dropdown.Toggle as={EllipsisToggle} variant="success" id="dropdown-basic"></Dropdown.Toggle>

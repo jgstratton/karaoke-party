@@ -28,6 +28,10 @@ const Player = () => {
 		<div className={classNames([styles.player])}>
 			{livePerformance ? (
 				<div className={styles.nowPlaying}>
+					<div className={styles.nowPlayingTime}>
+						{DateTimeUtilities.secondsToHHMMSS(storePlayer.length * storePlayer.position)} /{' '}
+						{DateTimeUtilities.secondsToHHMMSS(storePlayer.length)}
+					</div>
 					<div>
 						{livePerformance?.singerName && (
 							<span className="text-warning pr-2">{livePerformance?.singerName}</span>

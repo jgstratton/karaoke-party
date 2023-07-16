@@ -67,9 +67,7 @@
 
 @media (max-width: 1000px) {
 	.dashboardWrapper{
+		grid-gap: 0;
 		grid-template-columns: 100% 0%;
-	}
-	.footer {
-		display:none;
 	}
 }

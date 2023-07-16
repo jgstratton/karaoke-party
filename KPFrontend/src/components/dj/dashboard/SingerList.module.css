@@ -51,7 +51,7 @@
 	}
 }
 @media (max-width: 1000px) {
-	.hideOnMobile {
-		display:none;
+	.showWithoutHoverOnMobile {
+		visibility:visible;
 	}
 }

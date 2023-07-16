@@ -22,11 +22,52 @@
     grid-gap: 5px;
 	padding:10px;
     grid-template-columns: 20px 150px auto 100px 40px;
+	grid-template-areas:"songNumber singerName performance status control";
 	color:white;
 	border-top:1px solid gray;
+}
+
+.songNumber {
+	grid-area: songNumber;
+}
+
+.singerName {
+	grid-area: singerName;
+}
+
+.performance {
+	grid-area: performance;
+}
+
+.status {
+	grid-area: status;
+}
+
+.control {
+	grid-area: control;
 }
 
 .toggle :global(a.disabled){
 	color:rgb(200,200,200);
 	font-style:italic	;
+}
+
+@media (max-width: 1000px) {
+	.listContainer {
+		grid-template-columns: auto 100px 40px;
+		grid-template-areas:
+		"singerName singerName status"
+		"performance performance control";
+		font-size:12px;
+	}
+	.songNumber {
+		display:none;
+	}
+	.status {
+		text-align:right;
+	}
+
+	.statusInner {
+		float:right;
+	}
 }
