@@ -1,16 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { populateParty, reset as resetParty, joinHub } from './slices/partySlice';
-import { populateUser, reset as resetUser } from './slices/userSlice';
-import { populatePlayer, populateSettings } from './slices/playerSlice';
-import { populatePerformances, resetPerformances } from './slices/performancesSlice';
-import { populateSingers } from './slices/singerSlice';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import RequireSession from './components/common/RequireSession';
 import SingerDashboard from './components/SingerDashboard';
 import NoParty from './components/NoParty';
 import DJDashboard from './components/dj/dashboard/DJDashboard';
-import StorageService from './services/StorageService';
 import Search from './components/Search';
 import Player from './components/player/Player';
 import KeyPressChecker from './services/KeyPressChecker';
@@ -21,44 +15,11 @@ import MyRequests from './components/MyRequests/MyRequests';
 const App = () => {
 	const dispatch = useDispatch();
 	const user = useSelector((state) => state.user);
-	const [loading, setLoading] = useState(true);
+	const loading = useSelector((state) => !state.party.isLoaded);
 
-	useEffect(() => {
-		KeyPressChecker(['Shift', 'D', 'J'], () => {
-			ToggleDj();
-		});
-
-		async function load() {
-			let loadedParty = await StorageService.loadParty();
-			let loadedUser = await StorageService.loadUser();
-
-			if (loadedParty) {
-				console.log(loadedParty);
-				dispatch(populateParty(loadedParty));
-				dispatch(populatePlayer(loadedParty.player));
-				dispatch(populateSettings(loadedParty.playerSettings));
-			} else {
-				dispatch(resetParty(loadedParty));
-			}
-
-			if (loadedUser) {
-				console.log('Loaded User:', loadedUser);
-				dispatch(populateUser(loadedUser));
-			} else {
-				dispatch(resetUser());
-			}
-
-			if (loadedParty && loadedParty.performances) {
-				dispatch(populatePerformances(loadedParty.performances));
-				dispatch(populateSingers(loadedParty.singers));
-				dispatch(joinHub());
-			} else {
-				dispatch(resetPerformances());
-			}
-			setLoading(false);
-		}
-		load();
-	}, [dispatch]);
+	KeyPressChecker(['Shift', 'D', 'J'], () => {
+		ToggleDj();
+	});
 
 	return (
 		<div>

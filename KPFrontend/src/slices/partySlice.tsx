@@ -6,12 +6,14 @@ export interface Party {
 	title: string;
 	partyKey: string;
 	isStale: boolean;
+	isLoaded: boolean;
 }
 
 const initialState: Party = {
 	title: '',
 	partyKey: '',
 	isStale: false,
+	isLoaded: false,
 };
 
 export const partySlice = createSlice({
@@ -21,6 +23,7 @@ export const partySlice = createSlice({
 		populateParty: (state, action: PayloadAction<PartyDTO>) => {
 			state.title = action.payload.title;
 			state.partyKey = action.payload.partyKey;
+			state.isLoaded = true;
 		},
 
 		reset: () => initialState,

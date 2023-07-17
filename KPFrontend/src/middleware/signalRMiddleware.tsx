@@ -9,6 +9,7 @@ import PartyApi from '../api/PartyApi';
 import { AnyAction, Middleware } from 'redux';
 import { markAsStale } from '../slices/partySlice';
 import StorageService from '../services/StorageService';
+import { LoadParty } from '../mediators/PartyMediator';
 
 const messageQueue: { (): void }[] = [];
 
@@ -18,7 +19,7 @@ const signalRMiddleware: Middleware = (store) => {
 	const startSignalRConnection = (_connection: HubConnection) =>
 		_connection
 			.start()
-			.then(() => {
+			.then(async () => {
 				console.info('SignalR Connected');
 				while (messageQueue.length > 0) {
 					console.log(`Getting caught up on ${messageQueue.length} signalR messages.`);
@@ -29,8 +30,8 @@ const signalRMiddleware: Middleware = (store) => {
 				}
 
 				// auto rejoin
-				const partyKey = StorageService.getPartyKey();
-				if ((partyKey?.length ?? '') == 0) {
+				const party = await StorageService.loadParty();
+				if ((party?.partyKey?.length ?? '') == 0) {
 					return;
 				}
 				const isDj = StorageService.loadDjFlag();
@@ -39,7 +40,10 @@ const signalRMiddleware: Middleware = (store) => {
 					joinType = 'JoinAsPlayer';
 				}
 				console.log('Joining party:', joinType);
-				queueMessageSender(() => connection.invoke(joinType, partyKey));
+				queueMessageSender(() => connection.invoke(joinType, party?.partyKey));
+				if (joinType != 'JoinAsPlayer' || !store.getState().party.isLoaded) {
+					LoadParty();
+				}
 			})
 			.catch((err) => {
 				console.error('SignalR Connection Error: ', err);
