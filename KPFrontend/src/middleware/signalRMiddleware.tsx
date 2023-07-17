@@ -8,35 +8,49 @@ import { populateSingers } from '../slices/singerSlice';
 import PartyApi from '../api/PartyApi';
 import { AnyAction, Middleware } from 'redux';
 import { markAsStale } from '../slices/partySlice';
+import StorageService from '../services/StorageService';
 
 const messageQueue: { (): void }[] = [];
 
-const startSignalRConnection = (_connection: HubConnection) =>
-	_connection
-		.start()
-		.then(() => console.info('SignalR Connected'))
-		.catch((err) => {
-			console.error('SignalR Connection Error: ', err);
-			setTimeout(() => startSignalRConnection(connection), 5000);
-		});
-
 const connection = new HubConnectionBuilder().withUrl('/hubs/player').withAutomaticReconnect().build();
 
-connection
-	.start()
-	.then((result) => {
-		console.log('Connected!');
-		while (messageQueue.length > 0) {
-			console.log(`Getting caught up on ${messageQueue.length} signalR messages.`);
-			const messageSender = messageQueue.shift();
-			if (messageSender) {
-				messageSender();
-			}
-		}
-	})
-	.catch((e) => console.log('Connection failed: ', e));
-
 const signalRMiddleware: Middleware = (store) => {
+	const startSignalRConnection = (_connection: HubConnection) =>
+		_connection
+			.start()
+			.then(() => {
+				console.info('SignalR Connected');
+				while (messageQueue.length > 0) {
+					console.log(`Getting caught up on ${messageQueue.length} signalR messages.`);
+					const messageSender = messageQueue.shift();
+					if (messageSender) {
+						messageSender();
+					}
+				}
+
+				// auto rejoin
+				const partyKey = StorageService.getPartyKey();
+				if ((partyKey?.length ?? '') == 0) {
+					return;
+				}
+				const isDj = StorageService.loadDjFlag();
+				let joinType = isDj ? 'JoinAsDj' : 'JoinParty';
+				if (window.location.pathname.toLowerCase().includes('player')) {
+					joinType = 'JoinAsPlayer';
+				}
+				console.log('Joining party:', joinType);
+				queueMessageSender(() => connection.invoke(joinType, partyKey));
+			})
+			.catch((err) => {
+				console.error('SignalR Connection Error: ', err);
+				setTimeout(() => startSignalRConnection(connection), 5000);
+			});
+	connection.onclose(() => {
+		console.log('SignalR Connection Closed - Starting new connection');
+		startSignalRConnection(connection);
+	});
+
+	startSignalRConnection(connection);
 	const signalActionCreator = function (action: AnyAction) {
 		action.signalR = true;
 		console.log('SignalR action dispatched', action);
