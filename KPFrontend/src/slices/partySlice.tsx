@@ -5,6 +5,7 @@ import { RootState } from '../store';
 export interface Party {
 	title: string;
 	partyKey: string;
+	djKey: string;
 	isStale: boolean;
 	isLoaded: boolean;
 }
@@ -12,6 +13,7 @@ export interface Party {
 const initialState: Party = {
 	title: '',
 	partyKey: '',
+	djKey: '',
 	isStale: false,
 	isLoaded: false,
 };
@@ -23,10 +25,18 @@ export const partySlice = createSlice({
 		populateParty: (state, action: PayloadAction<PartyDTO>) => {
 			state.title = action.payload.title;
 			state.partyKey = action.payload.partyKey;
+			state.djKey = action.payload.djKey;
 			state.isLoaded = true;
 		},
 
-		reset: () => initialState,
+		reset: (state) => {
+			state.title = initialState.title;
+			state.partyKey = initialState.partyKey;
+			state.djKey = initialState.djKey;
+			state.isStale = initialState.isStale;
+			// no party is set, but the state is loaded
+			state.isLoaded = true;
+		},
 
 		markAsStale: (state) => {
 			state.isStale = true;
@@ -42,6 +52,10 @@ export const selectIsPartyInitialized = (state: RootState) => {
 
 export const selectPartyKey = (state: RootState) => {
 	return state.party?.partyKey ?? '';
+};
+
+export const selectDjKey = (state: RootState) => {
+	return state.party?.djKey ?? '';
 };
 
 export const selectIsStale = (state: RootState) => {

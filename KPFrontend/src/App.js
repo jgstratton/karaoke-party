@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import RequireSession from './components/common/RequireSession';
 import SingerDashboard from './components/SingerDashboard';
@@ -13,7 +12,6 @@ import { ToggleDj } from './mediators/PartyMediator';
 import MyRequests from './components/MyRequests/MyRequests';
 
 const App = () => {
-	const dispatch = useDispatch();
 	const user = useSelector((state) => state.user);
 	const loading = useSelector((state) => !state.party.isLoaded);
 

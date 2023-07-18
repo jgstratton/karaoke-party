@@ -19,31 +19,6 @@ namespace KaraokeParty.Controllers {
 			this.context = context;
 		}
 
-		[HttpGet]
-		public ActionResult<PartyDTO> Get(string partyKey) {
-			Party? party = context.Parties.Where(p =>
-				!p.IsExpired && p.PartyKey == partyKey.ToUpper()
-			).OrderByDescending(p => p.DateTimeCreated).FirstOrDefault();
-
-			if (party == null) {
-				return NotFound();
-			}
-			return PartyDTO.FromDb(party);
-		}
-
-		[HttpGet]
-		[Route("{partyKey}/join")]
-		public ActionResult<UserDTO> Join(string partyKey, [FromQuery] UserDTO singer) {
-			Party? party = partyService.GetPartyByKey(partyKey);
-			if (party == null) {
-				return NotFound();
-			}
-			User newUser = singer.ToDb();
-			context.Users.Add(newUser);
-			context.SaveChanges();
-			return UserDTO.FromDb(newUser);
-		}
-
 		[HttpPost]
 		[Route("{partyKey}/performance")]
 		public ActionResult<PerformanceDTO> PostPerformance(string partyKey, [FromBody] PerformanceRequestDTO dto) {

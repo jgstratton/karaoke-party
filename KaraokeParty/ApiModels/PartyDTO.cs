@@ -5,6 +5,7 @@ namespace KaraokeParty.ApiModels {
 		public int PartyId { get; set; }
 		public string Title { get; set; } = "";
 		public string PartyKey { get; set; } = "";
+		public string DjKey { get; set; } = "";
 
 		public PlayerDTO Player { get; set; }
 		public List<PerformanceDTO> Performances { get; set; }
@@ -32,6 +33,7 @@ namespace KaraokeParty.ApiModels {
 				PartyId = party.PartyId,
 				Title = party.Title,
 				PartyKey = party.PartyKey,
+				DjKey = party.DjKey,
 				Player = new PlayerDTO {
 					VideoLength = party.VideoLength,
 					VideoPosition = party.VideoPosition,

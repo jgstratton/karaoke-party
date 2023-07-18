@@ -6,6 +6,7 @@ import { Button, Form, Modal } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { broadcastSettings, selectPlayerSettings } from '../../slices/playerSlice';
 import styles from './SettingsModal.module.css';
+import { selectDjKey } from '../../slices/partySlice';
 interface props {
 	show: boolean;
 	handleClose: () => void;
@@ -14,6 +15,7 @@ interface props {
 const SettingsModal = ({ show, handleClose }: props) => {
 	const dispatch = useDispatch();
 	const playerStoreSettings = useSelector(selectPlayerSettings);
+	const djKey = useSelector(selectDjKey);
 	const [marqueeEnabled, setMarqueeEnabled] = useState(false);
 	const [marqueeText, setMarqueeText] = useState('');
 	const [marqueeSpeed, setMarqueeSpeed] = useState(20);
@@ -64,6 +66,12 @@ const SettingsModal = ({ show, handleClose }: props) => {
 					<Modal.Title>Settings</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
+					<Form.Group className="mb-3">
+						<Form.Label>DJ Party Key</Form.Label>
+						<p className="text-warning">({djKey})</p>
+						<p className="text-muted">Use this to join this party as a DJ from another device.</p>
+					</Form.Group>
+					<hr />
 					<Form.Group className="mb-3">
 						<Form.Label>Marquee Settings ({marqueeEnabled ? 'enabled' : 'marquee disabled'})</Form.Label>
 						{!marqueeEnabled && (

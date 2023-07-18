@@ -39,6 +39,7 @@ namespace KaraokeParty.Controllers {
 			Party newParty = new Party {
 				Title = postParty.Title,
 				PartyKey = KeyGenerator.CreateAlphaKey(4),
+				DjKey = KeyGenerator.CreateAlphaKey(5)
 			};
 
 			User newUser = new User {

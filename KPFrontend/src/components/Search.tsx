@@ -74,7 +74,7 @@ const Search = () => {
 			setDownloadInProgress(false);
 			return;
 		}
-		if (selectedSong.fileName.length == 0) {
+		if (selectedSong.fileName.length === 0) {
 			const downloadResult = await SongApi.downloadSong(selectedSong);
 			if (!downloadResult.ok) {
 				alert('error downloading file...');

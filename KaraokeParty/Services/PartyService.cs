@@ -17,6 +17,21 @@ namespace KaraokeParty.Services {
 				.FirstOrDefault();
 		}
 
+		public Party? GetPartyByDjKey(string djKey) {
+			return context.Parties
+				.Where(p => !p.IsExpired && p.DjKey == djKey)
+				.OrderByDescending(p => p.DateTimeCreated)
+				.FirstOrDefault();
+		}
+
+		public Party? GetPartyByAnyKey(string anyPartyKey) {
+			Party? party = GetPartyByKey(anyPartyKey);
+			if (party != null) {
+				return party;
+			}
+			return GetPartyByDjKey(anyPartyKey);
+		}
+
 		public PerformanceDTO? StartNextSong(string partyKey) {
 			Party? party = GetPartyByKey(partyKey);
 			if (party == null) {
@@ -195,6 +210,8 @@ namespace KaraokeParty.Services {
 
 	public interface IPartyService {
 		void ApllyDefaultPlayerSettings(Party party);
+		Party? GetPartyByAnyKey(string anyPartyKey);
+		Party? GetPartyByDjKey(string djKey);
 		Party? GetPartyByKey(string partyKey);
 		List<PerformanceDTO> MovePerformance(string partyKey, MovePerformanceDTO dto);
 		void Pause(string partyKey);

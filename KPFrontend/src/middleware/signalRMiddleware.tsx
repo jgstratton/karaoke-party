@@ -7,7 +7,7 @@ import { populateSingers } from '../slices/singerSlice';
 
 import PartyApi from '../api/PartyApi';
 import { AnyAction, Middleware } from 'redux';
-import { markAsStale } from '../slices/partySlice';
+import { markAsStale, reset } from '../slices/partySlice';
 import StorageService from '../services/StorageService';
 import { LoadParty } from '../mediators/PartyMediator';
 
@@ -30,10 +30,10 @@ const signalRMiddleware: Middleware = (store) => {
 						messageSender();
 					}
 				}
-
 				// auto rejoin
 				const party = await StorageService.loadParty();
-				if ((party?.partyKey?.length ?? '') == 0) {
+				if ((party?.partyKey ?? '').length === 0) {
+					store.dispatch(reset());
 					return;
 				}
 				const isDj = StorageService.loadDjFlag();
@@ -43,7 +43,7 @@ const signalRMiddleware: Middleware = (store) => {
 				}
 				console.log('Joining party:', joinType);
 				queueMessageSender(() => connection.invoke(joinType, party?.partyKey));
-				if (joinType != 'JoinAsPlayer' || !store.getState().party.isLoaded) {
+				if (joinType !== 'JoinAsPlayer' || !store.getState().party.isLoaded) {
 					LoadParty();
 				}
 				currentTry = -1;

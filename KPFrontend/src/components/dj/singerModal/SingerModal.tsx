@@ -2,10 +2,9 @@ import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect, useState } from 'react';
 import { Alert, Badge, Button, Col, Form, Modal, Row } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import StatusService from '../../../services/StatusService';
-import { selectPartyKey } from '../../../slices/partySlice';
-import { selectRotationSize, selectSingerDetailsById, updateSinger } from '../../../slices/singerSlice';
+import { selectRotationSize, selectSingerDetailsById } from '../../../slices/singerSlice';
 import { RootState } from '../../../store';
 import styles from './SingerModal.module.css';
 import SingerModalPerformance from './SingerModalPerformance';
@@ -21,7 +20,6 @@ interface props {
 }
 
 const SingerModal = ({ show, singerId, handleClose }: props) => {
-	const dispatch = useDispatch();
 	const [singerName, setSingerName] = useState('');
 	const [singerPosition, setSingerPosition] = useState(1);
 	const [performances, setPerformances] = useState<PerformanceDTO[]>([]);
@@ -29,7 +27,6 @@ const SingerModal = ({ show, singerId, handleClose }: props) => {
 	const [showErrorMessage, setShowErrorMessage] = useState(false);
 	const [errorMessage, setErrorMessage] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
-	const partyKey = useSelector(selectPartyKey);
 	const singerDetails = useSelector((state: RootState) => selectSingerDetailsById(state, singerId));
 	const rotationSize = useSelector(selectRotationSize);
 

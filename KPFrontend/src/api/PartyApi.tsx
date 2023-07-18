@@ -22,12 +22,7 @@ const createParty = async (title: string, djName: string, password: string): Pro
 
 const fetchParty = async (partyKey: string): Promise<Result<PartyDTO>> => {
 	console.log('fetching party');
-	const response = await fetch(
-		'party?' +
-			new URLSearchParams({
-				partyKey: partyKey,
-			})
-	);
+	const response = await fetch(`party/${partyKey}`);
 	let partyReponse = await response.json();
 	if (response.status === 404) {
 		return { ok: false, error: '404 - Party not found' };

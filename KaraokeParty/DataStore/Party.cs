@@ -15,6 +15,10 @@ namespace KaraokeParty.DataStore {
 		public string PartyKey { get; set; } = "";
 
 		[Required]
+		[MaxLength(10)]
+		public string DjKey { get; set; } = "";
+
+		[Required]
 		public DateTime DateTimeCreated { get; set; } = DateTime.Now;
 
 		public bool IsExpired { get; set; } = false;

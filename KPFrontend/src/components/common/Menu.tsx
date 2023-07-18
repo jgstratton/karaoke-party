@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectUserIsDj } from '../../slices/userSlice';
 import { selectIsPartyInitialized } from '../../slices/partySlice';
-import { selectRequests } from '../../slices/performancesSlice';
 import StorageService from '../../services/StorageService';
 import styles from './Menu.module.css';
 import SettingsModal from '../dj/SettingsModal';
@@ -11,8 +10,6 @@ import { useState } from 'react';
 import { RootState } from '../../store';
 import ConfirmModal from './ConfirmModal';
 import NewSingerModal from '../dj/NewSingerModal';
-
-import RequestProcessModal from '../dj/requestProcessModal/RequestProcessModal';
 
 const Menu = () => {
 	const user = useSelector((state: RootState) => state.user);

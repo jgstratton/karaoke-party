@@ -6,6 +6,7 @@ import SingerDTO from './SingerDTO';
 export default interface PartyDTO {
 	title: string;
 	partyKey: string;
+	djKey: string;
 	player: PlayerDTO;
 	performances: [PerformanceDTO];
 	singers: [SingerDTO];
