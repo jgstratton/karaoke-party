@@ -13,7 +13,7 @@ import { LoadParty } from '../mediators/PartyMediator';
 
 const messageQueue: { (): void }[] = [];
 
-const connection = new HubConnectionBuilder().withUrl('/hubs/player').withAutomaticReconnect().build();
+const connection = new HubConnectionBuilder().withUrl('/hubs/player').build();
 
 const signalRMiddleware: Middleware = (store) => {
 	const startSignalRConnection = (_connection: HubConnection) =>
