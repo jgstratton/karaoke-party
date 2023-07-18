@@ -14,9 +14,11 @@ import { LoadParty } from '../mediators/PartyMediator';
 const messageQueue: { (): void }[] = [];
 
 const connection = new HubConnectionBuilder().withUrl('/hubs/player').build();
+const retryIntervals = [1, 2, 3, 5, 5, 5, 10, 10, 10];
+let currentTry = -1;
 
 const signalRMiddleware: Middleware = (store) => {
-	const startSignalRConnection = (_connection: HubConnection) =>
+	const startSignalRConnection = (_connection: HubConnection) => {
 		_connection
 			.start()
 			.then(async () => {
@@ -44,11 +46,17 @@ const signalRMiddleware: Middleware = (store) => {
 				if (joinType != 'JoinAsPlayer' || !store.getState().party.isLoaded) {
 					LoadParty();
 				}
+				currentTry = -1;
 			})
 			.catch((err) => {
+				currentTry++;
 				console.error('SignalR Connection Error: ', err);
-				setTimeout(() => startSignalRConnection(connection), 5000);
+				if (currentTry < retryIntervals.length) {
+					console.log('Connection attempt:', currentTry + 1);
+					setTimeout(() => startSignalRConnection(connection), retryIntervals[currentTry] * 1000);
+				}
 			});
+	};
 	connection.onclose(() => {
 		console.log('SignalR Connection Closed - Starting new connection');
 		startSignalRConnection(connection);
