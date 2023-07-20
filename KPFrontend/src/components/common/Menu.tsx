@@ -55,12 +55,14 @@ const Menu = () => {
 									<Nav.Link onClick={() => navigate('/search')}>Add Request</Nav.Link>
 									<Nav.Link onClick={handleShowNewSingerModal}>Add Singer</Nav.Link>
 									<Nav.Link onClick={() => setShowConfirmLeave(true)}>Leave Party</Nav.Link>
+									<Nav.Link onClick={() => window.location.reload()}>Refresh Page</Nav.Link>
 									<Nav.Link onClick={handleShowDjSettings}>Open DJ Settings</Nav.Link>
 								</Nav>
 							</Navbar.Collapse>
 						) : (
 							<Navbar.Collapse id="responsive-navbar-nav">
 								<Nav className="me-auto">
+									<Nav.Link onClick={() => window.location.reload()}>Refresh Page</Nav.Link>
 									<Nav.Link onClick={() => setShowConfirmLeave(true)}>Leave Party</Nav.Link>
 								</Nav>
 							</Navbar.Collapse>
