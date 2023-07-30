@@ -3,6 +3,7 @@ using System;
 using KaraokeParty.DataStore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KaraokeParty.Migrations
 {
     [DbContext(typeof(KPContext))]
-    partial class KPContextModelSnapshot : ModelSnapshot
+    [Migration("20230730215346_AddIP")]
+    partial class AddIP
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,15 +47,15 @@ namespace KaraokeParty.Migrations
                         .HasColumnType("text")
                         .HasColumnName("connection_id");
 
+                    b.Property<string>("Group")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("group");
+
                     b.Property<string>("IP")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("ip");
-
-                    b.Property<string>("PartyKey")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("party_key");
 
                     b.HasKey("LogId")
                         .HasName("pk_connection_log");

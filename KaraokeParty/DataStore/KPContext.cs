@@ -4,6 +4,7 @@ namespace KaraokeParty.DataStore {
 	public class KPContext : DbContext {
 		private IConfiguration configuration;
 
+		public DbSet<ConnectionLog> ConnectionLog { get; set; } = null!;
 		public DbSet<Party> Parties { get; set; } = null!;
 		public DbSet<User> Users { get; set; } = null!;
 		public DbSet<Song> Songs { get; set; } = null!;
