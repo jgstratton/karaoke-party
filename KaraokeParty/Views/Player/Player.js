@@ -2,11 +2,9 @@ const Player = function (options) {
 	const model = options.model;
 	const video = options.video;
 	let splashScreen;
-	let interactionOverlay;
 
 	const state = {
 		playing: false,
-		interaction: false,
 		videoStarted: false,
 		playerSettings: null,
 		currentPerformance: null,
@@ -38,11 +36,6 @@ const Player = function (options) {
 	};
 
 	const _attemptPlay = () => {
-		// need interaction before chrome will let us play
-		if (!state.interaction) {
-			console.warn('PLAYER: Video not started, waiting for interaction');
-			return;
-		}
 		if (!state.playing) {
 			console.warn("PLAYER: Video not started. Not in 'playing' state.");
 			return;
@@ -53,39 +46,40 @@ const Player = function (options) {
 			return;
 		}
 
-		if (!state.videoStarted && splashScreen.IsVisible()) {
-			console.log('PLAYER: Video not started. Waiting for splashscreen to complete.');
+		const curSecondsVisible = splashScreen.GetSecondsVisible();
+		if (splashScreen.IsVisible() && curSecondsVisible < state.playerSettings.splashScreenSeconds) {
+			console.warn('PLAYER: Splash screen duration not complete, continue waiting.');
+			setTimeout(() => {
+				splashScreen.Hide();
+				_attemptPlay();
+			}, (state.playerSettings.splashScreenSeconds - curSecondsVisible) * 1000);
 			return;
 		}
 
-		// if the video was already started, then just show it
-		if (state.videoStarted) {
-			console.log('PLAYER: Video already started. Continue playing.');
-			video.play();
-			video.classList.remove('hidden');
-			splashScreen.Hide();
-			return;
-		}
-
-		// if the video is just now starting, show the splash screen
-		console.log('PLAYER: Starting new video, show splash screen.');
-		splashScreen.Show(state.currentPerformance);
-		setTimeout(() => {
-			state.videoStarted = true;
-			splashScreen.Hide();
-			_attemptPlay();
-		}, state.playerSettings.splashScreenSeconds * 1000);
+		console.log('PLAYER: Starting new video');
+		video.play();
+		video.classList.remove('hidden');
+		splashScreen.Hide();
 	};
 
 	const _loadVideo = () => {
+		const _updateProgress = (evt) => {
+			if (evt.lengthComputable) {
+				var percentComplete = (evt.loaded / evt.total) * 100;
+				splashScreen.SetProgressBar(percentComplete);
+			}
+		};
+
 		video.classList.add('hidden');
 		video.pause();
 		video.removeAttribute('src');
+		splashScreen.Show(state.currentPerformance);
 		if (lastRequest) {
 			lastRequest.abort();
 			lastRequest = null;
 		}
 		var req = new XMLHttpRequest();
+		req.onprogress = _updateProgress;
 		req.open('GET', `../../song/${state.currentPerformance.fileName}`, true);
 		req.responseType = 'blob';
 
@@ -105,18 +99,15 @@ const Player = function (options) {
 		lastRequest = req;
 	};
 	this.Run = () => {
-		//load the party details when the page first loads
-		_loadInitialState();
-		interactionOverlay = new InteractionOverlay({
+		new InteractionOverlay({
 			OnInteraction: () => {
-				state.interaction = true;
-				interactionOverlay.Hide();
+				// wait till interaction before loading party details
+				_loadInitialState();
 				_attemptPlay();
 			},
 		});
 
 		splashScreen = new SplashScreen();
-		interactionOverlay.Show();
 
 		const connection = new Connection({
 			partyKey: model.partyKey,
