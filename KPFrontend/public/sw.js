@@ -8,11 +8,6 @@ self.addEventListener('fetch', (event) => {
 		return;
 	}
 
-	// don't cache the player
-	if (event.request.url.search('player') > 0) {
-		return;
-	}
-
 	if (event.request.method == 'GET') {
 		event.respondWith(
 			caches.open(cacheName).then((cache) => {

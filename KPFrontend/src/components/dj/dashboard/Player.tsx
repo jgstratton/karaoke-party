@@ -10,10 +10,12 @@ import { selectLive, startNextPerformance, startPreviousPerformance } from '../.
 import classNames from 'classnames';
 import { RootState } from '../../../store';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { selectPartyKey } from '../../../slices/partySlice';
 
 const Player = () => {
 	const dispatch = useDispatch();
 	const performances = useSelector(selectLive);
+	const partyKey = useSelector(selectPartyKey);
 	const storePlayer = useSelector((state: RootState) => state.player);
 	const livePerformance = performances[0];
 
@@ -94,6 +96,15 @@ const Player = () => {
 						<a href="/player" target="_blank" rel="noopener noreferrer">
 							<FontAwesomeIcon
 								className={classNames([styles.icon, styles.navigate])}
+								icon={faTv}
+								onClick={() => dispatch(startPreviousPerformance())}
+							/>
+						</a>
+					</OverlayTrigger>
+					<OverlayTrigger overlay={<Tooltip>Launch NEW video player in new tab</Tooltip>} placement="top">
+						<a href={`/party/${partyKey}/player`} target="_blank" rel="noopener noreferrer">
+							<FontAwesomeIcon
+								className={classNames([styles.icon, styles.navigate, 'text-warning'])}
 								icon={faTv}
 								onClick={() => dispatch(startPreviousPerformance())}
 							/>

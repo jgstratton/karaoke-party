@@ -22,7 +22,7 @@ const Marquee = function (options) {
 			.replace(/%url%/gi, window.location.host)
 			.replaceAll(' ', '\u00A0');
 		const marqueeHtml = `
-			<div class="marquee-text" style="font-size:${parseInt(playerSettings.marqueeSize / 2)}px">
+			<div class="marquee-text" style="font-size:${parseInt(playerSettings.marqueeSize / 1.25)}px">
 				${marqueeText}
 			</div>`;
 		marqueeParent.innerHTML = marqueeHtml + marqueeHtml + marqueeHtml;
