@@ -12,47 +12,6 @@ import { RootState } from '../../store';
 import { selectPartyKey } from '../../slices/partySlice';
 import Splash from './Splash';
 import { selectUserIsDj } from '../../slices/userSlice';
-import store from '../../store';
-
-const playerContainer = document.createElement('div');
-playerContainer.innerHTML = `
-<div style="height: calc(100vh); overflow-y: hidden;">
-	<video id="videoPlayer" src="./song/" preload="auto" autoplay="" style="width: 100%; height: 100%;"></video>
-</div>`;
-
-if (!playerContainer) {
-	throw 'video wrapper not created';
-}
-document.body.appendChild(playerContainer);
-
-const playerElementTest = document.getElementById('videoPlayer');
-if (!playerElementTest) {
-	throw 'video element not found';
-}
-const playerElement: HTMLVideoElement = playerElementTest as HTMLVideoElement;
-
-const durationChangeEventHandler = () => {
-	// @ts-ignore:
-	store.dispatch(sendPosition(playerElement.duration));
-};
-
-playerElement.removeEventListener('durationchange', durationChangeEventHandler);
-playerElement.addEventListener('durationchange', durationChangeEventHandler);
-
-let lastTimeChecked = 0;
-const timeChecker = () => {
-	setTimeout(() => {
-		if (lastTimeChecked != playerElement.currentTime) {
-			lastTimeChecked = playerElement.currentTime;
-			store.dispatch(
-				// @ts-ignore:
-				sendPosition(playerElement.duration > 0 ? playerElement.currentTime / playerElement.duration : 0)
-			);
-		}
-		timeChecker();
-	}, 1000);
-};
-timeChecker();
 
 const Player = () => {
 	useBodyClass('player-open');
@@ -64,21 +23,8 @@ const Player = () => {
 	const playerSettings = useSelector(selectPlayerSettings);
 	const [userInteraction, setUserInteraction] = useState(false);
 	const [lastReportedPosition, setLastReportedPosition] = useState(0);
-
-	// useEffect(() => {
-	// 	var videoBlob = this.response;
-	// 	var vid = URL.createObjectURL(videoBlob); // IE10+
-	// 	// Video is now downloaded
-	// 	// and we can set it as source on the video element
-	// 	video.src = vid;
-	// }, [player.url]);
-
-	useEffect(() => {
-		console.log(userInteraction, player.playing);
-		if (userInteraction && player.playing) {
-			playerElement.play();
-		}
-	}, [userInteraction, player.playing]);
+	const [playbackRate] = useState(1.0);
+	const [loop] = useState(false);
 
 	useEffect(() => {
 		if (lastReportedPosition !== player.position && playerRef.current) {
@@ -117,8 +63,8 @@ const Player = () => {
 			) : player.showSplash && settings.splashScreenEnabled ? (
 				<Splash />
 			) : (
-				<div style={{ height: `calc(100vh)`, overflowY: 'hidden', position: 'absolute' }}>
-					{/* <ReactPlayer
+				<div style={{ height: `calc(100vh)`, overflowY: 'hidden' }}>
+					<ReactPlayer
 						// @ts-ignore:
 						ref={playerRef}
 						className="react-player"
@@ -129,10 +75,10 @@ const Player = () => {
 						playing={userInteraction && player.playing}
 						controls={false}
 						light={false}
-						// loop={loop}
-						// playbackRate={playbackRate}
+						loop={loop}
+						playbackRate={playbackRate}
 						// volume={volume}
-						// muted={false}
+						muted={false}
 						// onReady={() => console.log('onReady')}
 						// onStart={() => console.log('onStart')}
 						// onPlay={handlePlay}
@@ -146,7 +92,7 @@ const Player = () => {
 						// onError={(e) => console.log('onError', e)}
 						onProgress={handleProgress}
 						onDuration={(duration) => dispatch(sendDuration(Math.floor(duration * 1000)))}
-					/> */}
+					/>
 					{playerSettings.marqueeEnabled && (
 						<div
 							className="marquee-wrap"

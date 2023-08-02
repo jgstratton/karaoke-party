@@ -7,7 +7,6 @@ import { register } from './serviceWorkerRegistration';
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 import store from './store';
-import StandalonePlayer from './components/player/StandalonePlayer';
 
 register({
 	onUpdate: () => {
@@ -21,31 +20,27 @@ register({
 	},
 });
 
-const isPlayer = window.location.pathname.toLowerCase().includes('player');
-
-window.onerror = (e) => {
-	console.error('Unhandled error:', e);
-	if (!isPlayer) {
+if (!window.location.pathname.toLowerCase().includes('player')) {
+	window.onerror = (e) => {
+		console.error('Unhandled error:', e);
 		alert('OH NO! AN ERROR! Who wrote this trash!?');
-	}
-};
+	};
+} else {
+	window.onerror = (e) => {
+		console.error('Unhandled error:', e);
+	};
+}
 
 window.addEventListener('unhandledrejection', function (promiseRejectionEvent) {
 	console.error('Unhandled error:', promiseRejectionEvent);
-	if (!isPlayer) {
-		alert('OH NO! AN ERROR!  Who wrote this trash!?');
-	}
+	alert('OH NO! AN ERROR!  Who wrote this trash!?');
 });
 
-if (isPlayer) {
-	StandalonePlayer().init();
-} else {
-	const root = ReactDOM.createRoot(document.getElementById('root'));
-	root.render(
-		<BrowserRouter>
-			<Provider store={store}>
-				<App />
-			</Provider>
-		</BrowserRouter>
-	);
-}
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+	<BrowserRouter>
+		<Provider store={store}>
+			<App />
+		</Provider>
+	</BrowserRouter>
+);

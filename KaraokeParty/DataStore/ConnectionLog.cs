@@ -13,5 +13,7 @@ namespace KaraokeParty.DataStore {
 		public string IP { get; set; } = "";
 
 		public string Action { get; set; } = "";
+
+		public DateTime LogTime { get; set; } = DateTime.Now;
 	}
 }

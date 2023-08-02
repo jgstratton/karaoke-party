@@ -52,14 +52,14 @@ const App = () => {
 								</RequireSession>
 							}
 						/>
-						{/* <Route
+						<Route
 							path="Player"
 							element={
 								<RequireSession>
 									<Player />
 								</RequireSession>
 							}
-						/> */}
+						/>
 						<Route path="/redirectHome" element={<Navigate to="/home" />} />
 					</Routes>
 				</div>
