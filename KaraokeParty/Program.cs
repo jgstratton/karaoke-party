@@ -89,18 +89,6 @@ app.UseEndpoints(endpoints => {
 
 // Render only .js files in "Views" folder
 app.UseStaticFiles();
-app.UseStaticFiles(new StaticFileOptions() {
-	FileProvider = new PhysicalFileProvider(
-		Path.Combine(Directory.GetCurrentDirectory(), @"Views")),
-	RequestPath = new PathString("/Views"),
-	ContentTypeProvider = new FileExtensionContentTypeProvider(
-			new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-			{
-					{ ".js", "application/javascript" },
-					{ ".css", "text/css" },
-			})
-}
-);
 
 using (var scope = app.Services.CreateScope()) {
 	var services = scope.ServiceProvider;

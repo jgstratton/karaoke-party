@@ -23,12 +23,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="./.editorconfig" />
+    <None Include="wwwroot\StaticComponents\Connection.js" />
+    <None Include="wwwroot\StaticComponents\InteractionOverlay.js" />
+    <None Include="wwwroot\StaticComponents\Marquee.css" />
+    <None Include="wwwroot\StaticComponents\Marquee.js" />
+    <None Include="wwwroot\StaticComponents\Player.js" />
+    <None Include="wwwroot\StaticComponents\SplashScreen.css" />
+    <None Include="wwwroot\StaticComponents\SplashScreen.js" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Api\Party\Player\" />
     <Folder Include="Migrations\" />
     <Folder Include="FrontEndSpa\" />
-    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 </Project>
