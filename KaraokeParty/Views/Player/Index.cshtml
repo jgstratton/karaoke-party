@@ -1,0 +1,41 @@
+﻿@model KaraokeParty.Controllers.PlayerController.PlayerModel
+@{
+	Layout = "~/Views/Player/_Layout.cshtml";
+	var cacheVersion = Guid.NewGuid().ToString();
+}
+
+<script src="~/Views/Player/Connection.js?v=@cacheVersion"></script>
+<script src="~/Views/Player/Player.js?v=@cacheVersion"></script>
+<script src="~/Views/Player/InteractionOverlay.js?v=@cacheVersion"></script>
+<script src="~/Views/Player/SplashScreen.js?v=@cacheVersion"></script>
+<script src="~/lib/signalr/signalr.js"></script>
+
+<link href="~/Views/Player/SplashScreen.css?v=@cacheVersion" rel="stylesheet" type="text/css" />
+
+<style>
+	.hidden {
+		display:none;
+	}
+</style>
+<div style="height: calc(100vh); overflow-y: hidden">
+	<video id="videoPlayer" preload="auto" autoplay="" style="width: 100%; height: 100%"></video>
+</div>
+
+<script>
+	window.onerror = (e) => {
+		console.error(e);
+	};
+
+	const Model = function (model) {
+		partyKey: "@Model.PartyKey"
+	}
+
+	const player = new Player({
+		model: {
+			partyKey: "@Model.PartyKey"
+		},
+		video: document.getElementById("videoPlayer")
+	});
+
+	player.Run();
+</script>

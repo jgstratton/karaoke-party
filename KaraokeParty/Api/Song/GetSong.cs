@@ -19,7 +19,7 @@ namespace KaraokeParty.Controllers {
 
 		[HttpGet]
 		[Route("song/{fileName}")]
-		public IActionResult GetFile(string fileName) {
+		public FileResult GetFile(string fileName) {
 			string videoPath = $"{VideoStoragePath}/{fileName}";
 			var file = System.IO.File.ReadAllBytes(videoPath);
 			return File(file, contentType: "video/mp4", fileDownloadName: fileName, enableRangeProcessing: true);

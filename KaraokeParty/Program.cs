@@ -3,6 +3,7 @@ using KaraokeParty.Hubs;
 using KaraokeParty.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Rewrite;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using System.Text.Json.Serialization;
@@ -21,7 +22,7 @@ builder.Services.AddCors(options => {
 });
 
 // Add services to the container.
-builder.Services.AddControllers()
+builder.Services.AddControllersWithViews()
 	.AddJsonOptions(options => {
 		options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 	});
@@ -46,7 +47,7 @@ var app = builder.Build();
 
 // rewrite client-side routes to return index.html
 var options = new RewriteOptions();
-foreach (var clientRoute in new List<string> { "Search", "Home", "NoParty", "Player", "MyRequests" }) {
+foreach (var clientRoute in new List<string> { "Search", "Home", "NoParty", "MyRequests" }) {
 	options.AddRewrite($"(?i)^{clientRoute}", "index.html", skipRemainingRules: true);
 	options.AddRewrite($"(?i)^{clientRoute}/.*", "index.html", skipRemainingRules: true);
 }
@@ -85,7 +86,21 @@ app.UseEndpoints(endpoints => {
 	endpoints.MapHub<PlayerHub>("/hubs/player");
 	endpoints.MapFallbackToFile("/index.html");
 });
-//app.MapControllers();
+
+// Render only .js files in "Views" folder
+app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions() {
+	FileProvider = new PhysicalFileProvider(
+		Path.Combine(Directory.GetCurrentDirectory(), @"Views")),
+	RequestPath = new PathString("/Views"),
+	ContentTypeProvider = new FileExtensionContentTypeProvider(
+			new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+			{
+					{ ".js", "application/javascript" },
+					{ ".css", "text/css" },
+			})
+}
+);
 
 using (var scope = app.Services.CreateScope()) {
 	var services = scope.ServiceProvider;

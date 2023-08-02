@@ -1,0 +1,54 @@
+.splash-screen {
+	position: fixed;
+	width: 100%;
+	height:100%;
+	left:0;
+	top:0;
+}
+.splash-screen .large-glow {
+	margin-top:10%;
+	font-size: 5em;
+	font-family: "Yellowtail", sans-serif;
+	color: #fff;
+	text-shadow:
+		0 0 7px #fff,
+		0 0 10px #fff,
+		0 0 21px #fff,
+		0 0 42px #5271ff,
+		0 0 82px #5271ff,
+		0 0 92px #5271ff,
+		0 0 102px #5271ff,
+		0 0 151px #5271ff;
+}
+
+.splash-screen .singer-cricle-wrap {
+	position: fixed;
+	width: 100%;
+	height:100%;
+	left:0;
+	top:0;
+}
+.splash-screen .singer-bar {
+	position: absolute;
+	transform: translateY(-50%);
+	width: 100%;
+	height: 150px;
+	background-color: black;
+	margin:0;
+	top: 50%;
+	opacity:0.75;
+	
+	
+	line-height:150px;
+	font-family: Lato,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+}
+
+.singer-text {
+	color:rgb(243, 156, 18);
+	font-size:4em;
+}
+
+.song-text {
+	color:white;
+	font-size:2em;
+}
