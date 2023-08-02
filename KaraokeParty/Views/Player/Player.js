@@ -2,6 +2,7 @@ const Player = function (options) {
 	const model = options.model;
 	const video = options.video;
 	let splashScreen;
+	let marquee;
 
 	const state = {
 		playing: false,
@@ -29,6 +30,8 @@ const Player = function (options) {
 		state.playerSettings = partyResponse.playerSettings;
 		state.playing = partyResponse.player.playerState === 1;
 		state.currentPerformance = partyResponse.performances.filter((p) => p.status == 2)[0];
+		marquee.Update(state.playerSettings);
+
 		if (state.playing) {
 			_loadVideo();
 		}
@@ -109,6 +112,10 @@ const Player = function (options) {
 
 		splashScreen = new SplashScreen();
 
+		marquee = new Marquee({
+			partyKey: model.partyKey,
+		});
+
 		const connection = new Connection({
 			partyKey: model.partyKey,
 			ReceiveNewPerformanceStarted: (dto) => {
@@ -132,6 +139,7 @@ const Player = function (options) {
 			},
 			ReceivePlayerSettings: (newSettings) => {
 				state.playerSettings = newSettings;
+				marquee.Update(newSettings);
 			},
 		});
 
