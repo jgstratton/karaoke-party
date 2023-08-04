@@ -68,9 +68,27 @@ const Player = function (options) {
 	const _loadVideo = () => {
 		const _updateProgress = (evt) => {
 			if (evt.lengthComputable) {
-				var percentComplete = (evt.loaded / evt.total) * 100;
+				const secondsVisible = splashScreen.GetSecondsVisible();
+				const percentTimeEllapsed = secondsVisible / state.playerSettings.splashScreenSeconds;
+				const percentDownloaded = evt.loaded / evt.total;
+				percentComplete =
+					(percentTimeEllapsed < percentDownloaded ? percentTimeEllapsed : percentDownloaded) * 100;
 				splashScreen.SetProgressBar(percentComplete);
 			}
+		};
+
+		const _updateProgressTimeRemaining = (progressComplete = false) => {
+			setTimeout(() => {
+				if (progressComplete) {
+					_attemptPlay();
+					return;
+				}
+				const secondsVisible = splashScreen.GetSecondsVisible();
+
+				const percentTimeEllapsed = (secondsVisible / state.playerSettings.splashScreenSeconds) * 100;
+				splashScreen.SetProgressBar(percentTimeEllapsed > 100 ? 100 : percentTimeEllapsed);
+				_updateProgressTimeRemaining(percentTimeEllapsed > 100);
+			}, 500);
 		};
 
 		video.classList.add('hidden');
@@ -91,7 +109,7 @@ const Player = function (options) {
 				var videoBlob = this.response;
 				var vid = URL.createObjectURL(videoBlob);
 				video.src = vid;
-				_attemptPlay();
+				_updateProgressTimeRemaining();
 			}
 		};
 		req.onerror = function () {

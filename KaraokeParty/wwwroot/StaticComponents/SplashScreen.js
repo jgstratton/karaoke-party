@@ -37,10 +37,10 @@ const SplashScreen = function (options) {
 	};
 
 	this.SetProgressBar = (percentComplete) => {
-		if (this.IsVisible()) {
+		if (this.IsVisible() && document.querySelector('.progress-bar')) {
 			document.querySelector('.progress-bar').style.width = percentComplete + '%';
 		}
 	};
 
-	this.GetSecondsVisible = () => (this.IsVisible() ? (new Date() - showStart) / 1000 : 0);
+	this.GetSecondsVisible = () => (this.IsVisible() ? (new Date() - showStart) / 1000 : 9999999);
 };
