@@ -41,9 +41,10 @@ const signalRMiddleware: Middleware = (store) => {
 						messageSender();
 					}
 				}
+
 				// auto rejoin
-				const party = await StorageService.loadParty();
-				if ((party?.partyKey ?? '').length === 0) {
+				const partyKey = StorageService.getPartyKey();
+				if ((partyKey ?? '').length === 0) {
 					store.dispatch(reset());
 					return;
 				}
@@ -54,13 +55,15 @@ const signalRMiddleware: Middleware = (store) => {
 				}
 				console.log('Joining party:', joinType);
 				const sendClientDetails = { ...clientDetails };
-				sendClientDetails.PartyKey = party?.partyKey ?? '';
-				console.log(sendClientDetails);
-				queueMessageSender(() => connection.invoke(joinType, sendClientDetails));
-				if (joinType !== 'JoinAsPlayer' || !store.getState().party.isLoaded) {
-					LoadParty();
-				}
-				currentTry = -1;
+				sendClientDetails.PartyKey = partyKey ?? '';
+				queueMessageSender(() =>
+					connection.invoke(joinType, sendClientDetails).then(() => {
+						if (joinType !== 'JoinAsPlayer' || !store.getState().party.isLoaded) {
+							LoadParty();
+						}
+						currentTry = -1;
+					})
+				);
 			})
 			.catch((err) => {
 				currentTry++;
@@ -210,12 +213,14 @@ const signalRMiddleware: Middleware = (store) => {
 					break;
 				case 'party/joinHub': {
 					const partyKey = store.getState().party.partyKey;
+					const sendClientDetails = { ...clientDetails };
+					sendClientDetails.PartyKey = partyKey;
 					let joinType = store.getState().user.isDj ? 'JoinAsDj' : 'JoinParty';
 					if (window.location.pathname.toLowerCase().includes('player')) {
 						joinType = 'JoinAsPlayer';
 					}
 					console.log('Joining party:', joinType);
-					queueMessageSender(() => connection.invoke(joinType, partyKey, clientDetails));
+					queueMessageSender(() => connection.invoke(joinType, sendClientDetails));
 					break;
 				}
 				case 'player/broadcastSettings': {
