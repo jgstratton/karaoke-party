@@ -23,7 +23,7 @@ namespace KaraokeParty.Controllers {
 				c.PartyKey
 			}).Distinct().ToList();
 			foreach (var connection in connections) {
-				await hub.LeaveGroups(connection.PartyKey, connection.ConnectionId);
+				await hub.LeaveGroups(new ClientConnectionDetails { PartyKey = partyKey }, connection.ConnectionId);
 			}
 			return true;
 		}

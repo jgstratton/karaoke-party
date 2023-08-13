@@ -62,7 +62,6 @@ export const LoadParty = async (): Promise<void> => {
 	if (loadedParty && loadedParty.performances) {
 		store.dispatch(populatePerformances(loadedParty.performances));
 		store.dispatch(populateSingers(loadedParty.singers));
-		store.dispatch(joinHub());
 	} else {
 		store.dispatch(resetPerformances());
 	}

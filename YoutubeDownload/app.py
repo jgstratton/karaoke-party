@@ -64,11 +64,8 @@ def download_video(video_url):
 	temp_path = download_path + "/" + temp_folder
 	os.mkdir(temp_path)
 	dl_path = temp_path + "/%(title)s---%(id)s.%(ext)s"
-	file_quality = (
-		"bestvideo[ext!=webm][height<=1080]+bestaudio[ext!=webm]/best[ext!=webm]"
-		if high_quality
-		else "mp4"
-	)
+	file_quality =  "bestvideo[height<=720]+bestaudio/best/best"
+	app.logger.info(file_quality)
 	cmd = [youtubedl_path, "-f", file_quality, "-o", dl_path, "--max-downloads", "1",video_url]
 	rc = subprocess.call(cmd)
 	if rc != 0:

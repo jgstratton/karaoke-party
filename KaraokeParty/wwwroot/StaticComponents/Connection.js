@@ -3,12 +3,21 @@ const Connection = function (options) {
 	const retryIntervals = [1, 2, 3, 5, 5, 5, 10, 10, 10];
 	let currentTry = -1;
 
+	const getDeviceId = () => {
+		return localStorage.getItem('deviceId') ?? 'player-no-device-id';
+	};
+
+	const clientConnectionDetails = {
+		PartyKey: options.partyKey,
+		DeviceId: getDeviceId(),
+	};
+
 	const startSignalRConnection = (_connection) => {
 		_connection
 			.start()
 			.then(async () => {
 				console.info('SignalR Connected');
-				connection.invoke('JoinAsPlayer', options.partyKey);
+				connection.invoke('JoinAsPlayer', clientConnectionDetails);
 				currentTry = -1;
 			})
 			.catch((err) => {
@@ -29,7 +38,7 @@ const Connection = function (options) {
 	connection.on('ReceivePlay', options.ReceivePlay);
 	connection.on('ReceivePlayerSettings', options.ReceivePlayerSettings);
 
-	this.SendPosition = (payload) => connection.invoke('SendPosition', options.partyKey, payload);
-	this.SendVideoLength = (payload) => connection.invoke('SendVideoLength', options.partyKey, payload);
-	this.StartNewPerformance = () => connection.invoke('StartNewPerformance', options.partyKey);
+	this.SendPosition = (payload) => connection.invoke('SendPosition', clientConnectionDetails, payload);
+	this.SendVideoLength = (payload) => connection.invoke('SendVideoLength', clientConnectionDetails, payload);
+	this.StartNewPerformance = () => connection.invoke('StartNewPerformance', clientConnectionDetails);
 };

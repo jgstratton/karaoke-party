@@ -3,6 +3,7 @@ using System;
 using KaraokeParty.DataStore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KaraokeParty.Migrations
 {
     [DbContext(typeof(KPContext))]
-    partial class KPContextModelSnapshot : ModelSnapshot
+    [Migration("20230812191135_AddVideoId")]
+    partial class AddVideoId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,20 +42,15 @@ namespace KaraokeParty.Migrations
                         .HasColumnType("text")
                         .HasColumnName("action");
 
-                    b.Property<string>("BrowserDetails")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("browser_details");
-
                     b.Property<string>("ConnectionId")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("connection_id");
 
-                    b.Property<string>("DeviceId")
+                    b.Property<string>("IP")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("device_id");
+                        .HasColumnName("ip");
 
                     b.Property<DateTime>("LogTime")
                         .HasColumnType("timestamp with time zone")

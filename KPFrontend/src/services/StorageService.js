@@ -1,4 +1,5 @@
 import PartyApi from '../api/PartyApi';
+import { v4 as uuidv4 } from 'uuid';
 
 async function loadParty() {
 	const partyKey = localStorage.getItem('partyKey');
@@ -12,6 +13,15 @@ async function loadParty() {
 		return partyResponse.value;
 	}
 	return null;
+}
+
+function getDeviceId() {
+	let deviceId = localStorage.getItem('deviceId');
+	if (!deviceId) {
+		deviceId = uuidv4();
+		localStorage.setItem('deviceId', deviceId);
+	}
+	return deviceId;
 }
 
 function getPartyKey() {
@@ -61,6 +71,7 @@ function forgetUser() {
 }
 
 const StorageService = {
+	getDeviceId,
 	loadParty,
 	storeParty,
 	forgetParty,

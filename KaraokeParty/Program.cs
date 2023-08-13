@@ -10,7 +10,9 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSignalR();
+builder.Services.AddSignalR(options => {
+	options.EnableDetailedErrors = true;
+});
 
 builder.Services.AddCors(options => {
 	options.AddPolicy("CORSPolicy", builder =>

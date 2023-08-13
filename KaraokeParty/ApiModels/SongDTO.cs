@@ -14,7 +14,8 @@ namespace KaraokeParty.ApiModels {
 			return new Song {
 				FileName = FileName,
 				Title = Title is null ? FileName : Title,
-				Url = Url ?? ""
+				Url = Url ?? "",
+				VideoId = Id
 			};
 		}
 
@@ -31,13 +32,17 @@ namespace KaraokeParty.ApiModels {
 			if (!string.IsNullOrEmpty(Url)) {
 				song.Url = Url;
 			}
+			if (!string.IsNullOrEmpty(Id)) {
+				song.VideoId = Id;
+			}
 		}
 
 		public static SongDTO FromDb(Song song) {
 			return new SongDTO {
 				FileName = song.FileName,
 				Title = song.Title,
-				Url = song.Url
+				Url = song.Url,
+				Id = song.VideoId
 			};
 		}
 	}

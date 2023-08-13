@@ -10,8 +10,18 @@ import { AnyAction, Middleware } from 'redux';
 import { markAsStale, reset } from '../slices/partySlice';
 import StorageService from '../services/StorageService';
 import { LoadParty } from '../mediators/PartyMediator';
+import { detect } from 'detect-browser';
+import { ClientConnectionDetails } from '../dtoTypes/ClientConnectionDetails';
 
 const messageQueue: { (): void }[] = [];
+const browser = detect();
+const clientDetails: ClientConnectionDetails = {
+	PartyKey: '',
+	DeviceId: StorageService.getDeviceId() ?? '',
+	BrowserName: browser?.name ?? '',
+	BrowserVersion: browser?.version ?? '',
+	OS: browser?.os ?? '',
+};
 
 const connection = new HubConnectionBuilder().withUrl('/hubs/player').build();
 const retryIntervals = [1, 2, 3, 5, 5, 5, 10, 10, 10];
@@ -23,6 +33,7 @@ const signalRMiddleware: Middleware = (store) => {
 			.start()
 			.then(async () => {
 				console.info('SignalR Connected');
+
 				while (messageQueue.length > 0) {
 					console.log(`Getting caught up on ${messageQueue.length} signalR messages.`);
 					const messageSender = messageQueue.shift();
@@ -42,7 +53,10 @@ const signalRMiddleware: Middleware = (store) => {
 					joinType = 'JoinAsPlayer';
 				}
 				console.log('Joining party:', joinType);
-				queueMessageSender(() => connection.invoke(joinType, party?.partyKey));
+				const sendClientDetails = { ...clientDetails };
+				sendClientDetails.PartyKey = party?.partyKey ?? '';
+				console.log(sendClientDetails);
+				queueMessageSender(() => connection.invoke(joinType, sendClientDetails));
 				if (joinType !== 'JoinAsPlayer' || !store.getState().party.isLoaded) {
 					LoadParty();
 				}
@@ -144,55 +158,55 @@ const signalRMiddleware: Middleware = (store) => {
 
 	return (next) => (action) => {
 		if (!action.signalR) {
-			const currentStorePartyKey = store.getState().party.partyKey;
+			const sendClientDetails = { ...clientDetails };
+			sendClientDetails.PartyKey = store.getState().party.partyKey;
+
 			console.log(action);
 			switch (action.type) {
 				case 'player/sendPosition':
 					if (typeof action.payload != 'undefined') {
-						queueMessageSender(() =>
-							connection.invoke('SendPosition', currentStorePartyKey, action.payload)
-						);
+						queueMessageSender(() => connection.invoke('SendPosition', sendClientDetails, action.payload));
 					}
 					break;
 				case 'player/sendDuration':
 					if (typeof action.payload != 'undefined') {
 						queueMessageSender(() =>
-							connection.invoke('SendVideoLength', currentStorePartyKey, action.payload)
+							connection.invoke('SendVideoLength', sendClientDetails, action.payload)
 						);
 					}
 					break;
 				case 'player/pause':
-					queueMessageSender(() => connection.invoke('Pause', currentStorePartyKey));
+					queueMessageSender(() => connection.invoke('Pause', sendClientDetails));
 					break;
 				case 'player/play':
-					queueMessageSender(() => connection.invoke('Play', currentStorePartyKey));
+					queueMessageSender(() => connection.invoke('Play', sendClientDetails));
 					break;
 				case 'player/songEnded':
-					queueMessageSender(() => connection.invoke('StartNewPerformance', currentStorePartyKey));
+					queueMessageSender(() => connection.invoke('StartNewPerformance', sendClientDetails));
 					break;
 				case 'player/sendChangePlayerPosition':
 					if (typeof action.payload != 'undefined') {
 						queueMessageSender(() =>
-							connection.invoke('ChangePlayerPosition', currentStorePartyKey, action.payload)
+							connection.invoke('ChangePlayerPosition', sendClientDetails, action.payload)
 						);
 					}
 					break;
 				case 'performances/startNextPerformance':
-					queueMessageSender(() => connection.invoke('StartNewPerformance', currentStorePartyKey));
+					queueMessageSender(() => connection.invoke('StartNewPerformance', sendClientDetails));
 					// store.dispatch(resetPlayer());
 					break;
 				case 'performances/startPreviousPerformance':
-					queueMessageSender(() => connection.invoke('startPreviousPerformance', currentStorePartyKey));
+					queueMessageSender(() => connection.invoke('startPreviousPerformance', sendClientDetails));
 					// store.dispatch(resetPlayer());
 					break;
 				case 'party/resetParty': {
-					if (currentStorePartyKey.length > 0) {
-						queueMessageSender(() => connection.invoke('LeaveParty', currentStorePartyKey));
+					if (sendClientDetails.PartyKey.length > 0) {
+						queueMessageSender(() => connection.invoke('LeaveParty', sendClientDetails));
 					}
 					break;
 				}
 				case 'party/notifyDjChanges':
-					queueMessageSender(() => connection.invoke('NotifyDjChanges', currentStorePartyKey));
+					queueMessageSender(() => connection.invoke('NotifyDjChanges', sendClientDetails));
 					break;
 				case 'party/joinHub': {
 					const partyKey = store.getState().party.partyKey;
@@ -201,23 +215,19 @@ const signalRMiddleware: Middleware = (store) => {
 						joinType = 'JoinAsPlayer';
 					}
 					console.log('Joining party:', joinType);
-					queueMessageSender(() => connection.invoke(joinType, partyKey));
+					queueMessageSender(() => connection.invoke(joinType, partyKey, clientDetails));
 					break;
 				}
 				case 'player/broadcastSettings': {
-					queueMessageSender(() => connection.invoke('UpdateSettings', currentStorePartyKey, action.payload));
+					queueMessageSender(() => connection.invoke('UpdateSettings', sendClientDetails, action.payload));
 					break;
 				}
 				case 'performances/sendMovePerformance': {
-					queueMessageSender(() =>
-						connection.invoke('MovePerformance', currentStorePartyKey, action.payload)
-					);
+					queueMessageSender(() => connection.invoke('MovePerformance', sendClientDetails, action.payload));
 					break;
 				}
 				case 'performances/sendNotifyRequest': {
-					queueMessageSender(() =>
-						connection.invoke('NotifyNewRequest', currentStorePartyKey, action.payload)
-					);
+					queueMessageSender(() => connection.invoke('NotifyNewRequest', sendClientDetails, action.payload));
 					break;
 				}
 				default:

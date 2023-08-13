@@ -30,8 +30,7 @@ namespace KaraokeParty.Controllers {
 			var ytSearchResults = await response.Content.ReadAsAsync<List<SongDTO>>();
 
 			foreach (var song in ytSearchResults) {
-				//todo: add id field and use that instead of filename
-				song.FileName = context.Songs.Where(s => s.FileName.Contains(song.Id)).Select(s => s.FileName).FirstOrDefault() ?? "";
+				song.FileName = context.Songs.Where(s => s.VideoId == song.Id).Select(s => s.FileName).FirstOrDefault() ?? "";
 			}
 			return ytSearchResults;
 		}

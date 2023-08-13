@@ -10,10 +10,12 @@ namespace KaraokeParty.DataStore {
 
 		public string PartyKey { get; set; } = "";
 
-		public string IP { get; set; } = "";
+		public string DeviceId { get; set; } = "";
 
 		public string Action { get; set; } = "";
 
-		public DateTime LogTime { get; set; } = DateTime.Now;
+		public string BrowserDetails { get; set; } = "";
+
+		public DateTime LogTime { get; set; } = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, "Eastern Standard Time");
 	}
 }
