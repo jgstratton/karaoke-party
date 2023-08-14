@@ -2,9 +2,19 @@
 const cacheName = 'KaraokePartyCache_V5';
 const searchKeys = ['/party', '/song', '/images', 'sw.js'];
 
+// clear cache when loading new sw
+caches.keys().then(function (names) {
+	for (let name of names) caches.delete(name);
+});
+
 self.addEventListener('fetch', (event) => {
 	// prevent cors issue when getting images from youtube
 	if (event.request.url.search('youtube.com') > 0) {
+		return;
+	}
+
+	// don't cache anything from the player
+	if (event.request.referrer.slice(-7) == '/player') {
 		return;
 	}
 
@@ -14,10 +24,7 @@ self.addEventListener('fetch', (event) => {
 				// Go to the network first
 				return fetch(event.request.url)
 					.then((fetchedResponse) => {
-						// don't cache the video files (cache will get way too big)
-						if (event.request.destination != 'video') {
-							cache.put(event.request, fetchedResponse.clone());
-						}
+						cache.put(event.request, fetchedResponse.clone());
 						return fetchedResponse;
 					})
 					.catch(() => {

@@ -5,10 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KaraokeParty.Controllers {
 	[ApiController]
-	public class ApiGetParety : ControllerBase {
+	public class ApiGetParty : ControllerBase {
 		private readonly IPartyService partyService;
 
-		public ApiGetParety(IPartyService partyService) {
+		public ApiGetParty(IPartyService partyService) {
 			this.partyService = partyService;
 		}
 

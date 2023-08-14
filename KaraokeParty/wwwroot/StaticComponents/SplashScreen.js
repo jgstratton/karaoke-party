@@ -42,5 +42,13 @@ const SplashScreen = function (options) {
 		}
 	};
 
+	this.SetProgressBarPreloaded = (isPreloaded) => {
+		if (isPreloaded) {
+			document.querySelector('.progress-bar').classList.add('bg-success');
+		} else {
+			document.querySelector('.progress-bar').classList.remove('bg-success');
+		}
+	};
+
 	this.GetSecondsVisible = () => (this.IsVisible() ? (new Date() - showStart) / 1000 : 9999999);
 };

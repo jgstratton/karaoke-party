@@ -11,11 +11,14 @@ const Player = function (options) {
 		currentPerformance: null,
 	};
 
+	const storage = new Storage('songs');
+
 	let lastRequest;
 
 	// handle initial page load
 	const _loadInitialState = async () => {
 		const response = await fetch(`../../party/${model.partyKey}`);
+
 		let partyResponse = await response.json();
 
 		if (response.status === 404) {
@@ -65,7 +68,7 @@ const Player = function (options) {
 		splashScreen.Hide();
 	};
 
-	const _loadVideo = () => {
+	const _loadVideo = async () => {
 		const _updateProgress = (evt) => {
 			if (evt.lengthComputable) {
 				const secondsVisible = splashScreen.GetSecondsVisible();
@@ -95,30 +98,101 @@ const Player = function (options) {
 		video.pause();
 		video.removeAttribute('src');
 		splashScreen.Show(state.currentPerformance);
-		if (lastRequest) {
-			lastRequest.abort();
-			lastRequest = null;
-		}
-		var req = new XMLHttpRequest();
-		req.onprogress = _updateProgress;
-		req.open('GET', `../../song/${state.currentPerformance.fileName}`, true);
-		req.responseType = 'blob';
 
-		req.onload = function () {
-			if (this.status === 200) {
-				var videoBlob = this.response;
-				var vid = URL.createObjectURL(videoBlob);
-				video.src = vid;
-				_updateProgressTimeRemaining();
+		const storedFile = await storage.get(state.currentPerformance.fileName);
+
+		if (!storedFile) {
+			console.log('Current song - file not stored, loading from server');
+			if (lastRequest) {
+				console.log('Canceling in-progress request to download current song.');
+				lastRequest.abort();
+				lastRequest = null;
 			}
-		};
-		req.onerror = function () {
-			alert('error');
-		};
 
-		req.send();
-		lastRequest = req;
+			splashScreen.SetProgressBarPreloaded(false);
+			var req = new XMLHttpRequest();
+			req.onprogress = _updateProgress;
+			req.open('GET', `../../song/${state.currentPerformance.fileName}`, true);
+			req.responseType = 'blob';
+
+			req.onload = async function () {
+				if (this.status === 200) {
+					var videoBlob = this.response;
+					await storage.set(state.currentPerformance.fileName, videoBlob);
+					var vid = URL.createObjectURL(videoBlob);
+					video.src = vid;
+					splashScreen.SetProgressBarPreloaded(true);
+					_updateProgressTimeRemaining();
+
+					// after the current video is loaded we can start up the background loader
+					loadInBackground();
+				}
+			};
+			req.onerror = function () {
+				alert('error');
+			};
+
+			req.send();
+			lastRequest = req;
+		} else {
+			console.log('Current song - file already downloaded, loading from client db');
+			splashScreen.SetProgressBarPreloaded(true);
+			var vid = URL.createObjectURL(storedFile);
+			video.src = vid;
+			_updateProgressTimeRemaining();
+			loadInBackground();
+		}
 	};
+
+	const loadInBackground = async () => {
+		// if a request is alreay started, do nothing.  We don't want to interupt the current download
+		if (lastRequest && lastRequest.readyState < 4) {
+			console.log('Background - download in progress, abort');
+			return;
+		}
+		const queuedPerformancesResponse = await fetch(`../../party/${model.partyKey}/queued`);
+		let queuedPerformances = await queuedPerformancesResponse.json();
+		console.log(queuedPerformances);
+		for (var i = 0; i < queuedPerformances.length; i++) {
+			const targetFile = queuedPerformances[i].fileName;
+			const storedFile = await storage.get(targetFile);
+
+			if (!storedFile) {
+				console.log('Background - downloading queued song', targetFile);
+
+				const req = new XMLHttpRequest();
+				req.open('GET', `../../song/${targetFile}`, true);
+				req.responseType = 'blob';
+
+				req.onload = async function () {
+					if (this.status === 200) {
+						var videoBlob = this.response;
+						await storage.set(targetFile, videoBlob);
+						loadInBackground();
+					}
+				};
+				req.onerror = function () {
+					console.error('error');
+				};
+
+				// last minute check before queuing up background request
+				if (lastRequest && lastRequest.readyState < 4) {
+					console.log('Background - download in progress, abort');
+					return;
+				}
+				req.send();
+				lastRequest = req;
+				return;
+			}
+		}
+
+		// no queued performances were found.  Wait 30 seconds then check again
+		setTimeout(() => {
+			console.log('Background - No queued songs to download.  Pausing for 30 seconds.');
+			loadInBackground();
+		}, 30 * 1000);
+	};
+
 	this.Run = () => {
 		new InteractionOverlay({
 			OnInteraction: () => {
@@ -180,5 +254,10 @@ const Player = function (options) {
 		video.addEventListener('ended', () => {
 			connection.StartNewPerformance();
 		});
+		loadInBackground();
+	};
+
+	this.GetLastRequest = () => {
+		return lastRequest;
 	};
 };
