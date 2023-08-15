@@ -51,7 +51,7 @@ const Menu = () => {
 						{isDj ? (
 							<Navbar.Collapse id="responsive-navbar-nav">
 								<Nav className="me-auto">
-									<Nav.Link onClick={() => navigate('/home')}>Home</Nav.Link>
+									<Nav.Link onClick={() => navigate('/navigateHome')}>Home</Nav.Link>
 									<Nav.Link onClick={() => navigate('/search')}>Add Request</Nav.Link>
 									<Nav.Link onClick={handleShowNewSingerModal}>Add Singer</Nav.Link>
 									<Nav.Link onClick={() => setShowConfirmLeave(true)}>Leave Party</Nav.Link>

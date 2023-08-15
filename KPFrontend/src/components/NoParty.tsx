@@ -73,7 +73,7 @@ const NoParty = () => {
 
 	useEffect(() => {
 		if (user && user.userId && party && party.partyKey) {
-			navigate('/home');
+			navigate('/navigateHome');
 		}
 		setLoading(false);
 		setErrorMessage('');

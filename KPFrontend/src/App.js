@@ -6,18 +6,12 @@ import NoParty from './components/NoParty';
 import DJDashboard from './components/dj/dashboard/DJDashboard';
 import Search from './components/Search';
 import Player from './components/player/Player';
-import KeyPressChecker from './services/KeyPressChecker';
 import Offline from './components/common/Offline';
-import { ToggleDj } from './mediators/PartyMediator';
 import MyRequests from './components/MyRequests/MyRequests';
 
 const App = () => {
 	const user = useSelector((state) => state.user);
 	const loading = useSelector((state) => !state.party.isLoaded);
-
-	KeyPressChecker(['Shift', 'D', 'J'], () => {
-		ToggleDj();
-	});
 
 	return (
 		<div>
@@ -28,14 +22,29 @@ const App = () => {
 					<Routes>
 						<Route path="/" element={<NoParty />} />
 						<Route path="/NoParty" element={<NoParty />} />
-						<Route
-							path="home"
-							element={
-								<Offline>
-									<RequireSession>{user.isDj ? <DJDashboard /> : <SingerDashboard />}</RequireSession>
-								</Offline>
-							}
-						/>
+						{user.isDj ? (
+							<Route
+								path="djhome"
+								element={
+									<Offline>
+										<RequireSession>
+											<DJDashboard />
+										</RequireSession>
+									</Offline>
+								}
+							/>
+						) : (
+							<Route
+								path="home"
+								element={
+									<Offline>
+										<RequireSession>
+											<SingerDashboard />
+										</RequireSession>
+									</Offline>
+								}
+							/>
+						)}
 						<Route
 							path="Search"
 							element={
@@ -60,7 +69,7 @@ const App = () => {
 								</RequireSession>
 							}
 						/>
-						<Route path="/redirectHome" element={<Navigate to="/home" />} />
+						<Route path="*" element={<Navigate to={user.isDj ? '/djHome' : '/home'} />} />
 					</Routes>
 				</div>
 			)}

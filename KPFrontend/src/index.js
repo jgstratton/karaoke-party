@@ -7,6 +7,8 @@ import { register } from './serviceWorkerRegistration';
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 import store from './store';
+import KeyPressChecker from './services/KeyPressChecker';
+import { ToggleDj } from './mediators/PartyMediator';
 
 register({
 	onUpdate: () => {
@@ -34,6 +36,11 @@ if (!window.location.pathname.toLowerCase().includes('player')) {
 window.addEventListener('unhandledrejection', function (promiseRejectionEvent) {
 	console.error('Unhandled error:', promiseRejectionEvent);
 	alert('OH NO! AN ERROR!  Who wrote this trash!?');
+});
+
+KeyPressChecker(['Shift', 'D', 'J'], () => {
+	console.log('toggle dj');
+	ToggleDj();
 });
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

@@ -68,6 +68,10 @@ const signalRMiddleware: Middleware = (store) => {
 			.catch((err) => {
 				currentTry++;
 				console.error('SignalR Connection Error: ', err);
+				// in case of lost connection allow trying to load the party to pull from sw
+				if (currentTry == 4) {
+					LoadParty();
+				}
 				if (currentTry < retryIntervals.length) {
 					console.log('Connection attempt:', currentTry + 1);
 					setTimeout(() => startSignalRConnection(connection), retryIntervals[currentTry] * 1000);

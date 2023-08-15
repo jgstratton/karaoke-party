@@ -2,7 +2,7 @@ import { faToggleOff, faToggleOn } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
 import { useCallback, useEffect, useState } from 'react';
-import { Button, Form, Modal } from 'react-bootstrap';
+import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { broadcastSettings, selectPlayerSettings } from '../../slices/playerSlice';
 import styles from './SettingsModal.module.css';
@@ -25,6 +25,9 @@ const SettingsModal = ({ show, handleClose }: props) => {
 	const [splashScreenSeconds, setSplashScreenSeconds] = useState(10);
 	const [splashScreenUpcomingCount, setSplashScreenUpcomingCount] = useState(3);
 
+	const [dataQuota, setDataQuota] = useState(0);
+	const [dataUsage, setDataUsage] = useState(0);
+
 	const resetSettings = useCallback(() => {
 		setMarqueeEnabled(playerStoreSettings.marqueeEnabled);
 		setMarqueeText(playerStoreSettings.marqueeText);
@@ -38,6 +41,16 @@ const SettingsModal = ({ show, handleClose }: props) => {
 	useEffect(() => {
 		resetSettings();
 	}, [resetSettings]);
+
+	useEffect(() => {
+		if (show) {
+			console.log('checking data usage');
+			navigator.storage.estimate().then((result) => {
+				setDataQuota(result.quota ?? 0);
+				setDataUsage(result.usage ?? 0);
+			});
+		}
+	}, [show]);
 
 	const handleCancel = () => {
 		resetSettings();
@@ -66,11 +79,27 @@ const SettingsModal = ({ show, handleClose }: props) => {
 					<Modal.Title>Settings</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
-					<Form.Group className="mb-3">
-						<Form.Label>DJ Party Key</Form.Label>
-						<p className="text-warning">({djKey})</p>
-						<p className="text-muted">Use this to join this party as a DJ from another device.</p>
-					</Form.Group>
+					<Row>
+						<Col>
+							<Form.Group className="mb-3">
+								<Form.Label>DJ Party Key</Form.Label>
+								<p className="text-warning">({djKey})</p>
+								<p className="text-muted">Use this to join this party as a DJ from another device.</p>
+							</Form.Group>
+						</Col>
+						<Col>
+							<Form.Group className="mb-3">
+								<Form.Label>Storage</Form.Label>
+								<p className="text-warning">
+									This app is using {Math.round(dataUsage / (1024 * 1024))} MB of data.
+								</p>
+								<p className="text-muted">
+									{Math.round((dataUsage / dataQuota) * 100)} % available storage used.
+								</p>
+							</Form.Group>
+						</Col>
+					</Row>
+
 					<hr />
 					<Form.Group className="mb-3">
 						<Form.Label>Marquee Settings ({marqueeEnabled ? 'enabled' : 'marquee disabled'})</Form.Label>

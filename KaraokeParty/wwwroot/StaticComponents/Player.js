@@ -14,6 +14,7 @@ const Player = function (options) {
 	const storage = new Storage('songs');
 
 	let lastRequest;
+	let backgroundTimeout;
 
 	// handle initial page load
 	const _loadInitialState = async () => {
@@ -145,6 +146,11 @@ const Player = function (options) {
 	};
 
 	const loadInBackground = async () => {
+		if (backgroundTimeout) {
+			console.log('clearing existing background-loader timeout');
+			window.clearTimeout(backgroundTimeout);
+			backgroundTimeout = null;
+		}
 		// if a request is alreay started, do nothing.  We don't want to interupt the current download
 		if (lastRequest && lastRequest.readyState < 4) {
 			console.log('Background - download in progress, abort');
@@ -186,11 +192,12 @@ const Player = function (options) {
 			}
 		}
 
-		// no queued performances were found.  Wait 30 seconds then check again
-		setTimeout(() => {
-			console.log('Background - No queued songs to download.  Pausing for 30 seconds.');
+		// no queued performances were found.  Wait 15 seconds then check again
+		backgroundTimeout = setTimeout(() => {
+			console.log('Background - No queued songs to download.  Pausing for 15 seconds.');
+			backgroundTimeout = null;
 			loadInBackground();
-		}, 30 * 1000);
+		}, 15 * 1000);
 	};
 
 	this.Run = () => {
