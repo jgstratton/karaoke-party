@@ -49,7 +49,7 @@ var app = builder.Build();
 
 // rewrite client-side routes to return index.html
 var options = new RewriteOptions();
-foreach (var clientRoute in new List<string> { "Search", "Home", "NoParty", "Player", "MyRequests" }) {
+foreach (var clientRoute in new List<string> { "Search", "Home", "DjHome", "NoParty", "Player", "MyRequests" }) {
 	options.AddRewrite($"(?i)^{clientRoute}", "index.html", skipRemainingRules: true);
 	options.AddRewrite($"(?i)^{clientRoute}/.*", "index.html", skipRemainingRules: true);
 }
