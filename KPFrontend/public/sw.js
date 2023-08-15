@@ -21,7 +21,6 @@ self.addEventListener('fetch', (event) => {
 		event.request.referrer.slice(-7).toLowerCase() != '/djhome' &&
 		event.request.url.slice(-7).toLowerCase() != '/djhome'
 	) {
-		console.log('not caching', event.request.url);
 		return;
 	}
 

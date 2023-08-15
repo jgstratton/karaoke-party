@@ -91,10 +91,11 @@ const SettingsModal = ({ show, handleClose }: props) => {
 							<Form.Group className="mb-3">
 								<Form.Label>Storage</Form.Label>
 								<p className="text-warning">
-									This app is using {Math.round(dataUsage / (1024 * 1024))} MB of data.
+									This app is using {(dataUsage / (1024 * 1024 * 1024)).toFixed(1)} GB of data.
 								</p>
 								<p className="text-muted">
-									{Math.round((dataUsage / dataQuota) * 100)} % available storage used.
+									{((dataUsage / dataQuota) * 100).toFixed(1)}% of{' '}
+									{(dataQuota / (1024 * 1024 * 1024)).toFixed(1)} GB available storage used.
 								</p>
 							</Form.Group>
 						</Col>
