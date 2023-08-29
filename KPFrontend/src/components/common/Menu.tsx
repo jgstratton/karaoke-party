@@ -1,4 +1,4 @@
-import { Nav, Navbar } from 'react-bootstrap';
+import { Button, Modal, Nav, Navbar } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectUserIsDj } from '../../slices/userSlice';
@@ -10,10 +10,13 @@ import { useState } from 'react';
 import { RootState } from '../../store';
 import ConfirmModal from './ConfirmModal';
 import NewSingerModal from '../dj/NewSingerModal';
+import { selectErrors } from '../../slices/errorSlice';
 
 const Menu = () => {
 	const user = useSelector((state: RootState) => state.user);
 	const party = useSelector((state: RootState) => state.party);
+	const errors = useSelector(selectErrors);
+
 	const isPartyInitialized = useSelector(selectIsPartyInitialized);
 	const isDj = useSelector(selectUserIsDj);
 	const navigate = useNavigate();
@@ -22,6 +25,7 @@ const Menu = () => {
 	const [showDjSettings, setShowDjSettings] = useState(false);
 	const [showConfirmLeave, setShowConfirmLeave] = useState(false);
 	const [showNewSingerModal, setShowNewSingerModal] = useState(false);
+	const [showErrors, setShowErrors] = useState(false);
 
 	const handleHideDjSettings = () => setShowDjSettings(false);
 	const handleShowDjSettings = () => setShowDjSettings(true);
@@ -57,6 +61,11 @@ const Menu = () => {
 									<Nav.Link onClick={() => setShowConfirmLeave(true)}>Leave Party</Nav.Link>
 									<Nav.Link onClick={() => window.location.reload()}>Refresh Page</Nav.Link>
 									<Nav.Link onClick={handleShowDjSettings}>Open DJ Settings</Nav.Link>
+									{errors.length > 0 ? (
+										<Nav.Link onClick={() => setShowErrors(true)}>View Errors</Nav.Link>
+									) : (
+										''
+									)}
 								</Nav>
 							</Navbar.Collapse>
 						) : (
@@ -64,6 +73,11 @@ const Menu = () => {
 								<Nav className="me-auto">
 									<Nav.Link onClick={() => window.location.reload()}>Refresh Page</Nav.Link>
 									<Nav.Link onClick={() => setShowConfirmLeave(true)}>Leave Party</Nav.Link>
+									{errors.length > 0 ? (
+										<Nav.Link onClick={() => setShowErrors(true)}>View Errors</Nav.Link>
+									) : (
+										''
+									)}
 								</Nav>
 							</Navbar.Collapse>
 						)}
@@ -92,6 +106,25 @@ const Menu = () => {
 					</p>
 				)}
 			</ConfirmModal>
+
+			<Modal size="lg" show={showErrors} backdrop="static">
+				<Modal.Header>{errors.length} Error(s)</Modal.Header>
+				<Modal.Body>
+					{errors.map((e, i) => (
+						<>
+							<p className="text-danger">
+								{i + 1} - {JSON.stringify(e)}
+							</p>
+							<hr />
+						</>
+					))}
+				</Modal.Body>
+				<Modal.Footer>
+					<Button variant="secondary" onClick={() => setShowErrors(false)}>
+						Close
+					</Button>
+				</Modal.Footer>
+			</Modal>
 		</>
 	);
 };

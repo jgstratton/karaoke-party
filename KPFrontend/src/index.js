@@ -9,6 +9,7 @@ import { BrowserRouter } from 'react-router-dom';
 import store from './store';
 import KeyPressChecker from './services/KeyPressChecker';
 import { ToggleDj } from './mediators/PartyMediator';
+import { logError } from './slices/errorSlice';
 
 register({
 	onUpdate: () => {
@@ -22,21 +23,31 @@ register({
 	},
 });
 
-if (!window.location.pathname.toLowerCase().includes('player')) {
-	window.onerror = (e) => {
-		console.error('Unhandled error:', e);
-		alert('OH NO! AN ERROR! Who wrote this trash!?');
-	};
-} else {
-	window.onerror = (e) => {
-		console.error('Unhandled error:', e);
-	};
-}
+const globalLogger = (e) => {
+	store.dispatch(logError(e));
+};
 
-window.addEventListener('unhandledrejection', function (promiseRejectionEvent) {
-	console.error('Unhandled error:', promiseRejectionEvent);
-	alert('OH NO! AN ERROR!  Who wrote this trash!?');
-});
+if (!window.location.pathname.toLowerCase().includes('player')) {
+	window.onerror = (msg) => {
+		console.error('Unhandled error:', msg);
+		alert('OH NO! AN ERROR! Who wrote this trash!?');
+		globalLogger(msg);
+	};
+	window.addEventListener('unhandledrejection', function (promiseRejectionEvent) {
+		console.error('Unhandled error:', promiseRejectionEvent);
+		alert('OH NO! AN ERROR!  Who wrote this trash!?');
+		globalLogger(promiseRejectionEvent);
+	});
+} else {
+	window.onerror = (msg) => {
+		console.error('Unhandled error:', msg);
+		globalLogger(msg);
+	};
+	window.addEventListener('unhandledrejection', function (promiseRejectionEvent) {
+		console.error('Unhandled error:', promiseRejectionEvent);
+		globalLogger(promiseRejectionEvent);
+	});
+}
 
 KeyPressChecker(['Shift', 'D', 'J'], () => {
 	console.log('toggle dj');
@@ -51,3 +62,12 @@ root.render(
 		</Provider>
 	</BrowserRouter>
 );
+
+let testError = false;
+if (window.location.search.toLowerCase().includes('test-error')) {
+	console.log('test error', testError);
+	if (!testError) {
+		testError = true;
+		testError.thisNoExist.Really = false;
+	}
+}

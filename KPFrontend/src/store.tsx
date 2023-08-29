@@ -5,6 +5,7 @@ import userReducer from './slices/userSlice';
 import playerReducer from './slices/playerSlice';
 import signalRMiddleware from './middleware/signalRMiddleware';
 import singersReducer from './slices/singerSlice';
+import errorReducer from './slices/errorSlice';
 
 // create the store with the reducer function
 const store = configureStore({
@@ -14,6 +15,7 @@ const store = configureStore({
 		performances: performancesReducer,
 		player: playerReducer,
 		singer: singersReducer,
+		error: errorReducer,
 	},
 	middleware: (getDefaultMiddleware) => {
 		return getDefaultMiddleware().concat([signalRMiddleware]);
