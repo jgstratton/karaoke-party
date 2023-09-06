@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 
 export interface ErrorStore {
-	errors: object[];
+	errors: string[];
 }
 
 const initialState: ErrorStore = {
@@ -13,7 +13,7 @@ export const errorSlice = createSlice({
 	name: 'errors',
 	initialState: initialState,
 	reducers: {
-		logError: (state, action: PayloadAction<object>) => {
+		logError: (state, action: PayloadAction<string>) => {
 			if (state.errors.length <= 20) {
 				state.errors.push(action.payload);
 			}

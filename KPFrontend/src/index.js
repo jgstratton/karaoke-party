@@ -23,29 +23,33 @@ register({
 	},
 });
 
-const globalLogger = (e) => {
-	store.dispatch(logError(e));
+const globalLogger = (errObject) => {
+	store.dispatch(
+		logError(JSON.stringify(errObject, ['message', 'arguments', 'type', 'name', 'filename', 'lineno', 'colno']))
+	);
 };
 
 if (!window.location.pathname.toLowerCase().includes('player')) {
-	window.onerror = (msg) => {
-		console.error('Unhandled error:', msg);
-		alert('OH NO! AN ERROR! Who wrote this trash!?');
-		globalLogger(msg);
-	};
-	window.addEventListener('unhandledrejection', function (promiseRejectionEvent) {
-		console.error('Unhandled error:', promiseRejectionEvent);
+	window.addEventListener('error', (errorObject) => {
+		console.error('Unhandled error:', errorObject);
+		if ((errorObject?.lineno ?? 0 + errorObject?.colno ?? 0) > 0) {
+			alert('OH NO! AN ERROR! Who wrote this trash!?');
+		}
+		globalLogger(errorObject);
+	});
+	window.addEventListener('unhandledrejection', function (errorObject) {
+		console.error('Unhandled error:', errorObject);
 		alert('OH NO! AN ERROR!  Who wrote this trash!?');
-		globalLogger(promiseRejectionEvent);
+		globalLogger(errorObject);
 	});
 } else {
-	window.onerror = (msg) => {
-		console.error('Unhandled error:', msg);
-		globalLogger(msg);
-	};
-	window.addEventListener('unhandledrejection', function (promiseRejectionEvent) {
-		console.error('Unhandled error:', promiseRejectionEvent);
-		globalLogger(promiseRejectionEvent);
+	window.addEventListener('error', (errorObject) => {
+		console.error('Unhandled error:', errorObject);
+		globalLogger(errorObject);
+	});
+	window.addEventListener('unhandledrejection', function (errorObject) {
+		console.error('Unhandled error:', errorObject);
+		globalLogger(errorObject);
 	});
 }
 
@@ -68,6 +72,6 @@ if (window.location.search.toLowerCase().includes('test-error')) {
 	console.log('test error', testError);
 	if (!testError) {
 		testError = true;
-		testError.thisNoExist.Really = false;
+		window.testOtherDomainError();
 	}
 }

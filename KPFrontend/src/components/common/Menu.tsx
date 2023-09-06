@@ -113,7 +113,7 @@ const Menu = () => {
 					{errors.map((e, i) => (
 						<>
 							<p className="text-danger">
-								{i + 1} - {JSON.stringify(e)}
+								{i + 1} - {e}
 							</p>
 							<hr />
 						</>
