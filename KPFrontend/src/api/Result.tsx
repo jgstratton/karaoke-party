@@ -20,9 +20,30 @@ export async function validateResult<Type>(
 	validator: (obj: Type) => boolean,
 	errorMessage: string
 ): Promise<Result<Type>> {
-	let responseBody: Type = await response.json();
-	if (response.ok && validator(responseBody)) {
-		return { ok: true, value: responseBody };
+	try {
+		let responseBody: Type = await response.json();
+		if (response.ok && validator(responseBody)) {
+			return { ok: true, value: responseBody };
+		}
+		return { ok: false, error: typeof responseBody === 'string' ? responseBody : errorMessage };
+	} catch {
+		return { ok: false, error: errorMessage };
 	}
-	return { ok: false, error: typeof responseBody === 'string' ? responseBody : errorMessage };
+}
+
+export async function validateTextResult(
+	response: Response,
+	validator: (obj: string) => boolean,
+	errorMessage: string
+): Promise<Result<string>> {
+	try {
+		let responseBody: string = (await response.text()).replace(/(^"|"$)/g, '');
+		if (response.ok && validator(responseBody)) {
+			return { ok: true, value: responseBody };
+		}
+		return { ok: false, error: responseBody.length > 0 ? responseBody : errorMessage };
+	} catch (ex) {
+		console.error(ex);
+		return { ok: false, error: errorMessage };
+	}
 }

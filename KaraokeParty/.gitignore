@@ -5,3 +5,4 @@
 /.vs
 /FrontEndSpa
 *.user
+appsettings.Development.json

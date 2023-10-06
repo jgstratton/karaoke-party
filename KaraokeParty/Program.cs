@@ -1,9 +1,8 @@
+using Forge.OpenAI;
 using KaraokeParty.DataStore;
 using KaraokeParty.Hubs;
 using KaraokeParty.Services;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Rewrite;
-using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using System.Text.Json.Serialization;
@@ -45,6 +44,9 @@ builder.Services.AddHttpClient("yt-dlp", c => {
 	c.BaseAddress = new Uri(builder.Configuration["YTDLPServiceConnectionString"] ?? "");
 });
 
+builder.Services.AddForgeOpenAI(options => {
+	options.AuthenticationInfo = builder.Configuration["OpenAI:ApiKey"]!;
+});
 var app = builder.Build();
 
 // rewrite client-side routes to return index.html

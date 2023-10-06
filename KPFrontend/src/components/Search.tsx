@@ -66,14 +66,18 @@ const Search = () => {
 
 	async function handleSubmitRequest(selectedSong: SongDTO, singerName: string, singerId?: number) {
 		setDownloadInProgress(true);
-		if (!isDj) {
-			setDownloadMessage(downloadMessages[Math.floor(Math.random() * downloadMessages.length)]);
-		}
+		setDownloadMessage('');
 		if (!selectedSong) {
 			alert('No song selected');
 			setDownloadInProgress(false);
 			return;
 		}
+		const openAiMessageResult = await SongApi.openAiMessage(selectedSong.title);
+		setDownloadMessage(
+			openAiMessageResult.ok
+				? openAiMessageResult.value
+				: downloadMessages[Math.floor(Math.random() * downloadMessages.length)]
+		);
 		if (selectedSong.fileName.length === 0) {
 			const downloadResult = await SongApi.downloadSong(selectedSong);
 			if (!downloadResult.ok) {
@@ -87,13 +91,10 @@ const Search = () => {
 		}
 
 		console.log('already downloaded... pause anyway');
-		setTimeout(
-			() => {
-				setDownloadInProgress(false);
-				addNewPerformance(selectedSong, singerName, singerId);
-			},
-			isDj ? 1000 : 5000
-		);
+		setTimeout(() => {
+			setDownloadInProgress(false);
+			addNewPerformance(selectedSong, singerName, singerId);
+		}, 5000);
 	}
 
 	async function addNewPerformance(selectedSong: SongDTO, singerName: string, singerId?: number) {
@@ -123,28 +124,36 @@ const Search = () => {
 
 	return (
 		<>
-			{downloadInProgress && (
-				<Overlay>
-					<Loading>{downloadMessage}</Loading>
-				</Overlay>
-			)}
-
 			<div className="container" style={{ padding: '5px', maxWidth: '900px' }}>
-				{loading || addedToQueue ? (
+				{downloadInProgress || loading || addedToQueue ? (
 					<Overlay>
-						{loading && <div>Adding to queue...</div>}
-						{addedToQueue && (
-							<>
-								<div>Your song request has been received!</div>
-								<br />
-								<div className="mb-3">
-									<Button onClick={() => navigate(-1)}>Done for now</Button>
-								</div>
-								<div className="mb-3">
-									<Button onClick={() => resetSearch()}>Search for another song</Button>
-								</div>
-							</>
-						)}
+						<div style={{ maxWidth: '350px', padding: '0 5px', lineHeight: '20px' }}>
+							{downloadMessage.length > 0 && (
+								<>
+									{downloadMessage}
+									<hr />
+								</>
+							)}
+
+							{downloadInProgress && (
+								<p>
+									<Loading>Please wait while we fetch your song...</Loading>
+								</p>
+							)}
+							{loading && <div>Adding to queue...</div>}
+							{addedToQueue && (
+								<>
+									<div>Your song request has been received!</div>
+									<br />
+									<div className="mb-3">
+										<Button onClick={() => navigate(-1)}>Done for now</Button>
+									</div>
+									<div className="mb-3">
+										<Button onClick={() => resetSearch()}>Search for another song</Button>
+									</div>
+								</>
+							)}
+						</div>
 					</Overlay>
 				) : (
 					''

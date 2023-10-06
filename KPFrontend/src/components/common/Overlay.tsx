@@ -23,7 +23,7 @@ const Overlay = ({ backgroundOpacity = 0.9, position = Positions.Center, childre
 		case Positions.Center:
 		default:
 			cssPosition = 'relative';
-			top = '40%';
+			top = '20%';
 			right = 'auto';
 	}
 	return (
