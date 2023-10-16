@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace KaraokeParty.Controllers {
 	[ApiController]
 	public class ApiGetSongOpenAi : ControllerBase {
+		private readonly ILogger<ApiGetSongOpenAi> logger;
 		private readonly IOpenAIService openAi;
 
-		public ApiGetSongOpenAi(IOpenAIService openAi) {
+		public ApiGetSongOpenAi(ILogger<ApiGetSongOpenAi> logger, IOpenAIService openAi) {
+			this.logger = logger;
 			this.openAi = openAi;
 		}
 
@@ -49,7 +51,8 @@ namespace KaraokeParty.Controllers {
 				return new EmptyResult();
 
 			} catch (Exception ex) {
-				return BadRequest(ex);
+				logger.LogError("Error in openai-stream endpoing", ex);
+				return new EmptyResult();
 			}
 		}
 	}
