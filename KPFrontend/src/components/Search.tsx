@@ -7,7 +7,7 @@ import SearchCard from './search/SearchCard';
 import Loading from '../components/common/Loading';
 
 import { useNavigate } from 'react-router-dom';
-import Overlay from './common/Overlay';
+import Overlay, { Positions } from './common/Overlay';
 import Button from 'react-bootstrap/Button';
 import { RootState } from '../store';
 import { selectUserIsDj } from '../slices/userSlice';
@@ -20,6 +20,7 @@ import { PerformanceRequestDTO } from '../dtoTypes/PerformanceRequestDTO';
 import { SongDTO } from '../dtoTypes/SongDTO';
 import SongApi from '../api/SongApi';
 import { downloadMessages } from './search/DownloadResponses';
+import DownloadResponseGenerator from './search/DownloadResponseGenerator';
 
 const Search = () => {
 	const navigate = useNavigate();
@@ -35,6 +36,8 @@ const Search = () => {
 	const [errorMsg, setErrorMsg] = useState('');
 	const [downloadInProgress, setDownloadInProgress] = useState(false);
 	const [downloadMessage, setDownloadMessage] = useState('Download in progress... this may take a minute...');
+	const minDownloadTime = 5000; // wait at least 5 seconds when downloading
+	const [submittedSongTitle, setSubmittedSongTitle] = useState('');
 
 	const changeSearchSetting = (isKaraoke: number) => {
 		setSearchSubmitted(false);
@@ -65,36 +68,38 @@ const Search = () => {
 	}
 
 	async function handleSubmitRequest(selectedSong: SongDTO, singerName: string, singerId?: number) {
+		let submitSongDto = selectedSong;
 		setDownloadInProgress(true);
 		setDownloadMessage('');
-		if (!selectedSong) {
+		if (!submitSongDto) {
 			alert('No song selected');
 			setDownloadInProgress(false);
 			return;
 		}
-		const openAiMessageResult = await SongApi.openAiMessage(selectedSong.title);
-		setDownloadMessage(
-			openAiMessageResult.ok
-				? openAiMessageResult.value
-				: downloadMessages[Math.floor(Math.random() * downloadMessages.length)]
-		);
-		if (selectedSong.fileName.length === 0) {
-			const downloadResult = await SongApi.downloadSong(selectedSong);
+		const downloadStart = new Date();
+		// start the file download
+		let downloadPromise = submitSongDto.fileName.length === 0 ? SongApi.downloadSong(submitSongDto) : null;
+
+		// start the chatgpt api
+		setSubmittedSongTitle(submitSongDto.title);
+
+		if (downloadPromise != null) {
+			const downloadResult = await downloadPromise;
 			if (!downloadResult.ok) {
 				alert('error downloading file...');
 				setDownloadInProgress(false);
 				return;
 			}
-			setDownloadInProgress(false);
-			addNewPerformance(downloadResult.value, singerName, singerId);
-			return;
+			submitSongDto = downloadResult.value;
 		}
 
-		console.log('already downloaded... pause anyway');
+		const totalWaitTime = new Date().valueOf() - downloadStart.valueOf();
+		const remainingWaitTime = totalWaitTime > minDownloadTime ? 1 : minDownloadTime - totalWaitTime;
+		console.log(`Waiting ${remainingWaitTime} more ms`);
 		setTimeout(() => {
 			setDownloadInProgress(false);
-			addNewPerformance(selectedSong, singerName, singerId);
-		}, 5000);
+			addNewPerformance(submitSongDto, singerName, singerId);
+		}, remainingWaitTime);
 	}
 
 	async function addNewPerformance(selectedSong: SongDTO, singerName: string, singerId?: number) {
@@ -126,33 +131,29 @@ const Search = () => {
 		<>
 			<div className="container" style={{ padding: '5px', maxWidth: '900px' }}>
 				{downloadInProgress || loading || addedToQueue ? (
-					<Overlay>
-						<div style={{ maxWidth: '350px', padding: '0 5px', lineHeight: '20px' }}>
-							{downloadMessage.length > 0 && (
-								<>
-									{downloadMessage}
-									<hr />
-								</>
-							)}
-
-							{downloadInProgress && (
-								<p>
-									<Loading>Please wait while we fetch your song...</Loading>
-								</p>
-							)}
-							{loading && <div>Adding to queue...</div>}
-							{addedToQueue && (
-								<>
-									<div>Your song request has been received!</div>
-									<br />
-									<div className="mb-3">
-										<Button onClick={() => navigate(-1)}>Done for now</Button>
-									</div>
-									<div className="mb-3">
-										<Button onClick={() => resetSearch()}>Search for another song</Button>
-									</div>
-								</>
-							)}
+					<Overlay position={Positions.FullTop}>
+						<div style={{ width: '100%', padding: '0 15px', lineHeight: '20px' }}>
+							<div style={{ minHeight: '130px' }}>
+								{addedToQueue && (
+									<>
+										<div>Your song request has been received!</div>
+										<br />
+										<div className="mb-3">
+											<Button onClick={() => navigate(-1)}>Done for now</Button>
+										</div>
+										<div className="mb-3">
+											<Button onClick={() => resetSearch()}>Search for another song</Button>
+										</div>
+									</>
+								)}
+								{downloadInProgress && (
+									<p>
+										<Loading>Please wait while we fetch your song...</Loading>
+									</p>
+								)}
+								{loading && <div>Adding to queue...</div>}
+							</div>
+							<DownloadResponseGenerator songTitle={submittedSongTitle} />
 						</div>
 					</Overlay>
 				) : (
@@ -178,7 +179,7 @@ const Search = () => {
 					<div className="alert alert-danger">{errorMsg}</div>
 				) : (
 					<>
-						{searchSubmitted && (
+						{searchSubmitted && !downloadInProgress && !loading && !addedToQueue && (
 							<>
 								<SearchResults
 									isKaraoke={isKaraoke === 1}

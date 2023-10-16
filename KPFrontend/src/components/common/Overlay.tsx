@@ -3,6 +3,7 @@ import React, { PropsWithChildren } from 'react';
 export enum Positions {
 	Center,
 	TopRight,
+	FullTop,
 }
 
 interface iProps {
@@ -13,12 +14,18 @@ const Overlay = ({ backgroundOpacity = 0.9, position = Positions.Center, childre
 	let top = '40%';
 	let right = 'auto';
 	let cssPosition = 'fixed';
+	let display = 'inline-block';
 
 	switch (position) {
 		case Positions.TopRight:
 			cssPosition = 'fixed';
 			top = '30px';
 			right = '30px';
+			break;
+		case Positions.FullTop:
+			cssPosition = 'fixed';
+			top = '100px';
+			display = 'block';
 			break;
 		case Positions.Center:
 		default:

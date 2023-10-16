@@ -8,6 +8,7 @@ import Search from './components/Search';
 import Player from './components/player/Player';
 import Offline from './components/common/Offline';
 import MyRequests from './components/MyRequests/MyRequests';
+import TestApi from './components/dj/playground/TestApi';
 
 const App = () => {
 	const user = useSelector((state) => state.user);
@@ -66,6 +67,14 @@ const App = () => {
 							element={
 								<RequireSession>
 									<Player />
+								</RequireSession>
+							}
+						/>
+						<Route
+							path="TestApi"
+							element={
+								<RequireSession>
+									<TestApi />
 								</RequireSession>
 							}
 						/>
