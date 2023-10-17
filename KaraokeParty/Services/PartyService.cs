@@ -131,7 +131,7 @@ namespace KaraokeParty.Services {
 			context.SaveChanges();
 		}
 
-		public void SavePlayerSettings(string partyKey, PlayerSettingsDTO settings) {
+		public void SavePlayerSettings(string partyKey, ConfigurableSettingsDTO settings) {
 			Party? party = GetPartyByKey(partyKey);
 			if (party == null) {
 				return;
@@ -143,7 +143,7 @@ namespace KaraokeParty.Services {
 			party.SplashScreenEnabled = settings.SplashScreenEnabled;
 			party.SplashScreenSeconds = settings.SplashScreenSeconds;
 			party.SplashScreenUpcomingCount = settings.SplashScreenUpcomingCount;
-
+			party.AiEnabled = settings.AiEnabled;
 			context.SaveChanges();
 		}
 
@@ -216,7 +216,7 @@ namespace KaraokeParty.Services {
 		List<PerformanceDTO> MovePerformance(string partyKey, MovePerformanceDTO dto);
 		void Pause(string partyKey);
 		void Play(string partyKey);
-		void SavePlayerSettings(string partyKey, PlayerSettingsDTO settings);
+		void SavePlayerSettings(string partyKey, ConfigurableSettingsDTO settings);
 		PerformanceDTO? StartNextSong(string partyKey);
 		PerformanceDTO? StartPreviousSong(string partyKey);
 		void UpdateVideoLength(string partyKey, int timeInMs);

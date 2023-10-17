@@ -132,7 +132,7 @@ const Search = () => {
 			<div className="container" style={{ padding: '5px', maxWidth: '900px' }}>
 				{downloadInProgress || loading || addedToQueue ? (
 					<Overlay position={Positions.FullTop}>
-						<div style={{ width: '100%', padding: '0 15px', lineHeight: '20px' }}>
+						<div style={{ maxWidth: '900px', padding: '0 15px', lineHeight: '20px' }}>
 							<div style={{ minHeight: '130px' }}>
 								{addedToQueue && (
 									<>

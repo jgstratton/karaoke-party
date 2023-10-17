@@ -25,6 +25,8 @@ const SettingsModal = ({ show, handleClose }: props) => {
 	const [splashScreenSeconds, setSplashScreenSeconds] = useState(10);
 	const [splashScreenUpcomingCount, setSplashScreenUpcomingCount] = useState(3);
 
+	const [aiEnabled, setAiEnabled] = useState(true);
+
 	const [dataQuota, setDataQuota] = useState(0);
 	const [dataUsage, setDataUsage] = useState(0);
 
@@ -36,6 +38,7 @@ const SettingsModal = ({ show, handleClose }: props) => {
 		setSplashScreenEnabled(playerStoreSettings.splashScreenEnabled);
 		setSplashScreenSeconds(playerStoreSettings.splashScreenSeconds);
 		setSplashScreenUpcomingCount(playerStoreSettings.splashScreenUpcomingCount);
+		setAiEnabled(playerStoreSettings.aiEnabled);
 	}, [playerStoreSettings]);
 
 	useEffect(() => {
@@ -67,6 +70,7 @@ const SettingsModal = ({ show, handleClose }: props) => {
 				splashScreenEnabled,
 				splashScreenSeconds,
 				splashScreenUpcomingCount,
+				aiEnabled,
 			})
 		);
 		handleClose();
@@ -190,6 +194,25 @@ const SettingsModal = ({ show, handleClose }: props) => {
 							max={60}
 							onChange={(e) => setSplashScreenSeconds(parseInt(e.target.value))}
 						/>
+					</Form.Group>
+					<hr />
+					<Form.Group className="mb-3">
+						<Form.Label>AI Responses ({aiEnabled ? 'enabled' : 'disabled'})</Form.Label>
+
+						{!aiEnabled && (
+							<div className={classNames(['float-right', styles.faToggle])}>
+								<FontAwesomeIcon icon={faToggleOff} onClick={() => setAiEnabled(true)} />
+							</div>
+						)}
+						{aiEnabled && (
+							<div className={classNames(['float-right', styles.faToggle])}>
+								<FontAwesomeIcon icon={faToggleOn} onClick={() => setAiEnabled(false)} />
+							</div>
+						)}
+						<div className="text-muted">
+							Generate ChatGpt messages for the user to read while they wait for the song to download from
+							yt-dlp.
+						</div>
 					</Form.Group>
 				</Modal.Body>
 				<Modal.Footer>

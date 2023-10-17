@@ -14,7 +14,7 @@ const Overlay = ({ backgroundOpacity = 0.9, position = Positions.Center, childre
 	let top = '40%';
 	let right = 'auto';
 	let cssPosition = 'fixed';
-	let display = 'inline-block';
+	let innerDisplay = 'inline-block';
 
 	switch (position) {
 		case Positions.TopRight:
@@ -23,9 +23,9 @@ const Overlay = ({ backgroundOpacity = 0.9, position = Positions.Center, childre
 			right = '30px';
 			break;
 		case Positions.FullTop:
-			cssPosition = 'fixed';
+			cssPosition = 'relative';
 			top = '100px';
-			display = 'block';
+			innerDisplay = 'block';
 			break;
 		case Positions.Center:
 		default:
@@ -55,7 +55,7 @@ const Overlay = ({ backgroundOpacity = 0.9, position = Positions.Center, childre
 					right: right,
 				}}
 			>
-				<div className="text-left" style={{ display: 'inline-block' }}>
+				<div className="text-left" style={{ display: innerDisplay }}>
 					{children}
 				</div>
 			</div>

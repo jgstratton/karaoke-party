@@ -1,15 +1,27 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { downloadMessages } from '../search/DownloadResponses';
+import { useSelector } from 'react-redux';
+import { selectPlayerSettings } from '../../slices/playerSlice';
 
 interface iProps {
 	songTitle: string;
 }
 
 const DownloadResponseGenerator = ({ songTitle }: iProps) => {
+	const settings = useSelector(selectPlayerSettings);
 	const [responseMessage, setResponseMessage] = useState('');
+	const titleRef = useRef('no-title');
 
 	useEffect(() => {
 		if (songTitle.length == 0) {
+			setResponseMessage('');
+			return;
+		}
+		if (songTitle == titleRef.current) {
+			return;
+		}
+		titleRef.current = songTitle;
+		if (!settings.aiEnabled) {
 			setResponseMessage('');
 			return;
 		}
@@ -17,7 +29,7 @@ const DownloadResponseGenerator = ({ songTitle }: iProps) => {
 			// if any error occurs, use the pre-downloaded responses
 			setResponseMessage(downloadMessages[Math.floor(Math.random() * downloadMessages.length)]);
 		});
-	}, [songTitle]);
+	}, [songTitle, settings.aiEnabled]);
 
 	const _sumbitPrompt = async () => {
 		const response = await fetch(`song/${encodeURIComponent(songTitle)}/openai-stream`);

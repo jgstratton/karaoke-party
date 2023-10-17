@@ -6,17 +6,16 @@ namespace KaraokeParty.ApiModels {
 		public string Title { get; set; } = "";
 		public string PartyKey { get; set; } = "";
 		public string DjKey { get; set; } = "";
-
 		public PlayerDTO Player { get; set; }
 		public List<PerformanceDTO> Performances { get; set; }
 		public List<SingerDTO> Singers { get; set; }
-		public PlayerSettingsDTO PlayerSettings { get; set; }
+		public ConfigurableSettingsDTO Settings { get; set; }
 
 		public PartyDTO() {
 			Player = new PlayerDTO();
 			Performances = new List<PerformanceDTO>();
 			Singers = new List<SingerDTO>();
-			PlayerSettings = new PlayerSettingsDTO();
+			Settings = new ConfigurableSettingsDTO();
 		}
 
 		public static PartyDTO FromDb(Party party) {
@@ -34,6 +33,7 @@ namespace KaraokeParty.ApiModels {
 				Title = party.Title,
 				PartyKey = party.PartyKey,
 				DjKey = party.DjKey,
+
 				Player = new PlayerDTO {
 					VideoLength = party.VideoLength,
 					VideoPosition = party.VideoPosition,
@@ -43,14 +43,15 @@ namespace KaraokeParty.ApiModels {
 				},
 				Performances = performances,
 				Singers = singers,
-				PlayerSettings = new PlayerSettingsDTO {
+				Settings = new ConfigurableSettingsDTO {
 					MarqueeEnabled = party.MarqueeEnabled,
 					MarqueeSize = party.MarqueeSize,
 					MarqueeSpeed = party.MarqueeSpeed,
 					MarqueeText = party.MarqueeText,
 					SplashScreenEnabled = party.SplashScreenEnabled,
 					SplashScreenSeconds = party.SplashScreenSeconds,
-					SplashScreenUpcomingCount = party.SplashScreenUpcomingCount
+					SplashScreenUpcomingCount = party.SplashScreenUpcomingCount,
+					AiEnabled = party.AiEnabled
 				}
 			};
 		}

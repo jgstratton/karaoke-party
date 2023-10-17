@@ -19,6 +19,7 @@ const initialState = {
 		splashScreenEnabled: false,
 		splashScreenSeconds: 10,
 		splashScreenUpcomingCount: 3,
+		aiEnabled: true,
 	},
 };
 

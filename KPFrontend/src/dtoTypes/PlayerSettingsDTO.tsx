@@ -6,4 +6,5 @@ export interface PlayerSettingsDTO {
 	splashScreenEnabled: boolean;
 	splashScreenSeconds: number;
 	splashScreenUpcomingCount: number;
+	aiEnabled: boolean;
 }

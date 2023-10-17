@@ -112,7 +112,7 @@ namespace KaraokeParty.Hubs {
 			await Clients.OthersInGroup(clientDetails.PartyKey + "PLAYER").ReceivePlay();
 		}
 
-		public async Task UpdateSettings(ClientConnectionDetails clientDetails, PlayerSettingsDTO settings) {
+		public async Task UpdateSettings(ClientConnectionDetails clientDetails, ConfigurableSettingsDTO settings) {
 			logAction(clientDetails, "UpdateSettings");
 			partyService.SavePlayerSettings(clientDetails.PartyKey, settings);
 			await Clients.Group(clientDetails.PartyKey + "DJ").ReceivePlayerSettings(settings);
