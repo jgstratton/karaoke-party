@@ -31,7 +31,7 @@ const Player = function (options) {
 			console.error('404 - Parety not found (no key in response)');
 			return;
 		}
-		state.playerSettings = partyResponse.playerSettings;
+		state.playerSettings = partyResponse.settings;
 		state.playing = partyResponse.player.playerState === 1;
 		state.currentPerformance = partyResponse.performances.filter((p) => p.status == 2)[0];
 		marquee.Update(state.playerSettings);
