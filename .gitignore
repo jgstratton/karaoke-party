@@ -6,4 +6,6 @@ _old/*
 .env
 .env.*
 appsettings.Production.json
+react-env.js
+react.Production.js
 /Local/*

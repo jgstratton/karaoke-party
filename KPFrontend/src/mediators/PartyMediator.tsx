@@ -48,9 +48,10 @@ export const LoadParty = async (): Promise<void> => {
 		store.dispatch(populateParty(loadedParty));
 		store.dispatch(populatePlayer(loadedParty.player));
 		store.dispatch(populateSettings(loadedParty.playerSettings));
-		if (loadedParty.serverSettings.openAILambdaEndpoint.length > 0) {
+		const openAILambdaEndpoint = loadedParty?.serverSettings?.openAILambdaEndpoint ?? '';
+		if (openAILambdaEndpoint.length > 0) {
 			console.log('pinging openai endpoint');
-			fetch(loadedParty.serverSettings.openAILambdaEndpoint, {
+			fetch(openAILambdaEndpoint, {
 				method: 'POST',
 				mode: 'cors',
 				headers: {

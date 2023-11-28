@@ -19,7 +19,6 @@ import {
 import { PerformanceRequestDTO } from '../dtoTypes/PerformanceRequestDTO';
 import { SongDTO } from '../dtoTypes/SongDTO';
 import SongApi from '../api/SongApi';
-import { downloadMessages } from './search/DownloadResponses';
 import DownloadResponseGenerator from './search/DownloadResponseGenerator';
 
 const Search = () => {
@@ -35,7 +34,6 @@ const Search = () => {
 	const isDj = useSelector(selectUserIsDj);
 	const [errorMsg, setErrorMsg] = useState('');
 	const [downloadInProgress, setDownloadInProgress] = useState(false);
-	const [downloadMessage, setDownloadMessage] = useState('Download in progress... this may take a minute...');
 	const minDownloadTime = 5000; // wait at least 5 seconds when downloading
 	const [submittedSongTitle, setSubmittedSongTitle] = useState('');
 
@@ -70,7 +68,6 @@ const Search = () => {
 	async function handleSubmitRequest(selectedSong: SongDTO, singerName: string, singerId?: number) {
 		let submitSongDto = selectedSong;
 		setDownloadInProgress(true);
-		setDownloadMessage('');
 		if (!submitSongDto) {
 			alert('No song selected');
 			setDownloadInProgress(false);

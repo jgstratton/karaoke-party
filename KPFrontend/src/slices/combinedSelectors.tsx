@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit';
 import StatusService from '../services/StatusService';
-import { selectCompleted, selectLive, selectPerformances, selectQueued, selectRequests } from './performancesSlice';
+import { selectCompleted, selectLive, selectQueued, selectRequests } from './performancesSlice';
 import { selectSingerList } from './singerSlice';
 import { selectUserId } from './userSlice';
 import PerformanceDTO from '../dtoTypes/PerformanceDTO';

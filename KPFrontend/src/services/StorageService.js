@@ -42,7 +42,7 @@ async function loadUser() {
 		const response = await fetch(`user/${id}`);
 		const userObj = await response.json();
 		const isDj = localStorage.getItem('isDj');
-		if (isDj == 'true') {
+		if (isDj === 'true') {
 			userObj.isDj = true;
 		}
 		return await userObj;

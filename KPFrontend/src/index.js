@@ -9,7 +9,15 @@ import { BrowserRouter } from 'react-router-dom';
 import store from './store';
 import KeyPressChecker from './services/KeyPressChecker';
 import { ToggleDj } from './mediators/PartyMediator';
-import { logError } from './slices/errorSlice';
+import Bugsnag from '@bugsnag/js';
+import BugsnagPluginReact from '@bugsnag/plugin-react';
+import BugsnagPerformance from '@bugsnag/browser-performance';
+
+Bugsnag.start({
+	apiKey: window.reactenv.BugsnagAPI,
+	plugins: [new BugsnagPluginReact()],
+});
+BugsnagPerformance.start({ apiKey: window.reactenv.BugsnagAPI });
 
 register({
 	onUpdate: () => {
@@ -23,35 +31,7 @@ register({
 	},
 });
 
-const globalLogger = (errObject) => {
-	store.dispatch(
-		logError(JSON.stringify(errObject, ['message', 'arguments', 'type', 'name', 'filename', 'lineno', 'colno']))
-	);
-};
-
-if (!window.location.pathname.toLowerCase().includes('player')) {
-	window.addEventListener('error', (errorObject) => {
-		console.error('Unhandled error:', errorObject);
-		if ((errorObject?.lineno ?? 0 + errorObject?.colno ?? 0) > 0) {
-			alert('OH NO! AN ERROR! Who wrote this trash!?');
-		}
-		globalLogger(errorObject);
-	});
-	window.addEventListener('unhandledrejection', function (errorObject) {
-		console.error('Unhandled error:', errorObject);
-		alert('OH NO! AN ERROR!  Who wrote this trash!?');
-		globalLogger(errorObject);
-	});
-} else {
-	window.addEventListener('error', (errorObject) => {
-		console.error('Unhandled error:', errorObject);
-		globalLogger(errorObject);
-	});
-	window.addEventListener('unhandledrejection', function (errorObject) {
-		console.error('Unhandled error:', errorObject);
-		globalLogger(errorObject);
-	});
-}
+const ErrorBoundary = Bugsnag.getPlugin('react').createErrorBoundary(React);
 
 KeyPressChecker(['Shift', 'D', 'J'], () => {
 	console.log('toggle dj');
@@ -62,7 +42,9 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
 	<BrowserRouter>
 		<Provider store={store}>
-			<App />
+			<ErrorBoundary>
+				<App />
+			</ErrorBoundary>
 		</Provider>
 	</BrowserRouter>
 );
