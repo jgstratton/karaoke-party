@@ -10,12 +10,14 @@ namespace KaraokeParty.ApiModels {
 		public List<PerformanceDTO> Performances { get; set; }
 		public List<SingerDTO> Singers { get; set; }
 		public ConfigurableSettingsDTO Settings { get; set; }
+		public ServerSettings ServerSettings { get; set; }
 
 		public PartyDTO() {
 			Player = new PlayerDTO();
 			Performances = new List<PerformanceDTO>();
 			Singers = new List<SingerDTO>();
 			Settings = new ConfigurableSettingsDTO();
+			this.ServerSettings = ServerSettingsStaticProvider.GetServerSettings();
 		}
 
 		public static PartyDTO FromDb(Party party) {

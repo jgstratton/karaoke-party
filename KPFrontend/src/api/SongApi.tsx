@@ -1,7 +1,6 @@
-import SingerDTO from '../dtoTypes/SingerDTO';
 import { SongDTO } from '../dtoTypes/SongDTO';
 import { SongSearchRequestDTO } from '../dtoTypes/SongSearchRequestDTO';
-import { Result, validateResult, validateTextResult } from './Result';
+import { Result, validateResult } from './Result';
 
 const searchSongs = async (searchDto: SongSearchRequestDTO): Promise<Result<SongDTO[]>> =>
 	await validateResult(
@@ -38,19 +37,9 @@ const downloadSong = async (songDto: SongDTO): Promise<Result<SongDTO>> =>
 		'Something went wrong when trying to download the song'
 	);
 
-const openAiMessage = async (fileName: string): Promise<Result<string>> =>
-	fileName.length == 0
-		? { ok: false, error: 'No file selected' }
-		: await validateTextResult(
-				await fetch(`song/${fileName}/openai`),
-				(body) => body.length > 0,
-				'Something went wrong when trying to preview the song'
-		  );
-
 const SingerApi = {
 	searchSongs,
 	downloadSong,
-	openAiMessage,
 };
 
 export default SingerApi;

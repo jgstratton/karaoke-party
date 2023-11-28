@@ -7,12 +7,10 @@ namespace KaraokeParty.Controllers {
 	[ApiController]
 	public class ApiCreateParty : ControllerBase {
 		private readonly IPartyService partyService;
-		private readonly ISingerService singerService;
 		private readonly KPContext context;
 
-		public ApiCreateParty(KPContext context, IPartyService partyService, ISingerService singerService) {
+		public ApiCreateParty(KPContext context, IPartyService partyService) {
 			this.partyService = partyService;
-			this.singerService = singerService;
 			this.context = context;
 		}
 

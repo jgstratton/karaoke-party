@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { downloadMessages } from '../search/DownloadResponses';
 import { useSelector } from 'react-redux';
 import { selectPlayerSettings } from '../../slices/playerSlice';
+import { selectOpenAiEndpoint } from '../../slices/partySlice';
 
 interface iProps {
 	songTitle: string;
@@ -9,30 +10,26 @@ interface iProps {
 
 const DownloadResponseGenerator = ({ songTitle }: iProps) => {
 	const settings = useSelector(selectPlayerSettings);
+	const openAiEndpoint = useSelector(selectOpenAiEndpoint);
 	const [responseMessage, setResponseMessage] = useState('');
 	const titleRef = useRef('no-title');
 
-	useEffect(() => {
-		if (songTitle.length == 0) {
-			setResponseMessage('');
-			return;
-		}
-		if (songTitle == titleRef.current) {
-			return;
-		}
-		titleRef.current = songTitle;
-		if (!settings.aiEnabled) {
-			setResponseMessage('');
-			return;
-		}
-		_sumbitPrompt().catch(() => {
-			// if any error occurs, use the pre-downloaded responses
-			setResponseMessage(downloadMessages[Math.floor(Math.random() * downloadMessages.length)]);
-		});
-	}, [songTitle, settings.aiEnabled]);
-
 	const _sumbitPrompt = async () => {
-		const response = await fetch(`song/${encodeURIComponent(songTitle)}/openai-stream`);
+		if (openAiEndpoint.length === 0) {
+			setResponseMessage(downloadMessages[Math.floor(Math.random() * downloadMessages.length)]);
+			return;
+		}
+		const response = await fetch(openAiEndpoint, {
+			method: 'POST',
+			mode: 'cors',
+			headers: {
+				Accept: 'application/json',
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				song: songTitle,
+			}),
+		});
 		const reader = response.body?.getReader();
 		const textEncoder = new TextDecoder();
 		let textResponses = '';
@@ -43,7 +40,8 @@ const DownloadResponseGenerator = ({ songTitle }: iProps) => {
 		let started = false;
 
 		if (!reader) {
-			throw 'no reader';
+			console.warn(`No reader`);
+			return;
 		}
 
 		// streamed response is very choppy, use the queue to smooth out the response
@@ -66,7 +64,11 @@ const DownloadResponseGenerator = ({ songTitle }: iProps) => {
 				}
 
 				// stream is complete and all messages displayed, then quit
-				if (complete && messageQueue.length == 0) {
+				if (complete && messageQueue.length === 0) {
+					if (!started) {
+						console.warn('No data returned from API, resorting to canned response');
+						setResponseMessage(downloadMessages[Math.floor(Math.random() * downloadMessages.length)]);
+					}
 					return;
 				}
 
@@ -81,7 +83,7 @@ const DownloadResponseGenerator = ({ songTitle }: iProps) => {
 
 				// read the next item from the queue
 				_controlledRead();
-			}, 35);
+			}, 20);
 		};
 		_controlledRead();
 
@@ -92,9 +94,41 @@ const DownloadResponseGenerator = ({ songTitle }: iProps) => {
 				complete = true;
 				break;
 			}
-			messageQueue.push(...textEncoder.decode(value).split(/(?! )/g));
+			const text = textEncoder.decode(value);
+			const newtext = text.replaceAll('}{', '}zz-SplitTextHere--zz{');
+			const chunks = newtext.split('zz-SplitTextHere--zz');
+			chunks.forEach((chunk) => {
+				try {
+					messageQueue.push(...(JSON.parse(chunk)?.choices[0]?.delta?.content?.split(/(?! )/g) ?? ''));
+				} catch (ex) {
+					console.warn('chunk size', chunks.length);
+					console.warn(text);
+					console.warn(newtext);
+					console.warn(chunk);
+					console.error(ex);
+				}
+			});
 		}
 	};
+
+	useEffect(() => {
+		if (songTitle.length === 0) {
+			setResponseMessage('');
+			return;
+		}
+		if (songTitle === titleRef.current) {
+			return;
+		}
+		titleRef.current = songTitle;
+		if (!settings.aiEnabled) {
+			setResponseMessage('');
+			return;
+		}
+		_sumbitPrompt().catch(() => {
+			// if any error occurs, use the pre-downloaded responses
+			setResponseMessage(downloadMessages[Math.floor(Math.random() * downloadMessages.length)]);
+		});
+	}, [songTitle, settings.aiEnabled]); //ignore warning about _submitPrompt
 
 	return (
 		<>

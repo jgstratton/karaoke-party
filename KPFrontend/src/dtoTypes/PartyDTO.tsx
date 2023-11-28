@@ -1,6 +1,7 @@
 import PerformanceDTO from './PerformanceDTO';
 import PlayerDTO from './PlayerDTO';
 import { PlayerSettingsDTO } from './PlayerSettingsDTO';
+import { ServerSettingsDTO } from './ServerSettingsDTO';
 import SingerDTO from './SingerDTO';
 
 export default interface PartyDTO {
@@ -11,4 +12,5 @@ export default interface PartyDTO {
 	performances: [PerformanceDTO];
 	singers: [SingerDTO];
 	playerSettings: PlayerSettingsDTO;
+	serverSettings: ServerSettingsDTO;
 }

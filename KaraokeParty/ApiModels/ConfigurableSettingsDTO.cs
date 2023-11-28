@@ -10,5 +10,6 @@
 		public int SplashScreenUpcomingCount { get; set; } = 3;
 
 		public Boolean AiEnabled { get; set; } = false;
+		public string OpenAILambdaEndpoint { get; set; } = String.Empty;
 	}
 }

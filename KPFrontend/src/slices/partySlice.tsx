@@ -8,6 +8,7 @@ export interface Party {
 	djKey: string;
 	isStale: boolean;
 	isLoaded: boolean;
+	openAiEndpoint: string;
 }
 
 const initialState: Party = {
@@ -16,6 +17,7 @@ const initialState: Party = {
 	djKey: '',
 	isStale: false,
 	isLoaded: false,
+	openAiEndpoint: '',
 };
 
 export const partySlice = createSlice({
@@ -27,6 +29,7 @@ export const partySlice = createSlice({
 			state.partyKey = action.payload.partyKey;
 			state.djKey = action.payload.djKey;
 			state.isLoaded = true;
+			state.openAiEndpoint = action.payload.serverSettings.openAILambdaEndpoint;
 		},
 
 		reset: (state) => {
@@ -60,6 +63,10 @@ export const selectDjKey = (state: RootState) => {
 
 export const selectIsStale = (state: RootState) => {
 	return state.party?.isStale ?? false;
+};
+
+export const selectOpenAiEndpoint = (state: RootState) => {
+	return state.party?.openAiEndpoint ?? '';
 };
 
 export const { populateParty, reset, markAsStale, joinHub, notifyDjChanges } = partySlice.actions;

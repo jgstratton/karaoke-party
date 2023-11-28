@@ -1,4 +1,5 @@
 using Forge.OpenAI;
+using KaraokeParty.ApiModels;
 using KaraokeParty.DataStore;
 using KaraokeParty.Hubs;
 using KaraokeParty.Services;
@@ -36,6 +37,7 @@ builder.Services.AddTransient<IPartyService, PartyService>();
 builder.Services.AddTransient<ISingerService, SingerService>();
 builder.Services.AddTransient<PlayerHub>();
 builder.Services.AddScoped<KPContext, KPContext>();
+ServerSettingsStaticProvider.OpenAILambdaEndpoint = builder.Configuration["OpenAILambdaEndpoint"];
 
 // Need to register IHTTPClientFactory for the Proxy to work
 builder.Services.AddHttpClient();
@@ -51,7 +53,7 @@ var app = builder.Build();
 
 // rewrite client-side routes to return index.html
 var options = new RewriteOptions();
-foreach (var clientRoute in new List<string> { "Search", "Home", "DjHome", "NoParty", "Player", "MyRequests" }) {
+foreach (var clientRoute in new List<string> { "Search", "Home", "DjHome", "NoParty", "Player", "MyRequests", "TestApi" }) {
 	options.AddRewrite($"(?i)^{clientRoute}", "index.html", skipRemainingRules: true);
 	options.AddRewrite($"(?i)^{clientRoute}/.*", "index.html", skipRemainingRules: true);
 }
