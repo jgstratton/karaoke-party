@@ -132,9 +132,9 @@ const signalRMiddleware: Middleware = (store) => {
 		store.dispatch(signalActionCreator(play()));
 	});
 
-	connection.on('ReceivePlayerSettings', async (playerSettings) => {
+	connection.on('ReceivePlayerSettings', async (settings) => {
 		console.log('ReceivePlayerSettings');
-		store.dispatch(signalActionCreator(populateSettings(playerSettings)));
+		store.dispatch(signalActionCreator(populateSettings(settings)));
 	});
 
 	connection.on('ReceivePerformances', async (performances) => {

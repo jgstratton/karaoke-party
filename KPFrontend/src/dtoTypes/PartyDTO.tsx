@@ -11,6 +11,6 @@ export default interface PartyDTO {
 	player: PlayerDTO;
 	performances: [PerformanceDTO];
 	singers: [SingerDTO];
-	playerSettings: PlayerSettingsDTO;
+	settings: PlayerSettingsDTO;
 	serverSettings: ServerSettingsDTO;
 }

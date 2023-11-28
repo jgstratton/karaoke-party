@@ -24,7 +24,7 @@ export const CreateParty = async (
 	// update the store
 	store.dispatch(populateUser(dj));
 	store.dispatch(populateParty(party));
-	store.dispatch(populateSettings(party.playerSettings));
+	store.dispatch(populateSettings(party.settings));
 	store.dispatch(joinHub());
 	// store the dj flag and party key
 	StorageService.storeUser(dj);
@@ -47,7 +47,7 @@ export const LoadParty = async (): Promise<void> => {
 		console.log(loadedParty);
 		store.dispatch(populateParty(loadedParty));
 		store.dispatch(populatePlayer(loadedParty.player));
-		store.dispatch(populateSettings(loadedParty.playerSettings));
+		store.dispatch(populateSettings(loadedParty.settings));
 		const openAILambdaEndpoint = loadedParty?.serverSettings?.openAILambdaEndpoint ?? '';
 		if (openAILambdaEndpoint.length > 0) {
 			console.log('pinging openai endpoint');

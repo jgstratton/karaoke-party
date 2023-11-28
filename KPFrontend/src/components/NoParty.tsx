@@ -62,7 +62,7 @@ const NoParty = () => {
 		let newUser = await ApiService.joinParty(form.joinCode.toUpperCase(), form.singerName);
 		dispatch(populateParty(curParty));
 		dispatch(populatePlayer(curParty.player));
-		dispatch(populateSettings(curParty.playerSettings));
+		dispatch(populateSettings(curParty.settings));
 		dispatch(populateUser(newUser));
 		dispatch(populatePerformances(curParty.performances));
 		dispatch(populateSingers(curParty.singers));

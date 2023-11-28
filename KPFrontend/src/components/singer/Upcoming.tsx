@@ -5,8 +5,8 @@ import { selectPlayerSettings } from '../../slices/playerSlice';
 
 const Upcoming = () => {
 	const performances = useSelector(selectQueuedSorted);
-	const playerSettings = useSelector(selectPlayerSettings);
-	const performanceList = performances.slice(0, playerSettings.splashScreenUpcomingCount);
+	const settings = useSelector(selectPlayerSettings);
+	const performanceList = performances.slice(0, settings.splashScreenUpcomingCount);
 	return (
 		<ListGroup>
 			{performanceList.length > 0 ? (

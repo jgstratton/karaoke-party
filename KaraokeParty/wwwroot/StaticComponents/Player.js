@@ -7,7 +7,7 @@ const Player = function (options) {
 	const state = {
 		playing: false,
 		videoStarted: false,
-		playerSettings: null,
+		settings: null,
 		currentPerformance: null,
 	};
 
@@ -31,10 +31,10 @@ const Player = function (options) {
 			console.error('404 - Parety not found (no key in response)');
 			return;
 		}
-		state.playerSettings = partyResponse.settings;
+		state.settings = partyResponse.settings;
 		state.playing = partyResponse.player.playerState === 1;
 		state.currentPerformance = partyResponse.performances.filter((p) => p.status == 2)[0];
-		marquee.Update(state.playerSettings);
+		marquee.Update(state.settings);
 
 		if (state.playing) {
 			_loadVideo();
@@ -54,12 +54,12 @@ const Player = function (options) {
 		}
 
 		const curSecondsVisible = splashScreen.GetSecondsVisible();
-		if (splashScreen.IsVisible() && curSecondsVisible < state.playerSettings.splashScreenSeconds) {
+		if (splashScreen.IsVisible() && curSecondsVisible < state.settings.splashScreenSeconds) {
 			console.warn('PLAYER: Splash screen duration not complete, continue waiting.');
 			setTimeout(() => {
 				splashScreen.Hide();
 				_attemptPlay();
-			}, (state.playerSettings.splashScreenSeconds - curSecondsVisible) * 1000);
+			}, (state.settings.splashScreenSeconds - curSecondsVisible) * 1000);
 			return;
 		}
 
@@ -73,7 +73,7 @@ const Player = function (options) {
 		const _updateProgress = (evt) => {
 			if (evt.lengthComputable) {
 				const secondsVisible = splashScreen.GetSecondsVisible();
-				const percentTimeEllapsed = secondsVisible / state.playerSettings.splashScreenSeconds;
+				const percentTimeEllapsed = secondsVisible / state.settings.splashScreenSeconds;
 				const percentDownloaded = evt.loaded / evt.total;
 				percentComplete =
 					(percentTimeEllapsed < percentDownloaded ? percentTimeEllapsed : percentDownloaded) * 100;
@@ -89,7 +89,7 @@ const Player = function (options) {
 				}
 				const secondsVisible = splashScreen.GetSecondsVisible();
 
-				const percentTimeEllapsed = (secondsVisible / state.playerSettings.splashScreenSeconds) * 100;
+				const percentTimeEllapsed = (secondsVisible / state.settings.splashScreenSeconds) * 100;
 				splashScreen.SetProgressBar(percentTimeEllapsed > 100 ? 100 : percentTimeEllapsed);
 				_updateProgressTimeRemaining(percentTimeEllapsed > 100);
 			}, 500);
@@ -237,7 +237,7 @@ const Player = function (options) {
 				video.currentTime = video.duration * position;
 			},
 			ReceivePlayerSettings: (newSettings) => {
-				state.playerSettings = newSettings;
+				state.settings = newSettings;
 				marquee.Update(newSettings);
 			},
 		});

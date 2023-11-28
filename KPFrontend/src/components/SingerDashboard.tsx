@@ -8,7 +8,7 @@ import { selectPlayerSettings } from '../slices/playerSlice';
 
 const SingerDashboard = () => {
 	const navigate = useNavigate();
-	const playerSettings = useSelector(selectPlayerSettings);
+	const settings = useSelector(selectPlayerSettings);
 	return (
 		<div className="container" style={{ padding: '5px', maxWidth: '900px' }}>
 			<Menu />
@@ -25,7 +25,7 @@ const SingerDashboard = () => {
 				<Player />
 			</div>
 
-			{playerSettings.splashScreenUpcomingCount > 0 && (
+			{settings.splashScreenUpcomingCount > 0 && (
 				<>
 					<h6 className="ml-2">On Deck</h6>
 					<div className="mb-2">

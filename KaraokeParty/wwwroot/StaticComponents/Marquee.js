@@ -2,27 +2,27 @@ const Marquee = function (options) {
 	let marqueeParent;
 	let marqueeTimer;
 
-	this.Update = (playerSettings) => {
+	this.Update = (settings) => {
 		if (marqueeParent) {
 			marqueeParent.remove();
 		}
 		if (marqueeTimer) {
 			clearInterval(marqueeTimer);
 		}
-		if (!playerSettings.marqueeEnabled) {
+		if (!settings.marqueeEnabled) {
 			return;
 		}
 
 		marqueeParent = document.createElement('div');
 		marqueeParent.classList.add('marquee-parent');
-		// marqueeParent.style.height = `${playerSettings.marqueeSize}px`;
+		// marqueeParent.style.height = `${settings.marqueeSize}px`;
 
-		const marqueeText = playerSettings.marqueeText
+		const marqueeText = settings.marqueeText
 			.replace(/%code%/gi, options.partyKey)
 			.replace(/%url%/gi, window.location.host)
 			.replaceAll(' ', '\u00A0');
 		const marqueeHtml = `
-			<div class="marquee-text" style="font-size:${parseInt(playerSettings.marqueeSize / 1.25)}px">
+			<div class="marquee-text" style="font-size:${parseInt(settings.marqueeSize / 1.25)}px">
 				${marqueeText}
 			</div>`;
 		marqueeParent.innerHTML = marqueeHtml + marqueeHtml + marqueeHtml;
@@ -35,7 +35,7 @@ const Marquee = function (options) {
 			if (i > firstElement.clientWidth) {
 				i = 0;
 			}
-			i = i + playerSettings.marqueeSpeed / 100;
+			i = i + settings.marqueeSpeed / 100;
 		}, 10);
 	};
 };

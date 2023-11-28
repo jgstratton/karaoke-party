@@ -20,7 +20,6 @@ const Player = () => {
 	const isDj = useSelector(selectUserIsDj);
 	const player = useSelector((state: RootState) => state.player);
 	const partyKey = useSelector(selectPartyKey);
-	const playerSettings = useSelector(selectPlayerSettings);
 	const [userInteraction, setUserInteraction] = useState(false);
 	const [lastReportedPosition, setLastReportedPosition] = useState(0);
 	const [playbackRate] = useState(1.0);
@@ -93,18 +92,18 @@ const Player = () => {
 						onProgress={handleProgress}
 						onDuration={(duration) => dispatch(sendDuration(Math.floor(duration * 1000)))}
 					/>
-					{playerSettings.marqueeEnabled && (
+					{settings.marqueeEnabled && (
 						<div
 							className="marquee-wrap"
 							style={{
-								height: `${playerSettings.marqueeSize}px`,
-								lineHeight: `${playerSettings.marqueeSize}px`,
-								fontSize: `${playerSettings.marqueeSize * 0.8}px`,
+								height: `${settings.marqueeSize}px`,
+								lineHeight: `${settings.marqueeSize}px`,
+								fontSize: `${settings.marqueeSize * 0.8}px`,
 							}}
 						>
-							<Marquee gradient={false} speed={playerSettings.marqueeSpeed}>
+							<Marquee gradient={false} speed={settings.marqueeSpeed}>
 								<span className="p-2">
-									{playerSettings.marqueeText
+									{settings.marqueeText
 										.replace(/%code%/gi, partyKey)
 										.replace(/%url%/gi, window.location.host)
 										.replaceAll(' ', '\u00A0')}
