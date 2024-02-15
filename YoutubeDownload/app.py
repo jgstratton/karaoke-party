@@ -29,9 +29,9 @@ def search():
 
 def get_search_results(textToSearch):
 	num_results = 10
-	yt_search = 'ytsearch%d:"%s"' % (num_results, unidecode(textToSearch))
-	cmd = [youtubedl_path, "-j", "--no-playlist", "--flat-playlist","--match-filter","url!*=/shorts/", yt_search]
-
+	yt_search = 'https://www.youtube.com/results?search_query=%s' % (textToSearch)
+	cmd = [youtubedl_path, "-j", "--no-playlist", "--flat-playlist","--match-filter","url!*=/shorts/", "-I", "1:10", yt_search]
+	app.logger.info(cmd)
 	try:
 		output = subprocess.check_output(cmd).decode("utf-8")
 		rc = []
