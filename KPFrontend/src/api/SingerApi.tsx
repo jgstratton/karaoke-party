@@ -81,6 +81,19 @@ const moveToLast = async (partyKey: string, singerId: number): Promise<Result<Si
 		'Error moving singer in rotation'
 	);
 
+const autoMoveSinger = async (partyKey: string, singerId: number): Promise<Result<SingerDTO[]>> =>
+	await validateResult(
+		await fetch(`party/${partyKey}/singer/${singerId}/autoMoveSinger`, {
+			method: 'PUT',
+			headers: {
+				Accept: 'application/json',
+				'Content-Type': 'application/json',
+			},
+		}),
+		() => true,
+		'Error moving singer in rotation'
+	);
+
 const SingerApi = {
 	addSinger,
 	getSinger,
@@ -88,6 +101,7 @@ const SingerApi = {
 	updateSinger,
 	deleteSinger,
 	moveToLast,
+	autoMoveSinger,
 };
 
 export default SingerApi;

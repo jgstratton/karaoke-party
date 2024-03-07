@@ -47,7 +47,7 @@ namespace KaraokeParty.Controllers {
 
 		[HttpPut]
 		[Route("party/{partyKey}/singer/{singerId}/moveToLast")]
-		public ActionResult<List<SingerDTO>> Update(string partyKey, int singerId) {
+		public ActionResult<List<SingerDTO>> MoveToLast(string partyKey, int singerId) {
 			try {
 				Party? party = partyService.GetPartyByKey(partyKey);
 				if (party == null) {
@@ -74,6 +74,35 @@ namespace KaraokeParty.Controllers {
 
 				context.SaveChanges();
 				return party.Singers.OrderBy(s => s.RotationNumber).Select(s => SingerDTO.FromDb(s)).ToList();
+			} catch (Exception ex) {
+				return BadRequest($"An unexpected error occured: {ex.Message}");
+			}
+		}
+
+		[HttpPut]
+		[Route("party/{partyKey}/singer/{singerId}/autoMoveSinger")]
+		public ActionResult<AutoMoveSingerResponse> AutoMoveSinger(string partyKey, int singerId) {
+			try {
+				Party? party = partyService.GetPartyByKey(partyKey);
+				if (party == null) {
+					return NotFound();
+				}
+				Singer? singer = party.Singers.Where(s => s.SingerId == singerId).FirstOrDefault();
+				if (singer == null) {
+					return NotFound();
+				}
+
+				var (shouldMove, newPosition) = singerService.AutoMoveSinger(party, singer);
+				var wasMoved = false;
+				if (shouldMove && newPosition is not null) {
+					singerService.MoveSingerInRotation(party, singer, (int)newPosition);
+					context.SaveChanges();
+					wasMoved = true;
+				}
+
+				return new AutoMoveSingerResponse {
+					WasSingerMoved = wasMoved
+				};
 			} catch (Exception ex) {
 				return BadRequest($"An unexpected error occured: {ex.Message}");
 			}
