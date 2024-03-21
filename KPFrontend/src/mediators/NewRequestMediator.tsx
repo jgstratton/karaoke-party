@@ -33,9 +33,20 @@ export const CreateNewRequestForExistingSinger = async (
 	performance: PerformanceRequestDTO
 ): Promise<Result<PerformanceDTO>> => {
 	const partyKey = store.getState().party.partyKey;
+	const autoMoveSingerEnabled = store.getState().player.settings.autoMoveSingerEnabled;
 
 	if ((performance.singerId ?? 0) === 0) {
 		return { ok: false, error: 'Singer Id is not set, unable to update for existing singer.' };
+	}
+
+	if (autoMoveSingerEnabled) {
+		const response = await SingerApi.autoMoveSinger(partyKey, performance.singerId ?? 0);
+		if (response.ok && response.value.wasSingerMoved) {
+			const singersList = await SingerApi.getSingers(partyKey);
+			if (singersList.ok) {
+				store.dispatch(populateSingers(singersList.value));
+			}
+		}
 	}
 
 	const newPerformanceResult = await PerformanceApi.addPerformance(partyKey, performance);

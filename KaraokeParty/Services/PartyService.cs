@@ -144,6 +144,7 @@ namespace KaraokeParty.Services {
 			party.SplashScreenSeconds = settings.SplashScreenSeconds;
 			party.SplashScreenUpcomingCount = settings.SplashScreenUpcomingCount;
 			party.AiEnabled = settings.AiEnabled;
+			party.AutoMoveSingerEnabled = settings.AutoMoveSingerEnabled;
 			context.SaveChanges();
 		}
 

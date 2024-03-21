@@ -14,8 +14,20 @@ export const AssignRequestToExistingSinger = async (
 	singer: SingerDTO
 ): Promise<Result<PerformanceDTO>> => {
 	const partyKey = store.getState().party.partyKey;
+	const autoMoveSingerEnabled = store.getState().player.settings.autoMoveSingerEnabled;
+
 	if (singer.singerId == null) {
 		return { ok: false, error: 'null singer id' };
+	}
+
+	if (autoMoveSingerEnabled) {
+		const response = await SingerApi.autoMoveSinger(partyKey, performance.singerId ?? 0);
+		if (response.ok && response.value.wasSingerMoved) {
+			const singersList = await SingerApi.getSingers(partyKey);
+			if (singersList.ok) {
+				store.dispatch(populateSingers(singersList.value));
+			}
+		}
 	}
 
 	performance.status = StatusService.queued;

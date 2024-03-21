@@ -7,4 +7,5 @@ export interface PlayerSettingsDTO {
 	splashScreenSeconds: number;
 	splashScreenUpcomingCount: number;
 	aiEnabled: boolean;
+	autoMoveSingerEnabled: boolean;
 }

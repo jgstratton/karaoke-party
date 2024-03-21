@@ -53,7 +53,8 @@ namespace KaraokeParty.ApiModels {
 					SplashScreenEnabled = party.SplashScreenEnabled,
 					SplashScreenSeconds = party.SplashScreenSeconds,
 					SplashScreenUpcomingCount = party.SplashScreenUpcomingCount,
-					AiEnabled = party.AiEnabled
+					AiEnabled = party.AiEnabled,
+					AutoMoveSingerEnabled = party.AutoMoveSingerEnabled
 				}
 			};
 		}

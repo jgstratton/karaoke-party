@@ -20,6 +20,7 @@ const initialState = {
 		splashScreenSeconds: 10,
 		splashScreenUpcomingCount: 3,
 		aiEnabled: true,
+		autoMoveSingerEnabled: true,
 	},
 };
 

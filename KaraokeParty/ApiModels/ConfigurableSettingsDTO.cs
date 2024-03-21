@@ -10,5 +10,6 @@
 		public int SplashScreenUpcomingCount { get; set; } = 3;
 
 		public Boolean AiEnabled { get; set; } = false;
+		public Boolean AutoMoveSingerEnabled { get; set; } = false;
 	}
 }

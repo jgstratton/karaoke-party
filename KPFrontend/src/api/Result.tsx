@@ -1,3 +1,5 @@
+import Bugsnag from '@bugsnag/js';
+
 export type Result<T, E = string> = { ok: true; value: T } | { ok: false; error: E };
 
 export async function fetchOrThrowResult<Type>(result: Result<Type>): Promise<Type> {
@@ -26,7 +28,9 @@ export async function validateResult<Type>(
 			return { ok: true, value: responseBody };
 		}
 		return { ok: false, error: typeof responseBody === 'string' ? responseBody : errorMessage };
-	} catch {
+	} catch (e) {
+		//@ts-ignore
+		Bugsnag.notify(e);
 		return { ok: false, error: errorMessage };
 	}
 }

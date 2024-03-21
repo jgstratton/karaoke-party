@@ -26,7 +26,7 @@ const SettingsModal = ({ show, handleClose }: props) => {
 	const [splashScreenUpcomingCount, setSplashScreenUpcomingCount] = useState(3);
 
 	const [aiEnabled, setAiEnabled] = useState(true);
-
+	const [autoMoveSingerEnabled, setAutoMoveSingerEnabled] = useState(true);
 	const [dataQuota, setDataQuota] = useState(0);
 	const [dataUsage, setDataUsage] = useState(0);
 
@@ -39,6 +39,7 @@ const SettingsModal = ({ show, handleClose }: props) => {
 		setSplashScreenSeconds(playerStoreSettings.splashScreenSeconds);
 		setSplashScreenUpcomingCount(playerStoreSettings.splashScreenUpcomingCount);
 		setAiEnabled(playerStoreSettings.aiEnabled);
+		setAutoMoveSingerEnabled(playerStoreSettings.autoMoveSingerEnabled);
 	}, [playerStoreSettings]);
 
 	useEffect(() => {
@@ -71,6 +72,7 @@ const SettingsModal = ({ show, handleClose }: props) => {
 				splashScreenSeconds,
 				splashScreenUpcomingCount,
 				aiEnabled,
+				autoMoveSingerEnabled,
 			})
 		);
 		handleClose();
@@ -212,6 +214,25 @@ const SettingsModal = ({ show, handleClose }: props) => {
 						<div className="text-muted">
 							Generate ChatGpt messages for the user to read while they wait for the song to download from
 							yt-dlp.
+						</div>
+					</Form.Group>
+					<Form.Group className="mb-3">
+						<Form.Label>Auto-Move Singer ({autoMoveSingerEnabled ? 'enabled' : 'disabled'})</Form.Label>
+
+						{!autoMoveSingerEnabled && (
+							<div className={classNames(['float-right', styles.faToggle])}>
+								<FontAwesomeIcon icon={faToggleOff} onClick={() => setAutoMoveSingerEnabled(true)} />
+							</div>
+						)}
+						{autoMoveSingerEnabled && (
+							<div className={classNames(['float-right', styles.faToggle])}>
+								<FontAwesomeIcon icon={faToggleOn} onClick={() => setAutoMoveSingerEnabled(false)} />
+							</div>
+						)}
+						<div className="text-muted">
+							If adding a request to an existing singer in the rotation would change the "Upcoming
+							Singers" list, the singer will instead get moved to the next available slot after the
+							rotation.
 						</div>
 					</Form.Group>
 				</Modal.Body>

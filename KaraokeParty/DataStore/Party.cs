@@ -48,5 +48,7 @@ namespace KaraokeParty.DataStore {
 		public int SplashScreenUpcomingCount { get; set; } = 3;
 
 		public Boolean AiEnabled { get; set; } = true;
+
+		public Boolean AutoMoveSingerEnabled { get; set; } = true;
 	}
 }

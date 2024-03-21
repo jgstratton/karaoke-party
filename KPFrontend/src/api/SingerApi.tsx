@@ -1,3 +1,4 @@
+import { AutoMoveSingerResponse } from '../dtoTypes/AutoMoveSingerResponse';
 import SingerDTO from '../dtoTypes/SingerDTO';
 import { Result, validateResult } from './Result';
 
@@ -81,7 +82,7 @@ const moveToLast = async (partyKey: string, singerId: number): Promise<Result<Si
 		'Error moving singer in rotation'
 	);
 
-const autoMoveSinger = async (partyKey: string, singerId: number): Promise<Result<SingerDTO[]>> =>
+const autoMoveSinger = async (partyKey: string, singerId: number): Promise<Result<AutoMoveSingerResponse>> =>
 	await validateResult(
 		await fetch(`party/${partyKey}/singer/${singerId}/autoMoveSinger`, {
 			method: 'PUT',

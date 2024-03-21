@@ -22,11 +22,14 @@ namespace KaraokeParty.Services {
 		/// (right after the upcoming rotation.
 		/// </summary>
 		public (bool shouldMove, int? newPosition) AutoMoveSinger(Party party, Singer singer) {
+			if (!party.AutoMoveSingerEnabled) {
+				return (false, null);
+			}
 			var singerPerformances = party.Queue.Where(p => p.Singer is not null && p.Singer.SingerId == singer.SingerId).ToList();
 			var upcomingStatusList = new List<PerformanceStatus> { PerformanceStatus.Live, PerformanceStatus.Queued };
 
 			// this only applies to existing singers. If they have no requests then do nothing
-			if (singerPerformances.Any()) {
+			if (!singerPerformances.Any()) {
 				return (false, null);
 			}
 
@@ -101,7 +104,11 @@ namespace KaraokeParty.Services {
 
 			// move the user to right after the last upcoming singer
 			var lastUpcomingSinger = normalizedSingerList.Count > upcomingCount ? normalizedSingerList[upcomingCount] : normalizedSingerList.Last();
-			return (true, lastUpcomingSinger.RotationNumber + 1);
+
+			return (
+				true,
+				lastUpcomingSinger.RotationNumber + (lastUpcomingSinger.RotationNumber < currentSinger.RotationNumber && singer.RotationNumber > lastUpcomingSinger.RotationNumber ? 1 : 0)
+			);
 		}
 	}
 
