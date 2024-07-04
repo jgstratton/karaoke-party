@@ -50,5 +50,9 @@ namespace KaraokeParty.DataStore {
 		public Boolean AiEnabled { get; set; } = true;
 
 		public Boolean AutoMoveSingerEnabled { get; set; } = true;
+
+		public Boolean QRCodeEnabled { get; set; } = false;
+
+		public int QRCodeSize { get; set; } = 100;
 	}
 }

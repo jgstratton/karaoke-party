@@ -11,5 +11,8 @@
 
 		public Boolean AiEnabled { get; set; } = false;
 		public Boolean AutoMoveSingerEnabled { get; set; } = false;
+
+		public Boolean QRCodeEnabled { get; set; } = false;
+		public int QRCodeSize { get; set; } = 100;
 	}
 }

@@ -145,6 +145,8 @@ namespace KaraokeParty.Services {
 			party.SplashScreenUpcomingCount = settings.SplashScreenUpcomingCount;
 			party.AiEnabled = settings.AiEnabled;
 			party.AutoMoveSingerEnabled = settings.AutoMoveSingerEnabled;
+			party.QRCodeEnabled = settings.QRCodeEnabled;
+			party.QRCodeSize = settings.QRCodeSize;
 			context.SaveChanges();
 		}
 

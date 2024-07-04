@@ -7,8 +7,6 @@ import { register } from './serviceWorkerRegistration';
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 import store from './store';
-import KeyPressChecker from './services/KeyPressChecker';
-import { ToggleDj } from './mediators/PartyMediator';
 import Bugsnag from '@bugsnag/js';
 import BugsnagPluginReact from '@bugsnag/plugin-react';
 import BugsnagPerformance from '@bugsnag/browser-performance';
@@ -32,12 +30,6 @@ register({
 });
 
 const ErrorBoundary = Bugsnag.getPlugin('react').createErrorBoundary(React);
-
-KeyPressChecker(['Shift', 'D', 'J'], () => {
-	console.log('toggle dj');
-	ToggleDj();
-});
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
 	<BrowserRouter>

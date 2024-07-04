@@ -54,7 +54,9 @@ namespace KaraokeParty.ApiModels {
 					SplashScreenSeconds = party.SplashScreenSeconds,
 					SplashScreenUpcomingCount = party.SplashScreenUpcomingCount,
 					AiEnabled = party.AiEnabled,
-					AutoMoveSingerEnabled = party.AutoMoveSingerEnabled
+					AutoMoveSingerEnabled = party.AutoMoveSingerEnabled,
+					QRCodeEnabled = party.QRCodeEnabled,
+					QRCodeSize = party.QRCodeSize
 				}
 			};
 		}

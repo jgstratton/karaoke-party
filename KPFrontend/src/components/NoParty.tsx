@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import ApiService from '../api/ApiService';
 import { Form, Button, Card, Alert } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { populateUser } from '../slices/userSlice';
 import { joinHub, populateParty } from '../slices/partySlice';
 import { populatePlayer, populateSettings } from '../slices/playerSlice';
@@ -23,9 +23,10 @@ const NoParty = () => {
 	const [errorMessage, setErrorMessage] = useState('');
 	const [loading, setLoading] = useState(true);
 	const [mode, setMode] = useState('Join');
+	const [searchParams] = useSearchParams();
 	const [form, setForm] = useState({
 		partyName: '',
-		joinCode: '',
+		joinCode: searchParams.get('partyKey') ?? '',
 		djName: '',
 		password: '',
 		singerName: '',

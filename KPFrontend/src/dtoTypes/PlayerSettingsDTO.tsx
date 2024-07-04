@@ -8,4 +8,6 @@ export interface PlayerSettingsDTO {
 	splashScreenUpcomingCount: number;
 	aiEnabled: boolean;
 	autoMoveSingerEnabled: boolean;
+	qrCodeEnabled: boolean;
+	qrCodeSize: number;
 }

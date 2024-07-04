@@ -21,6 +21,8 @@ const initialState = {
 		splashScreenUpcomingCount: 3,
 		aiEnabled: true,
 		autoMoveSingerEnabled: true,
+		qrCodeEnabled: false,
+		qrCodeSize: 100
 	},
 };
 

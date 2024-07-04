@@ -30,6 +30,9 @@ const SettingsModal = ({ show, handleClose }: props) => {
 	const [dataQuota, setDataQuota] = useState(0);
 	const [dataUsage, setDataUsage] = useState(0);
 
+	const [qrCodeEnabled, setQrCodeEnabled] = useState(true);
+	const [qrCodeSize, setQrCodeSize] = useState(100);
+
 	const resetSettings = useCallback(() => {
 		setMarqueeEnabled(playerStoreSettings.marqueeEnabled);
 		setMarqueeText(playerStoreSettings.marqueeText);
@@ -40,6 +43,8 @@ const SettingsModal = ({ show, handleClose }: props) => {
 		setSplashScreenUpcomingCount(playerStoreSettings.splashScreenUpcomingCount);
 		setAiEnabled(playerStoreSettings.aiEnabled);
 		setAutoMoveSingerEnabled(playerStoreSettings.autoMoveSingerEnabled);
+		setQrCodeEnabled(playerStoreSettings.qrCodeEnabled);
+		setQrCodeSize(playerStoreSettings.qrCodeSize);
 	}, [playerStoreSettings]);
 
 	useEffect(() => {
@@ -73,6 +78,8 @@ const SettingsModal = ({ show, handleClose }: props) => {
 				splashScreenUpcomingCount,
 				aiEnabled,
 				autoMoveSingerEnabled,
+				qrCodeEnabled,
+				qrCodeSize,
 			})
 		);
 		handleClose();
@@ -160,6 +167,31 @@ const SettingsModal = ({ show, handleClose }: props) => {
 					</Form.Group>
 					<hr />
 					<Form.Group className="mb-3">
+						<Form.Label>QR Code ({qrCodeEnabled ? 'enabled' : 'disabled'})</Form.Label>
+						{!qrCodeEnabled && (
+							<div className={classNames(['float-right', styles.faToggle])}>
+								<FontAwesomeIcon icon={faToggleOff} onClick={() => setQrCodeEnabled(true)} />
+							</div>
+						)}
+						{qrCodeEnabled && (
+							<div className={classNames(['float-right', styles.faToggle])}>
+								<FontAwesomeIcon icon={faToggleOn} onClick={() => setQrCodeEnabled(false)} />
+							</div>
+						)}
+						<Form.Group className="mb-3">
+							<Form.Label>Size</Form.Label>
+							<span className="float-right text-muted">{qrCodeSize}</span>
+							<Form.Range
+								disabled={!qrCodeEnabled}
+								value={qrCodeSize}
+								min={25}
+								max={250}
+								onChange={(e) => setQrCodeSize(parseInt(e.target.value))}
+							/>
+						</Form.Group>
+					</Form.Group>
+					<hr />
+					<Form.Group className="mb-3">
 						<Form.Label>Number of upcoming singers to show</Form.Label>
 						<span className="float-right text-muted">{splashScreenUpcomingCount}</span>
 						<Form.Range
@@ -192,7 +224,7 @@ const SettingsModal = ({ show, handleClose }: props) => {
 						<Form.Range
 							disabled={!splashScreenEnabled}
 							value={splashScreenSeconds}
-							min={5}
+							min={1}
 							max={60}
 							onChange={(e) => setSplashScreenSeconds(parseInt(e.target.value))}
 						/>
