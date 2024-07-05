@@ -25,6 +25,7 @@ builder.Services.AddCors(options => {
 
 // Add services to the container.
 builder.Services.AddControllersWithViews()
+	.AddRazorRuntimeCompilation()
 	.AddJsonOptions(options => {
 		options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 	});

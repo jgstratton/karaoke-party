@@ -21,7 +21,57 @@
 	.hidden {
 		display:none;
 	}
+
+	.controls {
+		position: fixed;
+		top: 0;
+		right: 0;
+		height: 200px;
+		width: 300px;
+		padding: 30px;
+		z-index: 1000;
+		opacity:0;
+		text-align:center;
+	}
+	.controls p {
+		margin-top:15px;
+	}
+	.controls button {
+		margin-bottom:5px;
+		text-align:left;
+			outline: none;
+			box-shadow: none;
+	}
+	.controls:hover {
+		opacity: 0.4;
+	}
+
+	.controls hr {
+		opacity:1;
+		color:white;
+	}
 </style>
+
+<div class="controls">
+	<p class="text-white">Fullscreen</p>
+	<button class="btn btn-secondary" id="fsUp"><i class="fa-solid fa-expand"></i></button>
+	<button class="btn btn-secondary" id="fsDown"><i class="fa-solid fa-compress"></i></button>
+	<p class="text-white">Video Position</p>
+	<div>
+		<button class="btn btn-secondary" id="moveUp"><i class="fa-solid fa-up-long"></i></button>
+		<br />
+		<button class="btn btn-secondary" id="moveLeft"><i class="fa-solid fa-left-long"></i></button>
+		<button class="btn btn-secondary" id="reCenter"><i class="fa-regular fa-circle-dot"></i></button>
+		<button class="btn btn-secondary" id="moveRight"><i class="fa-solid fa-right-long"></i></button>
+		<br />
+		<button class="btn btn-secondary" id="moveDown"><i class="fa-solid fa-down-long"></i></button>
+		<br />
+		<button class="btn btn-secondary" id="zoomOut"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+		<button class="btn btn-secondary" id="zoomIn"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+	</div>
+	
+</div>
+
 <div style="height: calc(100vh); overflow-y: hidden">
 	<video id="videoPlayer" preload="none" style="width: 100%; height: 100%"></video>
 </div>
@@ -31,6 +81,24 @@
 		console.error(e);
 	};
 
+	let yAdjust = 0;
+	let xAdjust = 0;
+	let zoom = 0;
+
+	const playerElement = document.getElementById("videoPlayer");
+	const controls = {
+		fsUp: document.getElementById("fsUp"),
+		fsDown: document.getElementById("fsDown"),
+		moveUp: document.getElementById("moveUp"),
+		moveDown: document.getElementById("moveDown"),
+		moveLeft: document.getElementById("moveLeft"),
+		moveRight: document.getElementById("moveRight"),
+		reCenter: document.getElementById("reCenter"),
+		zoomIn: document.getElementById("zoomIn"),
+		zoomOut: document.getElementById("zoomOut"),
+	}
+	
+
 	const Model = function (model) {
 		partyKey: "@Model.PartyKey"
 	}
@@ -39,9 +107,66 @@
 		model: {
 			partyKey: "@Model.PartyKey"
 		},
-		video: document.getElementById("videoPlayer")
+		video: playerElement
 	});
 
 	player.Run();
 
+	controls.fsUp.addEventListener("click",function(){
+		document.body.requestFullscreen();
+		controls.fsUp.blur();
+	});
+
+	controls.fsDown.addEventListener("click", function () {
+		document.exitFullscreen();
+		controls.fsDown.blur();
+	});
+
+	const repositionPlayer = () => {
+		playerElement.style.height = (100 + zoom) + "%";
+		playerElement.style.width = (100 + zoom) + "%";
+		playerElement.style.marginTop = yAdjust + "px";
+		playerElement.style.marginLeft = xAdjust + "px";
+	}
+
+	controls.moveUp.addEventListener("click", function () {
+		yAdjust -= 10;
+		repositionPlayer();
+	})
+
+	controls.moveDown.addEventListener("click", function () {
+		yAdjust += 10;
+		repositionPlayer();
+	})
+
+	controls.moveLeft.addEventListener("click", function () {
+		xAdjust -= 10;
+		repositionPlayer();
+	})
+
+	controls.moveRight.addEventListener("click", function () {
+		xAdjust += 10;
+		repositionPlayer();
+	})
+
+	controls.reCenter.addEventListener("click", function () {
+		xAdjust = 0;
+		yAdjust = 0;
+		zoom = 0;
+		repositionPlayer();
+	})
+
+	controls.zoomIn.addEventListener("click", function () {
+		zoom += 4;
+		xAdjust -= .02 * document.body.offsetWidth;
+		yAdjust -= .02 * document.body.offsetHeight;
+		repositionPlayer();
+	})
+
+	controls.zoomOut.addEventListener("click", function () {
+		zoom -= 4;
+		xAdjust += .02 * document.body.offsetWidth;
+		yAdjust += .02 * document.body.offsetHeight;
+		repositionPlayer();
+	})
 </script>
