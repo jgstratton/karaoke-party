@@ -1,0 +1,53 @@
+.icon {
+    font-size: 22px;
+}
+
+.icon {
+    color: white;
+    font-size: 34px;
+    padding-left: 10px;
+    padding-right: 10px;
+    vertical-align: middle;
+}
+
+.icon.navigate {
+    font-size: 28px;
+    color: rgb(179, 179, 179);
+}
+
+.icon {
+    color: white;
+    font-size: 34px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.iconHidden {
+    display: none;
+}
+
+.icon:hover,
+.icon.navigate:hover {
+    cursor: pointer;
+    color: var(--bs-success);
+}
+
+.controlsLine1 {
+    width: 100%;
+    text-align: center;
+}
+
+.controlsLine2 {
+    display: grid;
+    grid-template-columns: [first] 100px [line2] auto [col3-start] 100px [end];
+}
+
+@media (max-width: 1000px) {
+    .controls {
+        display: none;
+    }
+
+    .controlsLine2 {
+        grid-template-columns: [first] 50px [line2] auto [col3-start] 50px [end];
+    }
+}

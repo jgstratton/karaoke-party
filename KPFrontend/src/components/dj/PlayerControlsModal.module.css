@@ -1,0 +1,18 @@
+.settingsModal input:disabled{
+	color:gray;
+	background-color:lightgray;
+}
+
+.faToggle {
+	font-size:24px;
+	margin-top:-5px;
+	margin-bottom:-5px;
+}
+
+.faToggle :global(.fa-toggle-off) {
+	color:gray;
+}
+
+.faToggle :global(.fa-toggle-on) {
+	color: #58a4f5;
+}

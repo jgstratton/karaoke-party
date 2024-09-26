@@ -11,6 +11,7 @@ import { RootState } from '../../store';
 import ConfirmModal from './ConfirmModal';
 import NewSingerModal from '../dj/NewSingerModal';
 import { selectErrors } from '../../slices/errorSlice';
+import PlayerSettingsModal from '../dj/PlayerControlsModal';
 
 const Menu = () => {
 	const user = useSelector((state: RootState) => state.user);
@@ -23,12 +24,15 @@ const Menu = () => {
 
 	// dj settings modals control
 	const [showDjSettings, setShowDjSettings] = useState(false);
+	const [showPlayerControls, setShowPlayerControls] = useState(false);
 	const [showConfirmLeave, setShowConfirmLeave] = useState(false);
 	const [showNewSingerModal, setShowNewSingerModal] = useState(false);
 	const [showErrors, setShowErrors] = useState(false);
 
 	const handleHideDjSettings = () => setShowDjSettings(false);
 	const handleShowDjSettings = () => setShowDjSettings(true);
+	const handleShowPlayerControls = () => setShowPlayerControls(true);
+	const handleHidePlayerControls = () => setShowPlayerControls(false);
 	const handleShowNewSingerModal = () => setShowNewSingerModal(true);
 	const handleHideNewSingerModal = () => setShowNewSingerModal(false);
 
@@ -61,6 +65,7 @@ const Menu = () => {
 									<Nav.Link onClick={() => setShowConfirmLeave(true)}>Leave Party</Nav.Link>
 									<Nav.Link onClick={() => window.location.reload()}>Refresh Page</Nav.Link>
 									<Nav.Link onClick={handleShowDjSettings}>Open DJ Settings</Nav.Link>
+									<Nav.Link onClick={handleShowPlayerControls}>Player Controls</Nav.Link>
 									{errors.length > 0 ? (
 										<Nav.Link onClick={() => setShowErrors(true)}>View Errors</Nav.Link>
 									) : (
@@ -85,6 +90,7 @@ const Menu = () => {
 				)}
 			</Navbar>
 			<SettingsModal show={showDjSettings} handleClose={handleHideDjSettings} />
+			<PlayerSettingsModal show={showPlayerControls} handleClose={handleHidePlayerControls} />
 			<NewSingerModal show={showNewSingerModal} handleClose={handleHideNewSingerModal} />
 
 			<ConfirmModal

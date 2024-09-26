@@ -4,8 +4,8 @@
 	grid-gap: 10px;
 	grid-template-columns: 30% auto 30%;
 	grid-template-areas:
-	"nowPlaying  controls  right";
-	padding:10px;
+		"nowPlaying  controls  right";
+	padding: 10px;
 }
 
 .nowPlaying {
@@ -16,15 +16,17 @@
 	white-space: nowrap;
 	display: inline-block;
 }
+
 .nowPlaying a {
-	max-width:400px;
+	max-width: 400px;
 	text-overflow: ellipsis;
 }
 
 .nowPlayingTime {
-	float:right;
-	display:none;
+	float: right;
+	display: none;
 }
+
 .controls {
 	text-align: center;
 	grid-area: controls;
@@ -34,60 +36,33 @@
 	grid-area: right;
 }
 
-.player .icon,
-.player .iconEnabled{
-	font-size:22px;
+.player.enabled {
+	color: lightblue;
+	cursor: pointer;
+}
+
+.launchToggle {
+	position: relative;
+	top: 50%;
+	margin-top: -10px;
+	text-align: right;
 }
 
 .player .icon {
-	color:white;
-	font-size:34px;
+	font-size: 22px;
+}
+
+.player .icon {
+	color: white;
+	font-size: 34px;
 	padding-left: 10px;
 	padding-right: 10px;
 	vertical-align: middle;
 }
 
-
-.player .icon.navigate {
-	font-size:28px;
-	color: rgb(179,179,179);
-}
-
-.player .icon {
-	color:white;
-	font-size:34px;
-	padding-left: 10px;
-	padding-right: 10px;
-}
-.player .iconHidden {
-	display:none;
-}
-
-.player .icon:hover,
-.player .icon.navigate:hover {
+.icon:hover {
 	cursor: pointer;
 	color: var(--bs-success);
-}
-
-.player.enabled .iconEnabled:hover{
-	color:lightblue;
-	cursor:pointer;
-}
-
-.controlsLine2 {
-	display: grid;
-	grid-template-columns: [first] 100px [line2] auto [col3-start] 100px [end];
-}
-
-.controlsLine1 {
-	width: 100%;
-}
-
-.launchToggle {
-	position: relative;
-	top:50%;
-	margin-top:-10px;
-	text-align:right;
 }
 
 .body {
@@ -98,18 +73,20 @@
 	.controls {
 		display: none;
 	}
+
 	.player {
 		grid-template-columns: auto 0 0;
 	}
+
 	.right {
-		display:none;
+		display: none;
 	}
-	.controlsLine2 {
-		grid-template-columns: [first] 50px [line2] auto [col3-start] 50px [end];
-	}
+
+
 	.player {
-		border-top:1px solid rgb(75,75,75)
+		border-top: 1px solid rgb(75, 75, 75)
 	}
+
 	.nowPlayingTime {
 		display: block;
 	}

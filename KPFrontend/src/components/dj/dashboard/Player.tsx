@@ -1,19 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import PlayerSlider from './PlayerSlider';
-import { faForwardStep, faBackwardStep, faPlayCircle, faPauseCircle, faTv } from '@fortawesome/free-solid-svg-icons';
+import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { faTv } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from './Player.module.css';
 import DateTimeUtilities from '../../../utilities/dateTimeUtilities';
-import { play, pause } from '../../../slices/playerSlice';
-import { selectLive, startNextPerformance, startPreviousPerformance } from '../../../slices/performancesSlice';
+import { selectLive } from '../../../slices/performancesSlice';
 import classNames from 'classnames';
 import { RootState } from '../../../store';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { selectPartyKey } from '../../../slices/partySlice';
+import PlayerMainControls from './PlayerMainControls';
 
 const Player = () => {
-	const dispatch = useDispatch();
 	const performances = useSelector(selectLive);
 	const partyKey = useSelector(selectPartyKey);
 	const storePlayer = useSelector((state: RootState) => state.player);
@@ -53,43 +51,7 @@ const Player = () => {
 				)}
 
 				<div className={`${styles.controls}`}>
-					<div className={`${styles.controlsLine1}`}>
-						<FontAwesomeIcon
-							className={classNames([styles.icon, styles.navigate])}
-							icon={faBackwardStep}
-							onClick={() => dispatch(startPreviousPerformance())}
-						/>
-						<FontAwesomeIcon
-							icon={faPlayCircle}
-							className={storePlayer.playing ? styles.iconHidden : styles.icon}
-							fixedWidth
-							onClick={() => dispatch(play())}
-						/>
-						<FontAwesomeIcon
-							icon={faPauseCircle}
-							className={storePlayer.playing ? styles.icon : styles.iconHidden}
-							fixedWidth
-							onClick={() => dispatch(pause())}
-						/>
-						<FontAwesomeIcon
-							className={classNames([styles.icon, styles.navigate])}
-							icon={faForwardStep}
-							onClick={() => dispatch(startNextPerformance())}
-						/>
-					</div>
-
-					<div className={`${styles.controlsLine2}`}>
-						<div className="text-right pr-3">
-							{DateTimeUtilities.secondsToHHMMSS(storePlayer.length * storePlayer.position)}
-						</div>
-						<div className="text-center">
-							<PlayerSlider
-								playerSlidePosition={storePlayer.position}
-								videoLengthSeconds={storePlayer.length}
-							/>
-						</div>
-						<div className="text-left pl-3"> {DateTimeUtilities.secondsToHHMMSS(storePlayer.length)}</div>
-					</div>
+					<PlayerMainControls />
 				</div>
 				<div className={styles.right}>
 					<div className={styles.launchToggle}>
