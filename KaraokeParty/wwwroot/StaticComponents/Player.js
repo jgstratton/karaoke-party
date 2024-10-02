@@ -166,6 +166,10 @@ const Player = function (options) {
         document.getElementById("volumeControl").style.display = "block";
         const initialVolume = parseInt(video.volume * 100);
         let volumeChange = targetVolume - initialVolume;
+        if (volumeChange === 0) {
+            console.log("No volume change, exiting");
+            return;
+        }
         console.log("Volume Change", volumeChange);
         const stepTime = 100; // at 100ms, each second will move the volume by 10% 
         const direction = volumeChange > 0 ? 1 : -1;
@@ -180,10 +184,10 @@ const Player = function (options) {
             }
             console.log("Smooth volume update", nextVolume);
             video.volume = nextVolume;
-            if (direction > 0 && volumeChange && nextVolume * 100 >= targetVolume) {
+            if (direction > 0 && nextVolume * 100 >= targetVolume) {
                 endVolumeChange();
             }
-            if (direction < 0 && volumeChange && nextVolume * 100 <= targetVolume) {
+            if (direction < 0 && nextVolume * 100 <= targetVolume) {
                 endVolumeChange();
             }
         }, stepTime);

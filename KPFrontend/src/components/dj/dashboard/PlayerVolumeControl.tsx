@@ -19,7 +19,7 @@ const PlayerMainControls: React.FC = () => {
                 <Form.Label>Volume: {playerVolume}%</Form.Label>
                 <Form.Control
                     type="range"
-                    min="60"
+                    min="20"
                     max="100"
                     value={playerVolume}
                     onChange={handleVolumeChange}
