@@ -131,6 +131,15 @@ namespace KaraokeParty.Services {
 			context.SaveChanges();
 		}
 
+		public void UpdateVideoVolume(string partyKey, int volume) {
+			Party? party = GetPartyByKey(partyKey);
+			if (party == null) {
+				return;
+			}
+			party.Volume = volume;
+			context.SaveChanges();
+		}
+
 		public void SavePlayerSettings(string partyKey, ConfigurableSettingsDTO settings) {
 			Party? party = GetPartyByKey(partyKey);
 			if (party == null) {
@@ -224,5 +233,6 @@ namespace KaraokeParty.Services {
 		PerformanceDTO? StartPreviousSong(string partyKey);
 		void UpdateVideoLength(string partyKey, int timeInMs);
 		void UpdateVideoPosition(string partyKey, decimal position);
+		void UpdateVideoVolume(string partyKey, int volume);
 	}
 }

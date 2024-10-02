@@ -39,15 +39,6 @@
 
 .controlsLine2 {
     display: grid;
-    grid-template-columns: [first] 100px [line2] auto [col3-start] 100px [end];
-}
-
-@media (max-width: 1000px) {
-    .controls {
-        display: none;
-    }
-
-    .controlsLine2 {
-        grid-template-columns: [first] 50px [line2] auto [col3-start] 50px [end];
-    }
+    grid-template-columns: [first] auto [line2] 1fr [col3-start] auto [end];
+    gap: 15px;
 }

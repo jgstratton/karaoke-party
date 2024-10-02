@@ -7,5 +7,6 @@ namespace KaraokeParty.ApiModels {
 		public int VideoLength { get; set; }
 		public string FileName { get; set; } = "";
 		public string Title { get; set; } = "";
+		public int Volume { get; set; } = 80;
 	}
 }

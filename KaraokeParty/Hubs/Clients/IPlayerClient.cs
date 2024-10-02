@@ -3,6 +3,7 @@
 namespace KaraokeParty.Hubs.Clients {
 	public interface IPlayerClient {
 		Task ReceivePosition(decimal position);
+		Task ReceiveVolume(int volume);
 		Task ReceiveVideoLength(int timeInMs);
 		Task ReceivePreviousSong(PerformanceDTO performance);
 		Task ReceivePause();

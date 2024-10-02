@@ -47,6 +47,13 @@ namespace KaraokeParty.Hubs {
 			await Clients.Group(clientDetails.PartyKey + "PLAYER").ReceivePosition(position);
 		}
 
+		public async Task ChangeVolume(ClientConnectionDetails clientDetails, int volume) {
+			logAction(clientDetails, "ChangePlayerVolume");
+			partyService.UpdateVideoVolume(clientDetails.PartyKey, volume);
+			await Clients.Group(clientDetails.PartyKey + "PLAYER").ReceiveVolume(volume);
+			await Clients.OthersInGroup(clientDetails.PartyKey + "DJ").ReceiveVolume(volume);
+		}
+
 		public async Task SendVideoLength(ClientConnectionDetails clientDetails, int timeInMs) {
 			logAction(clientDetails, "SendVideoLength");
 			partyService.UpdateVideoLength(clientDetails.PartyKey, timeInMs);

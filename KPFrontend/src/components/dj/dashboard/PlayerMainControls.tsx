@@ -10,7 +10,7 @@ import { RootState } from '../../../store';
 import PlayerSlider from './PlayerSlider';
 import DateTimeUtilities from '../../../utilities/dateTimeUtilities';
 
-const PlayerMainControls: React.FC = () => {
+const PlayerMainControls = () => {
     const dispatch = useDispatch();
     const storePlayer = useSelector((state: RootState) => state.player);
 
@@ -41,7 +41,7 @@ const PlayerMainControls: React.FC = () => {
                 />
             </div>
             <div className={`${styles.controlsLine2}`}>
-                <div className="text-right pr-3">
+                <div className="text-right">
                     {DateTimeUtilities.secondsToHHMMSS(storePlayer.length * storePlayer.position)}
                 </div>
                 <div className="text-center">
@@ -50,7 +50,7 @@ const PlayerMainControls: React.FC = () => {
                         videoLengthSeconds={storePlayer.length}
                     />
                 </div>
-                <div className="text-left pl-3"> {DateTimeUtilities.secondsToHHMMSS(storePlayer.length)}</div>
+                <div className="text-left"> {DateTimeUtilities.secondsToHHMMSS(storePlayer.length)}</div>
             </div>
         </>
     );

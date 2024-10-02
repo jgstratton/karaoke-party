@@ -37,7 +37,8 @@ const Player = function (options) {
         state.currentPerformance = partyResponse.performances.filter((p) => p.status == 2)[0];
         marquee.Update(state.settings);
         partyQR.Update(state.settings);
-
+        console.log("setting initial volume", partyResponse.player.volume);
+        video.volume = partyResponse.player.volume / 100;
         if (state.playing) {
             _loadVideo();
         }
@@ -147,6 +148,47 @@ const Player = function (options) {
         }
     };
 
+    let volumeInterval = null;
+
+    const endVolumeChange = () => {
+        clearInterval(volumeInterval);
+        volumeInterval = null;
+        document.getElementById("volumeControl").style.display = "none";
+    }
+
+    const smoothChangeVolume = (targetVolume) => {
+
+        // Clear existing interval if it exists
+        if (volumeInterval !== null) {
+            endVolumeChange();
+        }
+        console.log("New volume received", targetVolume);
+        document.getElementById("volumeControl").style.display = "block";
+        const initialVolume = parseInt(video.volume * 100);
+        let volumeChange = targetVolume - initialVolume;
+        console.log("Volume Change", volumeChange);
+        const stepTime = 100; // at 100ms, each second will move the volume by 10% 
+        const direction = volumeChange > 0 ? 1 : -1;
+
+        volumeInterval = setInterval(() => {
+            const nextVolume = video.volume + direction * 0.01;
+            console.log("Next volume", nextVolume);
+            if (nextVolume < 0 || nextVolume > 1) {
+                endVolumeChange();
+                console.log("Existing volume changer, hit limit", nextVolume);
+                return;
+            }
+            console.log("Smooth volume update", nextVolume);
+            video.volume = nextVolume;
+            if (direction > 0 && volumeChange && nextVolume * 100 >= targetVolume) {
+                endVolumeChange();
+            }
+            if (direction < 0 && volumeChange && nextVolume * 100 <= targetVolume) {
+                endVolumeChange();
+            }
+        }, stepTime);
+    }
+
     const loadInBackground = async () => {
         if (backgroundTimeout) {
             console.log('clearing existing background-loader timeout');
@@ -241,6 +283,9 @@ const Player = function (options) {
             },
             ReceivePosition: (position) => {
                 video.currentTime = video.duration * position;
+            },
+            ReceiveVolume: (volume) => {
+                video.volume = smoothChangeVolume(volume);
             },
             ReceivePlayerSettings: (newSettings) => {
                 console.log("New settings received", newSettings);

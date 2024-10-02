@@ -1,5 +1,5 @@
 import { HubConnection, HubConnectionBuilder, HubConnectionState } from '@microsoft/signalr';
-import { setPosition, setLength } from '../slices/playerSlice';
+import { setPosition, setLength, setVolume } from '../slices/playerSlice';
 import { populatePerformances, addPerformance } from '../slices/performancesSlice';
 import { populatePlayer, pause, play } from '../slices/playerSlice';
 import { populateSettings } from '../slices/playerSlice';
@@ -93,6 +93,11 @@ const signalRMiddleware: Middleware = (store) => {
 	connection.on('ReceivePosition', (value) => {
 		console.log('ReceivePosition');
 		store.dispatch(signalActionCreator(setPosition(value)));
+	});
+
+	connection.on('ReceiveVolume', (value) => {
+		console.log('ReceiveVolume');
+		store.dispatch(signalActionCreator(setVolume(value)));
 	});
 
 	connection.on('ReceiveVideoLength', (valueInMs) => {
@@ -195,6 +200,13 @@ const signalRMiddleware: Middleware = (store) => {
 					if (typeof action.payload != 'undefined') {
 						queueMessageSender(() =>
 							connection.invoke('ChangePlayerPosition', sendClientDetails, action.payload)
+						);
+					}
+					break;
+				case 'player/setVolume':
+					if (typeof action.payload != 'undefined') {
+						queueMessageSender(() =>
+							connection.invoke('ChangeVolume', sendClientDetails, action.payload)
 						);
 					}
 					break;

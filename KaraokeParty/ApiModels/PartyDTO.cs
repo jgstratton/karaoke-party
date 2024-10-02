@@ -41,7 +41,8 @@ namespace KaraokeParty.ApiModels {
 					VideoPosition = party.VideoPosition,
 					FileName = currentPerformance?.FileName ?? "",
 					PlayerState = party.PlayerState,
-					Title = currentPerformance?.SongTitle ?? ""
+					Title = currentPerformance?.SongTitle ?? "",
+					Volume = party.Volume,
 				},
 				Performances = performances,
 				Singers = singers,

@@ -1,6 +1,7 @@
 import { Button, Card, Col, Modal, Row } from "react-bootstrap";
 import styles from './PlayerControlsModal.module.css';
 import PlayerMainControls from "./dashboard/PlayerMainControls";
+import PlayerVolumeControl from "./dashboard/PlayerVolumeControl";
 
 interface props {
 	show: boolean;
@@ -20,6 +21,19 @@ const PlayerSettingsModal = ({ show, handleClose }: props) => {
 					<Modal.Title>Player Controls</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
+					<Row>
+						<Col md={2} className="d-flex align-items-center">
+							<p>Volume Controls</p>
+						</Col>
+						<Col md={10}>
+							<Card className="border-secondary">
+								<Card.Body>
+									<PlayerVolumeControl />
+								</Card.Body>
+							</Card>
+						</Col>
+					</Row>
+					<br />
 					<Row>
 						<Col md={2} className="d-flex align-items-center">
 							<p>Main Controls</p>

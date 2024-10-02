@@ -33,6 +33,8 @@ namespace KaraokeParty.DataStore {
 
 		public int VideoLength { get; set; }
 
+		public int Volume { get; set; } = 80;
+
 		public Boolean MarqueeEnabled { get; set; } = false;
 
 		public string MarqueeText { get; set; } = "";

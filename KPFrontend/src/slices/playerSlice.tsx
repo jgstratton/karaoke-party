@@ -10,6 +10,7 @@ const initialState = {
 	url: '',
 	title: '',
 	position: 0,
+	volume: 80,
 	length: 0,
 	settings: {
 		marqueeEnabled: true,
@@ -34,16 +35,21 @@ export const playerSlice = createSlice({
 	reducers: {
 		// payload is party object
 		populatePlayer: (state, action: PayloadAction<PlayerDTO>) => {
+			console.log("populate player", action.payload);
 			state.enabled = true;
 			state.playing = action.payload.playerState === 1;
 			state.showSplash = action.payload.showSplash ?? false;
 			state.url = `./song/${action.payload.fileName}`;
 			state.title = action.payload.title;
 			state.position = action.payload.videoPosition;
+			state.volume = action.payload.volume;
 			state.length = msToSec(action.payload.videoLength);
 		},
 		setPosition: (state, action) => {
 			state.position = action.payload;
+		},
+		setVolume: (state, action) => {
+			state.volume = action.payload;
 		},
 		setLength: (state, action) => {
 			state.length = msToSec(action.payload);
@@ -58,9 +64,9 @@ export const playerSlice = createSlice({
 			state.playing = false;
 		},
 		resetPlayer: () => initialState,
-		sendPosition: () => {},
-		sendChangePlayerPosition: () => {},
-		sendDuration: (state, action: PayloadAction<number>) => {},
+		sendPosition: () => { },
+		sendChangePlayerPosition: () => { },
+		sendDuration: (state, action: PayloadAction<number>) => { },
 		populateSettings: (state, action: PayloadAction<PlayerSettingsDTO>) => {
 			if (action.payload) {
 				state.settings = action.payload;
@@ -69,7 +75,7 @@ export const playerSlice = createSlice({
 		disableSplash: (state) => {
 			state.showSplash = false;
 		},
-		broadcastSettings: (state, action: PayloadAction<PlayerSettingsDTO>) => {},
+		broadcastSettings: (state, action: PayloadAction<PlayerSettingsDTO>) => { },
 	},
 });
 
@@ -90,6 +96,7 @@ export const {
 	sendDuration,
 	setLength,
 	setPosition,
+	setVolume,
 	songEnded,
 } = playerSlice.actions;
 
