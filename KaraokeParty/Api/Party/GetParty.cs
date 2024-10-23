@@ -1,9 +1,8 @@
 using KaraokeParty.ApiModels;
-using KaraokeParty.DataStore;
 using KaraokeParty.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace KaraokeParty.Controllers {
+namespace KaraokeParty.Api.Party {
 	[ApiController]
 	public class ApiGetParty : ControllerBase {
 		private readonly IPartyService partyService;
@@ -16,7 +15,7 @@ namespace KaraokeParty.Controllers {
 		[Route("party/{partyKey}")]
 		[HttpGet]
 		public ActionResult<PartyDTO> Get(string partyKey) {
-			Party? party = partyService.GetPartyByAnyKey(partyKey);
+			DataStore.Party? party = partyService.GetPartyByAnyKey(partyKey);
 
 			if (party == null) {
 				return NotFound();

@@ -3,7 +3,7 @@ using KaraokeParty.DataStore;
 using KaraokeParty.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace KaraokeParty.Controllers {
+namespace KaraokeParty.Api.Party {
 	[ApiController]
 	public class ApiCreateParty : ControllerBase {
 		private readonly IPartyService partyService;
@@ -34,7 +34,7 @@ namespace KaraokeParty.Controllers {
 				return BadRequest("The provided password was invalid.");
 			}
 
-			Party newParty = new Party {
+			DataStore.Party newParty = new DataStore.Party {
 				Title = postParty.Title,
 				PartyKey = KeyGenerator.CreateAlphaKey(4),
 				DjKey = KeyGenerator.CreateAlphaKey(5)

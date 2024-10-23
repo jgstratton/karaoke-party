@@ -3,7 +3,7 @@ using Forge.OpenAI.Models.ChatCompletions;
 using Forge.OpenAI.Models.Common;
 using Microsoft.AspNetCore.Mvc;
 
-namespace KaraokeParty.Controllers {
+namespace KaraokeParty.Api.Song {
 	[ApiController]
 	public class ApiGetSongOpenAi : ControllerBase {
 		private readonly ILogger<ApiGetSongOpenAi> logger;
@@ -51,7 +51,7 @@ namespace KaraokeParty.Controllers {
 				return new EmptyResult();
 
 			} catch (Exception ex) {
-				logger.LogError("Error in openai-stream endpoing", ex);
+				logger.LogError(ex, "Error in openai-stream endpoing");
 				return new EmptyResult();
 			}
 		}

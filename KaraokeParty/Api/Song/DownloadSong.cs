@@ -1,9 +1,8 @@
 using KaraokeParty.ApiModels;
 using KaraokeParty.DataStore;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
-namespace KaraokeParty.Controllers {
+namespace KaraokeParty.Api.Song {
 	[ApiController]
 	public class ApiSongDownload : ControllerBase {
 		private readonly ILogger<ApiSongDownload> logger;
@@ -34,7 +33,7 @@ namespace KaraokeParty.Controllers {
 			var response = await ytClient.SendAsync(request);
 
 			if (!response.IsSuccessStatusCode) {
-				logger.LogError("Error downloading song", response);
+				logger.LogError("Error downloading song: {response}", response);
 				return BadRequest("Error trying to get song");
 			}
 
@@ -44,7 +43,7 @@ namespace KaraokeParty.Controllers {
 			}
 			dto.FileName = fileName.file;
 
-			Song? song = context.Songs.Find(dto.FileName);
+			DataStore.Song? song = context.Songs.Find(dto.FileName);
 			if (song is null) {
 				song = dto.ToDb();
 				context.Songs.Add(song);

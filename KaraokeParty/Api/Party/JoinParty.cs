@@ -3,7 +3,7 @@ using KaraokeParty.DataStore;
 using KaraokeParty.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace KaraokeParty.Controllers {
+namespace KaraokeParty.Api.Party {
 	[ApiController]
 	public class ApiJoinParety : ControllerBase {
 		private readonly IPartyService partyService;
@@ -17,9 +17,9 @@ namespace KaraokeParty.Controllers {
 		[HttpGet]
 		[Route("party/{partyKey}/join")]
 		public ActionResult<UserDTO> Join(string partyKey, [FromQuery] UserDTO singer) {
-			Party? party = partyService.GetPartyByKey(partyKey);
+			DataStore.Party? party = partyService.GetPartyByKey(partyKey);
 			if (party == null) {
-				Party? djParty = partyService.GetPartyByDjKey(partyKey);
+				DataStore.Party? djParty = partyService.GetPartyByDjKey(partyKey);
 				if (djParty == null) {
 					return NotFound();
 				}

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace KaraokeParty.Controllers {
+namespace KaraokeParty.Api.Song {
 	[ApiController]
 	public class ApiGetSong : ControllerBase {
 		private string VideoStoragePath;

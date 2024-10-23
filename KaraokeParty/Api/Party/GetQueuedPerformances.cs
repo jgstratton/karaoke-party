@@ -2,7 +2,7 @@ using KaraokeParty.ApiModels;
 using KaraokeParty.DataStore;
 using Microsoft.AspNetCore.Mvc;
 
-namespace KaraokeParty.Controllers {
+namespace KaraokeParty.Api.Party {
 	[ApiController]
 	public class ApiGetQueuedPerformances : ControllerBase {
 		private readonly KPContext context;

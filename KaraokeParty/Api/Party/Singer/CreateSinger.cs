@@ -3,7 +3,7 @@ using KaraokeParty.DataStore;
 using KaraokeParty.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace KaraokeParty.Controllers {
+namespace KaraokeParty.Api.PartyEndpoints.Singer {
 	[ApiController]
 	public class ApiSingerCreate : ControllerBase {
 		private readonly IPartyService partyService;
@@ -23,7 +23,7 @@ namespace KaraokeParty.Controllers {
 				if (dto.SingerId != null) {
 					return BadRequest("Wrong verb / unexpected id, use PUT to update an existing singer");
 				}
-				Party? party = partyService.GetPartyByKey(partyKey);
+				DataStore.Party? party = partyService.GetPartyByKey(partyKey);
 				if (party == null) {
 					return NotFound();
 				}
@@ -38,7 +38,7 @@ namespace KaraokeParty.Controllers {
 					return BadRequest("Name is already used in this party");
 				}
 
-				Singer dbSinger = dto.ToDb();
+				DataStore.Singer dbSinger = dto.ToDb();
 				if (dto.RotationNumber <= 0) {
 					dbSinger.RotationNumber = party.Singers.Count() + 1;
 				} else {

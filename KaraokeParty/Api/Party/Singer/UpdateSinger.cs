@@ -3,7 +3,7 @@ using KaraokeParty.DataStore;
 using KaraokeParty.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace KaraokeParty.Controllers {
+namespace KaraokeParty.Api.Party.Singer {
 	[ApiController]
 	public class ApiSingerUpdate : ControllerBase {
 		private readonly IPartyService partyService;
@@ -17,17 +17,17 @@ namespace KaraokeParty.Controllers {
 		}
 
 		[HttpPut]
-		[Route("party/{partyKey}/singer/{singerId}")]
+		[Route("party/{partyKey}/singer")]
 		public ActionResult<SingerDTO> Update(string partyKey, [FromBody] SingerDTO dto) {
 			try {
 				if (dto.SingerId == null) {
 					return BadRequest("Wrong verb or missing id, use POST to update an existing singer, or provide a singer id");
 				}
-				Party? party = partyService.GetPartyByKey(partyKey);
+				DataStore.Party? party = partyService.GetPartyByKey(partyKey);
 				if (party == null) {
 					return NotFound();
 				}
-				Singer? singer = context.Singers.Find(dto.SingerId);
+				DataStore.Singer? singer = context.Singers.Find(dto.SingerId);
 				if (singer == null) {
 					return NotFound();
 				}
@@ -49,11 +49,11 @@ namespace KaraokeParty.Controllers {
 		[Route("party/{partyKey}/singer/{singerId}/moveToLast")]
 		public ActionResult<List<SingerDTO>> MoveToLast(string partyKey, int singerId) {
 			try {
-				Party? party = partyService.GetPartyByKey(partyKey);
+				DataStore.Party? party = partyService.GetPartyByKey(partyKey);
 				if (party == null) {
 					return NotFound();
 				}
-				Singer? singer = party.Singers.Where(s => s.SingerId == singerId).FirstOrDefault();
+				DataStore.Singer? singer = party.Singers.Where(s => s.SingerId == singerId).FirstOrDefault();
 				if (singer == null) {
 					return NotFound();
 				}
@@ -83,11 +83,11 @@ namespace KaraokeParty.Controllers {
 		[Route("party/{partyKey}/singer/{singerId}/autoMoveSinger")]
 		public ActionResult<AutoMoveSingerResponse> AutoMoveSinger(string partyKey, int singerId) {
 			try {
-				Party? party = partyService.GetPartyByKey(partyKey);
+				DataStore.Party? party = partyService.GetPartyByKey(partyKey);
 				if (party == null) {
 					return NotFound();
 				}
-				Singer? singer = party.Singers.Where(s => s.SingerId == singerId).FirstOrDefault();
+				DataStore.Singer? singer = party.Singers.Where(s => s.SingerId == singerId).FirstOrDefault();
 				if (singer == null) {
 					return NotFound();
 				}

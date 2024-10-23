@@ -38,7 +38,7 @@ builder.Services.AddTransient<IPartyService, PartyService>();
 builder.Services.AddTransient<ISingerService, SingerService>();
 builder.Services.AddTransient<PlayerHub>();
 builder.Services.AddScoped<KPContext, KPContext>();
-ServerSettingsStaticProvider.OpenAILambdaEndpoint = builder.Configuration["OpenAILambdaEndpoint"];
+ServerSettingsStaticProvider.OpenAILambdaEndpoint = builder.Configuration["OpenAILambdaEndpoint"] ?? throw new Exception("Missing configuration: OpenAILambdaEndpoint");
 
 // Need to register IHTTPClientFactory for the Proxy to work
 builder.Services.AddHttpClient();
@@ -68,10 +68,9 @@ var fsOptions = new FileServerOptions {
 
 fsOptions.StaticFileOptions.OnPrepareResponse = (ctx) => {
 	if (ctx.File.Name.Contains(".html") || ctx.File.Name.Contains("sw.js")) {
-		ctx.Context.Response.Headers
-					.Add("Cache-Control", "no-cache, no-store, must-revalidate");
-		ctx.Context.Response.Headers.Add("Pragma", "no-cache");
-		ctx.Context.Response.Headers.Add("Expires", "0");
+		ctx.Context.Response.Headers.Append("Cache-Control", "no-cache, no-store, must-revalidate");
+		ctx.Context.Response.Headers.Append("Pragma", "no-cache");
+		ctx.Context.Response.Headers.Append("Expires", "0");
 	}
 };
 
@@ -88,11 +87,10 @@ app.UseRouting();
 //app.UseHttpsRedirection();
 
 app.UseAuthorization();
-app.UseEndpoints(endpoints => {
-	endpoints.MapControllers();
-	endpoints.MapHub<PlayerHub>("/hubs/player");
-	endpoints.MapFallbackToFile("/index.html");
-});
+app.MapControllers();
+app.MapHub<PlayerHub>("/hubs/player");
+app.MapFallbackToFile("/index.html");
+
 
 // Render only .js files in "Views" folder
 app.UseStaticFiles();

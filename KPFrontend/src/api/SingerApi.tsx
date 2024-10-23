@@ -44,7 +44,7 @@ const getSingers = async (partyKey: string): Promise<Result<SingerDTO[]>> =>
 
 const updateSinger = async (partyKey: string, singer: SingerDTO): Promise<Result<SingerDTO>> =>
 	await validateResult(
-		await fetch(`party/${partyKey}/singer/${singer.singerId}`, {
+		await fetch(`party/${partyKey}/singer`, {
 			method: 'PUT',
 			headers: {
 				Accept: 'application/json',
