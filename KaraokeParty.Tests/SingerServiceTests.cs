@@ -34,13 +34,13 @@ namespace KaraokeParty.Tests {
 			Singer singer = _singer(5);
 
 			Party party = new Party {
-				Queue = new List<Performance> {
+				Queue = [
 					_performance(singer, PerformanceStatus.Live)
-				}
+				]
 			};
 
 			var moveResult = _singerService.AutoMoveSinger(party, singer);
-			Assert.IsFalse(moveResult.shouldMove);
+			Assert.That(moveResult.shouldMove, Is.False);
 		}
 
 		[Test]
@@ -48,15 +48,15 @@ namespace KaraokeParty.Tests {
 			Singer singer = _singer(2);
 
 			Party party = new Party {
-				Queue = new List<Performance> {
+				Queue = [
 					_performance(_singer(1), PerformanceStatus.Live),
 					_performance(singer, PerformanceStatus.Queued),
 					_performance(_singer(3), PerformanceStatus.Queued)
-				}
+				]
 			};
 
 			var moveResult = _singerService.AutoMoveSinger(party, singer);
-			Assert.IsFalse(moveResult.shouldMove);
+			Assert.That(moveResult.shouldMove, Is.False);
 		}
 
 		[Test]
@@ -64,15 +64,15 @@ namespace KaraokeParty.Tests {
 			Singer singer = _singer(2);
 
 			Party party = new Party {
-				Queue = new List<Performance> {
+				Queue = [
 					_performance(_singer(1), PerformanceStatus.Queued),
 					_performance(singer, PerformanceStatus.Queued),
 					_performance(_singer(3), PerformanceStatus.Queued)
-				}
+				]
 			};
 
 			var moveResult = _singerService.AutoMoveSinger(party, singer);
-			Assert.IsFalse(moveResult.shouldMove);
+			Assert.That(moveResult.shouldMove, Is.False);
 		}
 
 		[Test]
@@ -81,17 +81,17 @@ namespace KaraokeParty.Tests {
 
 			Party party = new Party {
 				SplashScreenUpcomingCount = 3,
-				Queue = new List<Performance> {
+				Queue = [
 					_performance(_singer(1), PerformanceStatus.Queued),
 					_performance(_singer(2), PerformanceStatus.Queued),
 					_performance(singer, PerformanceStatus.Completed),
 					_performance(_singer(4), PerformanceStatus.Live),
 					_performance(_singer(5), PerformanceStatus.Queued)
-				}
+				]
 			};
 
 			var moveResult = _singerService.AutoMoveSinger(party, singer);
-			Assert.IsFalse(moveResult.shouldMove);
+			Assert.That(moveResult.shouldMove, Is.False);
 		}
 
 		[Test]
@@ -100,17 +100,17 @@ namespace KaraokeParty.Tests {
 
 			Party party = new Party {
 				SplashScreenUpcomingCount = 3,
-				Queue = new List<Performance> {
+				Queue = [
 					_performance(_singer(1), PerformanceStatus.Queued),
 					_performance(singer, PerformanceStatus.Requested),
 					_performance(_singer(3), PerformanceStatus.Queued),
 					_performance(_singer(4), PerformanceStatus.Live),
 					_performance(_singer(5), PerformanceStatus.Queued)
-				}
+				]
 			};
 
 			var (shouldMove, rotationNumber) = _singerService.AutoMoveSinger(party, singer);
-			Assert.IsTrue(shouldMove);
+			Assert.That(shouldMove, Is.True);
 			Assert.That(rotationNumber, Is.EqualTo(3));
 		}
 
@@ -120,16 +120,16 @@ namespace KaraokeParty.Tests {
 
 			Party party = new Party {
 				SplashScreenUpcomingCount = 3,
-				Queue = new List<Performance> {
+				Queue = [
 					_performance(_singer(1), PerformanceStatus.Live),
 					_performance(singer, PerformanceStatus.Completed),
 					_performance(_singer(3), PerformanceStatus.Queued),
 					_performance(_singer(4), PerformanceStatus.Completed),
-				}
+				]
 			};
 
 			var (shouldMove, rotationNumber) = _singerService.AutoMoveSinger(party, singer);
-			Assert.IsTrue(shouldMove);
+			Assert.That(shouldMove, Is.True);
 			Assert.That(rotationNumber, Is.EqualTo(3));
 		}
 
@@ -139,17 +139,17 @@ namespace KaraokeParty.Tests {
 
 			Party party = new Party {
 				SplashScreenUpcomingCount = 3,
-				Queue = new List<Performance> {
+				Queue = [
 					_performance(_singer(1), PerformanceStatus.Live),
 					_performance(_singer(2), PerformanceStatus.Queued),
 					_performance(_singer(3), PerformanceStatus.Queued),
 					_performance(_singer(4), PerformanceStatus.Queued),
 					_performance(singer, PerformanceStatus.Completed)
 
-				}
+				]
 			};
 			var (shouldMove, _) = _singerService.AutoMoveSinger(party, singer);
-			Assert.IsFalse(shouldMove);
+			Assert.That(shouldMove, Is.False);
 		}
 
 		[Test]
@@ -158,17 +158,17 @@ namespace KaraokeParty.Tests {
 
 			Party party = new Party {
 				SplashScreenUpcomingCount = 3,
-				Queue = new List<Performance> {
+				Queue = [
 					_performance(_singer(1), PerformanceStatus.Queued),
 					_performance(_singer(2), PerformanceStatus.Live),
 					_performance(_singer(3), PerformanceStatus.Completed),
 					_performance(_singer(4), PerformanceStatus.Queued),
 					_performance(singer, PerformanceStatus.Completed)
 
-				}
+				]
 			};
 			var (shouldMove, rotationNumber) = _singerService.AutoMoveSinger(party, singer);
-			Assert.IsTrue(shouldMove);
+			Assert.That(shouldMove, Is.True);
 			Assert.That(rotationNumber, Is.EqualTo(2));
 		}
 
@@ -178,13 +178,13 @@ namespace KaraokeParty.Tests {
 
 			Party party = new Party {
 				SplashScreenUpcomingCount = 3,
-				Queue = new List<Performance> {
+				Queue = [
 					_performance(_singer(1), PerformanceStatus.Live),
 					_performance(_singer(2), PerformanceStatus.Queued),
-				}
+				]
 			};
 			var (shouldMove, _) = _singerService.AutoMoveSinger(party, singer);
-			Assert.IsFalse(shouldMove);
+			Assert.That(shouldMove, Is.False);
 		}
 
 		[Test]
@@ -193,7 +193,7 @@ namespace KaraokeParty.Tests {
 
 			Party party = new Party {
 				SplashScreenUpcomingCount = 3,
-				Queue = new List<Performance> {
+				Queue = [
 					_performance(_singer(1), PerformanceStatus.Live),
 					_performance(_singer(2), PerformanceStatus.Queued),
 					_performance(_singer(3), PerformanceStatus.Requested),
@@ -202,10 +202,10 @@ namespace KaraokeParty.Tests {
 					_performance(singer, PerformanceStatus.Completed),
 					_performance(_singer(7), PerformanceStatus.Queued),
 
-				}
+				]
 			};
 			var (shouldMove, rotationNumber) = _singerService.AutoMoveSinger(party, singer);
-			Assert.IsTrue(shouldMove);
+			Assert.That(shouldMove, Is.True);
 			Assert.That(rotationNumber, Is.EqualTo(7));
 		}
 
@@ -215,17 +215,17 @@ namespace KaraokeParty.Tests {
 
 			Party party = new Party {
 				SplashScreenUpcomingCount = 3,
-				Queue = new List<Performance> {
+				Queue = [
 					_performance(_singer(1), PerformanceStatus.Queued),
 					_performance(_singer(2), PerformanceStatus.Live),
 					_performance(_singer(3), PerformanceStatus.Completed),
 					_performance(singer, PerformanceStatus.Completed),
 					_performance(_singer(5), PerformanceStatus.Queued),
 
-				}
+				]
 			};
 			var (shouldMove, rotationNumber) = _singerService.AutoMoveSinger(party, singer);
-			Assert.IsTrue(shouldMove);
+			Assert.That(shouldMove, Is.True);
 			Assert.That(rotationNumber, Is.EqualTo(2));
 		}
 
@@ -235,7 +235,7 @@ namespace KaraokeParty.Tests {
 
 			Party party = new Party {
 				SplashScreenUpcomingCount = 20,
-				Queue = new List<Performance> {
+				Queue = [
 					_performance(_singer(4), PerformanceStatus.Queued),
 					_performance(_singer(6), PerformanceStatus.Live),
 					_performance(_singer(8), PerformanceStatus.Queued),
@@ -244,10 +244,10 @@ namespace KaraokeParty.Tests {
 					_performance(singer, PerformanceStatus.Requested),
 					_performance(_singer(12), PerformanceStatus.Queued),
 
-				}
+				]
 			};
 			var (shouldMove, rotationNumber) = _singerService.AutoMoveSinger(party, singer);
-			Assert.IsTrue(shouldMove);
+			Assert.That(shouldMove, Is.True);
 			Assert.That(rotationNumber, Is.EqualTo(5));
 		}
 
@@ -257,7 +257,7 @@ namespace KaraokeParty.Tests {
 
 			Party party = new Party {
 				SplashScreenUpcomingCount = 5,
-				Queue = new List<Performance> {
+				Queue = [
 					_performance(_singer(1), PerformanceStatus.Queued),
 					_performance(_singer(2), PerformanceStatus.Requested),
 					_performance(_singer(3), PerformanceStatus.Live),
@@ -273,11 +273,34 @@ namespace KaraokeParty.Tests {
 					_performance(_singer(13), PerformanceStatus.Queued),
 					_performance(_singer(14), PerformanceStatus.Completed),
 					_performance(_singer(15), PerformanceStatus.Queued),
-				}
+				]
 			};
 			var (shouldMove, rotationNumber) = _singerService.AutoMoveSinger(party, singer);
-			Assert.IsTrue(shouldMove);
+			Assert.That(shouldMove, Is.True);
 			Assert.That(rotationNumber, Is.EqualTo(12));
+		}
+
+		[Test]
+		public void AutoMoveSingerTest_Move_IgnorePaused() {
+			Singer singer = _singer(5);
+			Singer pausedSinger = _singer(6);
+			pausedSinger.IsPaused = true;
+
+			Party party = new Party {
+				SplashScreenUpcomingCount = 2,
+				Queue = [
+					_performance(_singer(1), PerformanceStatus.Queued),
+					_performance(_singer(2), PerformanceStatus.Queued),
+					_performance(_singer(3), PerformanceStatus.Queued),
+					_performance(_singer(4), PerformanceStatus.Live),
+					_performance(singer, PerformanceStatus.Completed),
+					_performance(pausedSinger, PerformanceStatus.Queued),
+
+				]
+			};
+			var (shouldMove, rotationNumber) = _singerService.AutoMoveSinger(party, singer);
+			Assert.That(shouldMove, Is.True);
+			Assert.That(rotationNumber, Is.EqualTo(3));
 		}
 	}
 }

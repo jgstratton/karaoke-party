@@ -1,5 +1,4 @@
-﻿using KaraokeParty.ApiModels;
-using KaraokeParty.DataStore;
+﻿using KaraokeParty.DataStore;
 
 namespace KaraokeParty.Services {
 	public class SingerService : ISingerService {
@@ -25,7 +24,11 @@ namespace KaraokeParty.Services {
 			if (!party.AutoMoveSingerEnabled) {
 				return (false, null);
 			}
-			var singerPerformances = party.Queue.Where(p => p.Singer is not null && p.Singer.SingerId == singer.SingerId).ToList();
+			var singerPerformances = party.Queue.Where(p =>
+				p.Singer is not null &&
+				p.Singer.SingerId == singer.SingerId
+			).ToList();
+
 			var upcomingStatusList = new List<PerformanceStatus> { PerformanceStatus.Live, PerformanceStatus.Queued };
 
 			// this only applies to existing singers. If they have no requests then do nothing
@@ -39,7 +42,11 @@ namespace KaraokeParty.Services {
 			}
 
 			var allUpcomingPerformances = party.Queue
-				.Where(p => upcomingStatusList.Contains(p.Status) && p.Singer != null)
+				.Where(p =>
+					upcomingStatusList.Contains(p.Status) &&
+					p.Singer != null &&
+					!p.Singer.IsPaused
+				)
 				.Select(p => new {
 					singer = p.Singer,
 					status = p.Status,

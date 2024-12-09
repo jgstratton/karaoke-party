@@ -1,3 +1,4 @@
+using Forge.OpenAI.Interfaces.Infrastructure;
 using Forge.OpenAI.Interfaces.Services;
 using Forge.OpenAI.Models.ChatCompletions;
 using Forge.OpenAI.Models.Common;
@@ -41,9 +42,9 @@ namespace KaraokeParty.Api.Song {
 				Response.ContentType = "text/plain";
 				StreamWriter sw;
 				await using ((sw = new StreamWriter(Response.Body)).ConfigureAwait(false)) {
-					await foreach (HttpOperationResult<ChatCompletionStreamedResponse> response in openAi.ChatCompletionService.GetStreamAsync(request, CancellationToken.None)) {
+					await foreach (HttpOperationResult<IAsyncEventInfo<ChatCompletionStreamedResponse>> response in openAi.ChatCompletionService.GetStreamAsync(request, CancellationToken.None)) {
 						if (response.IsSuccess) {
-							await sw.WriteAsync(response.Result!.Choices[0].Delta.Content).ConfigureAwait(false);
+							await sw.WriteAsync(response.Result!.Data.Choices[0].Delta.Content).ConfigureAwait(false);
 							await sw.FlushAsync().ConfigureAwait(false);
 						}
 					}
