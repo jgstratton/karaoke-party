@@ -1,9 +1,9 @@
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 80
 
 # restore and publish app
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-dotnet
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-dotnet
 WORKDIR /src
 COPY ./KaraokeParty .
 RUN dotnet publish -c Release -o /app
@@ -17,7 +17,7 @@ RUN npm ci
 RUN npm run build
 
 # deploy built application to new container
-FROM mcr.microsoft.com/dotnet/aspnet:6.0
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 COPY --from=build-dotnet /app /app
 COPY --from=build-react /src/build /app/FrontEndSpa
