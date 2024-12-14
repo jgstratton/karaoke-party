@@ -16,6 +16,7 @@ const Player = function (options) {
 
     let lastRequest;
     let backgroundTimeout;
+    let connection;
 
     // handle initial page load
     const _loadInitialState = async () => {
@@ -267,7 +268,7 @@ const Player = function (options) {
             partyKey: model.partyKey,
         })
 
-        const connection = new Connection({
+        connection = new Connection({
             partyKey: model.partyKey,
             ReceiveNewPerformanceStarted: (dto) => {
                 state.currentPerformance = dto;
@@ -324,4 +325,6 @@ const Player = function (options) {
     this.GetLastRequest = () => {
         return lastRequest;
     };
+
+    this.GetConnectionObject = () => connection;
 };

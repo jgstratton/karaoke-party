@@ -1,5 +1,13 @@
 const Connection = function (options) {
-    const connection = new signalR.HubConnectionBuilder().withUrl('../../hubs/player').build();
+    const connection = new signalR.HubConnectionBuilder()
+        .withAutomaticReconnect([0, 2000, 50000, 10000, 30000, 30000])
+        .withUrl('../../hubs/player')
+        .build();
+
+    connection.onreconnecting(error => {
+        console.log('Player Signalr Reconnecting interval', error);
+    });
+
     const retryIntervals = [1, 2, 3, 5, 5, 5, 10, 10, 10];
     let currentTry = -1;
 
@@ -43,4 +51,5 @@ const Connection = function (options) {
     this.SendVideoLength = (payload) => connection.invoke('SendVideoLength', clientConnectionDetails, payload);
     this.StartNewPerformance = () => connection.invoke('StartNewPerformance', clientConnectionDetails);
     this.SendVolume = (payload) => connection.invoke('SendVolume', clientConnectionDetails, payload);
+    this.GetConnectionObject = () => connection;
 };
