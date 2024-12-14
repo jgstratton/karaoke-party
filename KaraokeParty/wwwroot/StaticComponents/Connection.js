@@ -1,6 +1,5 @@
 const Connection = function (options) {
     const connection = new signalR.HubConnectionBuilder()
-        .withAutomaticReconnect([0, 2000, 50000, 10000, 30000, 30000])
         .withUrl('../../hubs/player')
         .build();
 
@@ -8,8 +7,10 @@ const Connection = function (options) {
         console.log('Player Signalr Reconnecting interval', error);
     });
 
-    const retryIntervals = [1, 2, 3, 5, 5, 5, 10, 10, 10];
-    let currentTry = -1;
+    connection.onclose(error => {
+        console.log('Player Signalr Connection closed', error);
+        startSignalRConnection(connection);
+    });
 
     const getDeviceId = () => {
         return localStorage.getItem('deviceId') ?? 'player-no-device-id';
@@ -21,20 +22,18 @@ const Connection = function (options) {
     };
 
     const startSignalRConnection = (_connection) => {
+        console.log("%c ~~~ Attempting to start new connection to SignalR ~~~", 'padding:5px; background-color:#ddffdd');
         _connection
             .start()
             .then(async () => {
                 console.info('SignalR Connected');
                 connection.invoke('JoinAsPlayer', clientConnectionDetails);
-                currentTry = -1;
             })
             .catch((err) => {
-                currentTry++;
-                console.error('SignalR Connection Error: ', err);
-                if (currentTry < retryIntervals.length) {
-                    console.log('Connection attempt:', currentTry + 1);
-                    setTimeout(() => startSignalRConnection(connection), retryIntervals[currentTry] * 1000);
-                }
+                // the hub already has it's own retry/timeout policy, so we don't need a super tight retry here
+                console.log("%c ~~~ New connection to SignalR failed ~~~", 'padding:5px; background-color:#ffdddd');
+                console.error(err);
+                setTimeout(() => startSignalRConnection(connection), 10 * 1000); // try again in 20 seconds
             });
     };
     startSignalRConnection(connection);
