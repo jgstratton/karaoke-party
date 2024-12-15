@@ -1,20 +1,26 @@
 html {
-	font-size:14px;
+	font-size: 14px;
 }
-body{
-	background-size:100%;
+
+body {
+	background-size: 100%;
 	background-attachment: fixed;
-	overflow-x:hidden;
-	overflow-y:auto;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+::backdrop {
+	background-image: url('../../images/wall.png');
+	background-size: cover;
 }
 
 body.player-open {
-	overflow-x:hidden;
-	overflow-y:hidden;
+	overflow-x: hidden;
+	overflow-y: hidden;
 }
 
 .card {
-	--bs-card-bg: rgba(27, 27, 27,.95);
+	--bs-card-bg: rgba(27, 27, 27, .95);
 }
 
 .modal-backdrop {
@@ -22,20 +28,20 @@ body.player-open {
 }
 
 .marquee-wrap {
-	position:fixed;
-	bottom:0;
-	overflow:hidden;
-	width:100%;
+	position: fixed;
+	bottom: 0;
+	overflow: hidden;
+	width: 100%;
 }
 
 .marquee-container {
-	width:100%;
-	height:100%;
-	overflow:hidden;
-	background-color:black;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	background-color: black;
 }
 
-.no-wrap{
+.no-wrap {
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
