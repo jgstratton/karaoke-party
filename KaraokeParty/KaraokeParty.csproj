@@ -8,6 +8,8 @@
 
   <ItemGroup>
     <PackageReference Include="AspNetCore.Proxy" Version="4.5.0" />
+    <PackageReference Include="AWSSDK.Core" Version="3.7.400.69" />
+    <PackageReference Include="AWSSDK.Lambda" Version="3.7.411.12" />
     <PackageReference Include="EFCore.NamingConventions" Version="8.0.3" />
     <PackageReference Include="Forge.OpenAI" Version="1.5.5" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="6.0.0" />

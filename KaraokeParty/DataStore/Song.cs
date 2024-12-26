@@ -10,5 +10,7 @@ namespace KaraokeParty.DataStore {
 		public string Url { get; set; } = "";
 
 		public string VideoId { get; set; } = "";
+
+		public string S3Key { get; set; } = "";
 	}
 }

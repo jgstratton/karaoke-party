@@ -6,6 +6,7 @@ namespace KaraokeParty.ApiModels {
 		public string FileName { get; set; } = "";
 		public string Title { get; set; } = "";
 		public string Url { get; set; } = "";
+		public string S3Key { get; set; } = "";
 
 		public Song ToDb() {
 			if (FileName is null) {
@@ -15,7 +16,8 @@ namespace KaraokeParty.ApiModels {
 				FileName = FileName,
 				Title = Title is null ? FileName : Title,
 				Url = Url ?? "",
-				VideoId = Id
+				VideoId = Id,
+				S3Key = S3Key ?? ""
 			};
 		}
 
@@ -35,6 +37,9 @@ namespace KaraokeParty.ApiModels {
 			if (!string.IsNullOrEmpty(Id)) {
 				song.VideoId = Id;
 			}
+			if (!string.IsNullOrEmpty(S3Key)) {
+				song.S3Key = S3Key;
+			}
 		}
 
 		public static SongDTO FromDb(Song song) {
@@ -42,7 +47,8 @@ namespace KaraokeParty.ApiModels {
 				FileName = song.FileName,
 				Title = song.Title,
 				Url = song.Url,
-				Id = song.VideoId
+				Id = song.VideoId,
+				S3Key = song.S3Key
 			};
 		}
 	}
