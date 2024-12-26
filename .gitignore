@@ -9,3 +9,7 @@ appsettings.Production.json
 react-env.js
 react.Production.js
 /Local/*
+kp-aws-stack/download-song/cookies.txt
+.aws-sam/
+kp-aws-stack/samconfig.toml
+kp-aws-stack/event.json

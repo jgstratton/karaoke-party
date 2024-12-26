@@ -1,0 +1,48 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  kp-aws-stack
+  SAM Template for karaoke-party stack
+
+Globals:
+  Function:
+    Timeout: 180
+    LoggingConfig:
+      LogFormat: JSON
+
+Resources:
+  DownloadSongFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: DownloadSongFunction
+      Description: Downloads a song with yt-dlp
+      PackageType: Image
+      MemorySize: 1024
+      Role: !GetAtt LambdaExecutionRole.Arn
+    Metadata:
+        Dockerfile: Dockerfile
+        DockerContext: download-song/.
+
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal: {Service: [lambda.amazonaws.com]}
+          Action: ['sts:AssumeRole']
+      Path: /
+      ManagedPolicyArns:
+      - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+      - "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+      # Policies:
+      # - PolicyName: S3Policy
+      #   PolicyDocument:
+      #     Version: '2012-10-17'
+      #     Statement:
+      #       - Effect: Allow
+      #         Action:
+      #           - 's3:PutObject'
+      #           - 'S3:DeleteObject'
+      #         Resource: !Sub "arn:aws:s3:::karaoke-files"
