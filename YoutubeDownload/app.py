@@ -63,7 +63,7 @@ def download_video(video_url):
 	temp_folder = ''.join(random.choices(string.ascii_lowercase, k=5))
 	temp_path = download_path + "/" + temp_folder
 	os.mkdir(temp_path)
-	dl_path = temp_path + "/%(title)s---%(id)s.%(ext)s"
+	dl_path = temp_path + "/%(id)s.%(ext)s"
 	file_quality = "bestvideo[ext=mp4][height<=720]+bestaudio[ext=m4a]/best[ext=mp4]/best"
 	app.logger.info(file_quality)
 	cmd = [youtubedl_path, "-f", file_quality, "-o", dl_path, "--max-downloads", "1",video_url]

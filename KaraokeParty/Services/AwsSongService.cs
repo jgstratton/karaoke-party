@@ -10,7 +10,7 @@ namespace KaraokeParty.Services {
 		private readonly AmazonLambdaClient lambdaClient;
 		private readonly ILogger<AwsSongService> logger;
 
-		public AwsSongService(ConfigurationManager config, ILogger<AwsSongService> logger) {
+		public AwsSongService(IConfiguration config, ILogger<AwsSongService> logger) {
 			lambdaClient = new AmazonLambdaClient(
 			config["LambdaApiKey"] ?? throw new Exception("Missing configuration: LambdaApiKey"),
 			config["LambdaApiSecret"] ?? throw new Exception("Missing configuration: LambdaApiSecret"),
@@ -37,6 +37,11 @@ namespace KaraokeParty.Services {
 				var payload = JsonSerializer.Deserialize<AwsSongResponse>(textPayload);
 
 				if (payload is null) {
+					logger.LogWarning("Failed to parse payload: {textPayload}", textPayload);
+					return Result.Fail<AwsSongResponse>("Failed to parse response");
+				}
+
+				if (payload.video_id.Length == 0 || payload.s3_key.Length == 0 || payload.url.Length == 0 || payload.title.Length == 0) {
 					logger.LogWarning("Failed to parse payload: {textPayload}", textPayload);
 					return Result.Fail<AwsSongResponse>("Failed to parse response");
 				}

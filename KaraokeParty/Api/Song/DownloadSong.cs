@@ -27,6 +27,10 @@ namespace KaraokeParty.Api.Song {
 				return BadRequest("URL is required to download file");
 			}
 
+			if (dto.Id.Length == 0) {
+				return BadRequest("Video ID is required to download file");
+			}
+
 			// try to downlaod the song using cloud services
 			var cloudDownload = await _downloadSongFromCloud(dto.Url, cancellationToken);
 			if (cloudDownload.success) {
@@ -54,7 +58,7 @@ namespace KaraokeParty.Api.Song {
 			}
 			dto.FileName = fileName.file;
 
-			DataStore.Song? song = context.Songs.Find(dto.FileName);
+			DataStore.Song? song = _findDbSong(dto);
 			if (song is null) {
 				song = dto.ToDb();
 				context.Songs.Add(song);
@@ -71,35 +75,36 @@ namespace KaraokeParty.Api.Song {
 			var cloudResponse = await awsSongService.DownloadSong(url, cancellationToken);
 			if (cloudResponse.Success) {
 				var payload = cloudResponse.Value;
+				SongDTO dto = new SongDTO {
+					FileName = Path.GetFileName(payload.s3_key),
+					Title = payload.title,
+					Url = payload.url,
+					Id = payload.video_id,
+					S3Key = payload.s3_key
+				};
+
 				// we can technically match any of these fields to find the record in the database
-				DataStore.Song? song = context.Songs.Where(s =>
-					s.VideoId == payload.video_id ||
-					s.Url == url ||
-					s.S3Key == payload.s3_key ||
-					s.FileName == Path.GetFileName(payload.s3_key)
-				).FirstOrDefault();
+				DataStore.Song? song = _findDbSong(dto);
 
 				if (song is null) {
-					song = new DataStore.Song {
-						FileName = Path.GetFileName(payload.s3_key),
-						VideoId = payload.video_id,
-						S3Key = payload.s3_key,
-						Title = payload.title,
-						Url = url
-					};
+					song = dto.ToDb();
 					context.Songs.Add(song);
 				} else {
-					song.FileName = Path.GetFileName(payload.s3_key);
-					song.Title = payload.title;
-					song.Url = url;
-					song.VideoId = payload.video_id;
-					song.S3Key = payload.s3_key;
+					dto.UpdateDb(song);
 				}
 				context.SaveChanges();
 				return (true, SongDTO.FromDb(song));
 			}
 			return (false, null);
 		}
+
+		private DataStore.Song? _findDbSong(SongDTO dto) => context.Songs.Where(s =>
+			1 == 2 ||
+			dto.Id.Length > 0 && s.VideoId == dto.Id ||
+			dto.Url.Length > 0 && s.Url == dto.Url ||
+			dto.FileName.Length > 0 && s.FileName == dto.FileName
+		).FirstOrDefault();
+
 
 		private class DownloadResult {
 			public string status { get; set; } = "";

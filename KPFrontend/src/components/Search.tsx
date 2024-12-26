@@ -74,8 +74,8 @@ const Search = () => {
 			return;
 		}
 		const downloadStart = new Date();
-		// start the file download
-		let downloadPromise = submitSongDto.fileName.length === 0 ? SongApi.downloadSong(submitSongDto) : null;
+		// start the file download (always, server side will handle if it's needed)
+		let downloadPromise = SongApi.downloadSong(submitSongDto);
 
 		// start the chatgpt api
 		setSubmittedSongTitle(submitSongDto.title);
@@ -111,8 +111,8 @@ const Search = () => {
 		const newRequestResult = !isDj
 			? await CreateNewUserRequest(newRequest)
 			: createNewSinger
-			? await CreateNewRequestForNewSinger(newRequest)
-			: await CreateNewRequestForExistingSinger(newRequest);
+				? await CreateNewRequestForNewSinger(newRequest)
+				: await CreateNewRequestForExistingSinger(newRequest);
 
 		if (!newRequestResult.ok) {
 			setLoading(false);

@@ -23,7 +23,7 @@ def get_file_details(video_url):
 		"--cookies", "/tmp/cookies/cookies.txt",
 		"--skip-download",
 		"--print",
-		'{"id":"%(id)s","title":"%(title)s","ext":"%(ext)s"}',
+		'{"id":"%(id)s","title":"%(title)S","ext":"%(ext)s"}',
 		video_url
 	]
 
@@ -57,7 +57,7 @@ def file_exists_in_s3(file_key):
 # if found it will return the file name, otherwise it will return an empty string
 def check_video(video_url):
 
-	info_dict = get_file_details(video_url);
+	info_dict = get_file_details(video_url)
 	video_title = info_dict.get('title', None)
 	video_id = info_dict.get('id', None)
 	video_ext = info_dict.get('ext', None)
@@ -149,25 +149,12 @@ def handler(event, context):
 
 	if ('video_url' not in event):
 		return {
-			'statusCode': 400,
-			'headers': {
-				"Access-Control-Allow-Origin": "*",
-				"Access-Control-Allow-Methods": 'GET, POST, PUT, DELETE, OPTIONS'
-			},
-			'body': {
-				"error": "video_url is a required parameter"
-			}
+			"error": "video_url is a required parameter"
 		}
+		
 	
 	response = check_video(event['video_url'])
 	if (not response['found']):
 		download_video(response)
 		
-	return {
-		'statusCode': 200,
-		'headers': {
-		"Access-Control-Allow-Origin": "*",
-		"Access-Control-Allow-Methods": 'GET, POST, PUT, DELETE, OPTIONS'
-		},
-		'body': response
-	} 
+	return response

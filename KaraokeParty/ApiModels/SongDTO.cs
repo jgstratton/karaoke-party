@@ -22,11 +22,11 @@ namespace KaraokeParty.ApiModels {
 		}
 
 		public void UpdateDb(Song song) {
-			if (FileName is null) {
-				throw new Exception("Missing Filename");
+			if (Id is null) {
+				throw new Exception("Missing Video ID");
 			}
-			if (song.FileName != FileName) {
-				throw new Exception($"Attempted to update wrong object {FileName}:{song.FileName}");
+			if (song.VideoId != Id) {
+				throw new Exception($"Attempted to update wrong object {FileName}:{song.VideoId}");
 			}
 			if (!string.IsNullOrEmpty(Title)) {
 				song.Title = Title;
@@ -34,11 +34,11 @@ namespace KaraokeParty.ApiModels {
 			if (!string.IsNullOrEmpty(Url)) {
 				song.Url = Url;
 			}
-			if (!string.IsNullOrEmpty(Id)) {
-				song.VideoId = Id;
-			}
 			if (!string.IsNullOrEmpty(S3Key)) {
 				song.S3Key = S3Key;
+			}
+			if (!string.IsNullOrEmpty(Url)) {
+				song.FileName = FileName;
 			}
 		}
 

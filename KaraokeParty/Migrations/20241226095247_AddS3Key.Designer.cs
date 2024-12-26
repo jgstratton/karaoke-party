@@ -3,6 +3,7 @@ using System;
 using KaraokeParty.DataStore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KaraokeParty.Migrations
 {
     [DbContext(typeof(KPContext))]
-    partial class KPContextModelSnapshot : ModelSnapshot
+    [Migration("20241226095247_AddS3Key")]
+    partial class AddS3Key
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -223,9 +226,9 @@ namespace KaraokeParty.Migrations
                         .HasColumnType("text")
                         .HasColumnName("singer_name");
 
-                    b.Property<string>("SongVideoId")
+                    b.Property<string>("SongFileName")
                         .HasColumnType("text")
-                        .HasColumnName("song_video_id");
+                        .HasColumnName("song_file_name");
 
                     b.Property<int?>("SortOrder")
                         .HasColumnType("integer")
@@ -248,8 +251,8 @@ namespace KaraokeParty.Migrations
                     b.HasIndex("SingerId")
                         .HasDatabaseName("ix_performances_singer_id");
 
-                    b.HasIndex("SongVideoId")
-                        .HasDatabaseName("ix_performances_song_video_id");
+                    b.HasIndex("SongFileName")
+                        .HasDatabaseName("ix_performances_song_file_name");
 
                     b.HasIndex("UserId")
                         .HasDatabaseName("ix_performances_user_id");
@@ -295,12 +298,7 @@ namespace KaraokeParty.Migrations
 
             modelBuilder.Entity("KaraokeParty.DataStore.Song", b =>
                 {
-                    b.Property<string>("VideoId")
-                        .HasColumnType("text")
-                        .HasColumnName("video_id");
-
                     b.Property<string>("FileName")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("file_name");
 
@@ -319,7 +317,12 @@ namespace KaraokeParty.Migrations
                         .HasColumnType("text")
                         .HasColumnName("url");
 
-                    b.HasKey("VideoId")
+                    b.Property<string>("VideoId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("video_id");
+
+                    b.HasKey("FileName")
                         .HasName("pk_songs");
 
                     b.ToTable("songs", (string)null);
@@ -364,8 +367,8 @@ namespace KaraokeParty.Migrations
 
                     b.HasOne("KaraokeParty.DataStore.Song", "Song")
                         .WithMany()
-                        .HasForeignKey("SongVideoId")
-                        .HasConstraintName("fk_performances_songs_song_video_id");
+                        .HasForeignKey("SongFileName")
+                        .HasConstraintName("fk_performances_songs_song_file_name");
 
                     b.HasOne("KaraokeParty.DataStore.User", "User")
                         .WithMany()
