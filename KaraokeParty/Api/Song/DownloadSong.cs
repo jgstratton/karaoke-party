@@ -23,11 +23,15 @@ namespace KaraokeParty.Api.Song {
 		[HttpPost]
 		[Route("song/download")]
 		public async Task<ActionResult<SongDTO>> Download(SongDTO dto, CancellationToken cancellationToken) {
+			logger.LogInfo($"File Download Request --- Request Submitted: {dto.Id} - {dto.Title}");
+
 			if (dto.Url.Length == 0) {
+				logger.LogWarning($"File Download Request --- URL is required to download file: {dto.Id} - {dto.Title}");
 				return BadRequest("URL is required to download file");
 			}
 
 			if (dto.Id.Length == 0) {
+				logger.LogWarning($"File Download Request --- Video ID is required to download file: {dto.Id} - {dto.Title}");
 				return BadRequest("Video ID is required to download file");
 			}
 

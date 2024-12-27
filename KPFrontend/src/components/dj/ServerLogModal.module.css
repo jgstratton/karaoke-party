@@ -1,0 +1,3 @@
+.serverLogModal>div {
+	--bs-modal-width: 95% !important;
+}

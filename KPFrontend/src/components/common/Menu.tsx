@@ -12,6 +12,7 @@ import ConfirmModal from './ConfirmModal';
 import NewSingerModal from '../dj/NewSingerModal';
 import { selectErrors } from '../../slices/errorSlice';
 import PlayerSettingsModal from '../dj/PlayerControlsModal';
+import ServerLogModal from '../dj/ServerLogModal';
 
 const Menu = () => {
 	const user = useSelector((state: RootState) => state.user);
@@ -28,6 +29,7 @@ const Menu = () => {
 	const [showConfirmLeave, setShowConfirmLeave] = useState(false);
 	const [showNewSingerModal, setShowNewSingerModal] = useState(false);
 	const [showErrors, setShowErrors] = useState(false);
+	const [showServerLog, setShowServerLog] = useState(false);
 
 	const handleHideDjSettings = () => setShowDjSettings(false);
 	const handleShowDjSettings = () => setShowDjSettings(true);
@@ -35,6 +37,8 @@ const Menu = () => {
 	const handleHidePlayerControls = () => setShowPlayerControls(false);
 	const handleShowNewSingerModal = () => setShowNewSingerModal(true);
 	const handleHideNewSingerModal = () => setShowNewSingerModal(false);
+	const handleShowServerLog = () => setShowServerLog(true);
+	const handleHideServerLog = () => setShowServerLog(false);
 
 	function leaveParty() {
 		StorageService.forgetParty();
@@ -66,6 +70,7 @@ const Menu = () => {
 									<Nav.Link onClick={() => window.location.reload()}>Refresh Page</Nav.Link>
 									<Nav.Link onClick={handleShowDjSettings}>Open DJ Settings</Nav.Link>
 									<Nav.Link onClick={handleShowPlayerControls}>Player Controls</Nav.Link>
+									<Nav.Link onClick={handleShowServerLog}>Server Log</Nav.Link>
 									{errors.length > 0 ? (
 										<Nav.Link onClick={() => setShowErrors(true)}>View Errors</Nav.Link>
 									) : (
@@ -92,6 +97,7 @@ const Menu = () => {
 			<SettingsModal show={showDjSettings} handleClose={handleHideDjSettings} />
 			<PlayerSettingsModal show={showPlayerControls} handleClose={handleHidePlayerControls} />
 			<NewSingerModal show={showNewSingerModal} handleClose={handleHideNewSingerModal} />
+			<ServerLogModal show={showServerLog} handleClose={handleHideServerLog} />
 
 			<ConfirmModal
 				show={showConfirmLeave}
