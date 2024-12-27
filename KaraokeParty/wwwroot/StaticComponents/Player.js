@@ -104,7 +104,8 @@ const Player = function (options) {
         video.removeAttribute('src');
         splashScreen.Show(state.currentPerformance);
 
-        const storedFile = await storage.get(state.currentPerformance.fileName);
+        const storedFile = await storage.get(state.currentPerformance.videoId);
+        const videoId = state.currentPerformance.videoId;
 
         if (!storedFile) {
             console.log('Current song - file not stored, loading from server');
@@ -114,16 +115,26 @@ const Player = function (options) {
                 lastRequest = null;
             }
 
+            const objectUrlResponse = await fetch(`../../song/objecturl/${videoId}`);
+            let songObjectDto = await objectUrlResponse.json();
+            if (!songObjectDto.objectUrl) {
+                console.log(songObjectDto);
+                console.error('Background - objectUrl not found for videoId', videoId);
+                return;
+            }
+
             splashScreen.SetProgressBarPreloaded(false);
             var req = new XMLHttpRequest();
             req.onprogress = _updateProgress;
-            req.open('GET', `../../song/${state.currentPerformance.fileName}`, true);
+            req.open('GET', songObjectDto.objectUrl, true);
             req.responseType = 'blob';
 
             req.onload = async function () {
                 if (this.status === 200) {
                     var videoBlob = this.response;
-                    await storage.set(state.currentPerformance.fileName, videoBlob);
+                    delete songObjectDto.objectUrl;
+                    songObjectDto.blob = videoBlob;
+                    await storage.set(state.currentPerformance.videoId, songObjectDto);
                     var vid = URL.createObjectURL(videoBlob);
                     video.src = vid;
                     splashScreen.SetProgressBarPreloaded(true);
@@ -142,7 +153,7 @@ const Player = function (options) {
         } else {
             console.log('Current song - file already downloaded, loading from client db');
             splashScreen.SetProgressBarPreloaded(true);
-            var vid = URL.createObjectURL(storedFile);
+            var vid = URL.createObjectURL(storedFile.blob);
             video.src = vid;
             _updateProgressTimeRemaining();
             loadInBackground();
@@ -209,20 +220,30 @@ const Player = function (options) {
         let queuedPerformances = await queuedPerformancesResponse.json();
         console.log(queuedPerformances);
         for (var i = 0; i < queuedPerformances.length; i++) {
-            const targetFile = queuedPerformances[i].fileName;
-            const storedFile = await storage.get(targetFile);
+            const videoId = queuedPerformances[i].videoId;
+            const storedFile = await storage.get(videoId);
 
             if (!storedFile) {
-                console.log('Background - downloading queued song', targetFile);
+                console.log('Background - downloading queued song', videoId);
+
+                const objectUrlResponse = await fetch(`../../song/objecturl/${videoId}`);
+                let songObjectDto = await objectUrlResponse.json();
+                if (!songObjectDto.objectUrl) {
+                    console.log(songObjectDto);
+                    console.error('Background - objectUrl not found for videoId', videoId);
+                    continue;
+                }
 
                 const req = new XMLHttpRequest();
-                req.open('GET', `../../song/${targetFile}`, true);
+                req.open('GET', songObjectDto.objectUrl, true);
                 req.responseType = 'blob';
 
                 req.onload = async function () {
                     if (this.status === 200) {
                         var videoBlob = this.response;
-                        await storage.set(targetFile, videoBlob);
+                        delete songObjectDto.objectUrl;
+                        songObjectDto.blob = videoBlob;
+                        await storage.set(videoId, songObjectDto);
                         loadInBackground();
                     }
                 };
