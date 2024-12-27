@@ -2,15 +2,16 @@ using Forge.OpenAI.Interfaces.Infrastructure;
 using Forge.OpenAI.Interfaces.Services;
 using Forge.OpenAI.Models.ChatCompletions;
 using Forge.OpenAI.Models.Common;
+using KaraokeParty.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KaraokeParty.Api.Song {
 	[ApiController]
 	public class ApiGetSongOpenAi : ControllerBase {
-		private readonly ILogger<ApiGetSongOpenAi> logger;
+		private readonly AppLoggerService logger;
 		private readonly IOpenAIService openAi;
 
-		public ApiGetSongOpenAi(ILogger<ApiGetSongOpenAi> logger, IOpenAIService openAi) {
+		public ApiGetSongOpenAi(AppLoggerService logger, IOpenAIService openAi) {
 			this.logger = logger;
 			this.openAi = openAi;
 		}
@@ -52,7 +53,7 @@ namespace KaraokeParty.Api.Song {
 				return new EmptyResult();
 
 			} catch (Exception ex) {
-				logger.LogError(ex, "Error in openai-stream endpoing");
+				logger.LogError("Error in openai-stream endpoing", ex);
 				return new EmptyResult();
 			}
 		}

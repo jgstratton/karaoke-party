@@ -6,13 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace KaraokeParty.Api.Song {
 	[ApiController]
 	public class ApiSongDownload : ControllerBase {
-		private readonly ILogger<ApiSongDownload> logger;
+		private readonly AppLoggerService logger;
 		private readonly KPContext context;
 		private readonly IHttpClientFactory clientFactory;
 		private readonly AwsSongService awsSongService;
 		private readonly InternalSongService internalSongService;
 
-		public ApiSongDownload(ILogger<ApiSongDownload> logger, KPContext context, IHttpClientFactory clientFactory, AwsSongService awsSongService, InternalSongService internalSongService) {
+		public ApiSongDownload(AppLoggerService logger, KPContext context, IHttpClientFactory clientFactory, AwsSongService awsSongService, InternalSongService internalSongService) {
 			this.logger = logger;
 			this.context = context;
 			this.clientFactory = clientFactory;
@@ -34,17 +34,20 @@ namespace KaraokeParty.Api.Song {
 			// if the song is already downloaded then skip all the rest of the stuff
 			DataStore.Song? dbSong = _findDbSong(dto);
 			if (dbSong is not null && _isSongComplete(dbSong)) {
+				logger.LogInfo($"File Download Request --- Skipping download for existing song: {dto.Id} - {dto.Title}");
 				return SongDTO.FromDb(dbSong);
 			}
 
 			// try to downlaod the song using cloud services
 			var cloudDownload = await _downloadSongFromCloud(dto.Url, cancellationToken);
 			if (cloudDownload.success) {
+				logger.LogInfo($"File Download Request --- Download from cloud services successfull: {dto.Id} - {dto.Title}");
 				return cloudDownload.dto!;
 			}
 
 			// if cloud services aren't available, check if we already have the song downloaded locally (no need to download it multiple times)
 			if (dto.FileName.Length > 0 && internalSongService.HasFileBeenDownloaded(dto.FileName)) {
+				logger.LogInfo($"File Download Request --- File already download to local server. Skipping re-download: {dto.Id} - {dto.Title}");
 				return dto;
 			}
 
@@ -54,7 +57,7 @@ namespace KaraokeParty.Api.Song {
 			var response = await ytClient.SendAsync(request, cancellationToken);
 
 			if (!response.IsSuccessStatusCode) {
-				logger.LogError("Error downloading song: {response}", response);
+				logger.LogError($"Error downloading song: {response}");
 				return BadRequest("Error trying to get song");
 			}
 
@@ -73,6 +76,8 @@ namespace KaraokeParty.Api.Song {
 			}
 
 			context.SaveChanges();
+			logger.LogInfo($"File Download Request --- File downloaded to local server: {dto.Id} - {dto.Title}");
+
 			return SongDTO.FromDb(song);
 		}
 

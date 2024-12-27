@@ -1,13 +1,12 @@
-﻿using KaraokeParty.Api.Song;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 
 namespace KaraokeParty.Services {
 	public class InternalSongService {
 		private readonly string VideoStoragePath;
-		private readonly ILogger<ApiGetSong> logger;
+		private readonly AppLoggerService logger;
 
-		public InternalSongService(IConfiguration config, ILogger<ApiGetSong> logger) {
+		public InternalSongService(IConfiguration config, AppLoggerService logger) {
 			if (config.GetSection("DownloadLocation")?.Value is string downloadLocation) {
 				this.VideoStoragePath = downloadLocation;
 			} else {
@@ -26,15 +25,15 @@ namespace KaraokeParty.Services {
 		/// </summary>
 		public FileStreamResult GetFile(string fileName) {
 			var tik = Environment.TickCount;
-			logger.LogInformation("Stream started: {fileName}", fileName);
+			logger.LogInfo($"Stream started from local server storage: {fileName}");
 			string videoPath = $"{VideoStoragePath}/{fileName}";
 			//var file = System.IO.File.ReadAllBytes(videoPath);
 			Stream str = System.IO.File.OpenRead(videoPath);
 			return new MyFileStreamResult(
 				str,
 				"video/mp4",
-				() => logger.LogInformation("Stream completed in {time}ms: {fileName}", Environment.TickCount - tik, fileName),
-				() => logger.LogInformation("Stream ABORTED after {time}ms: {fileName}", Environment.TickCount - tik, fileName)
+				() => logger.LogInfo($"Stream completed in {Environment.TickCount - tik}ms: {fileName}"),
+				() => logger.LogInfo($"Stream ABORTED after {Environment.TickCount - tik}ms: {fileName}")
 			);
 		}
 

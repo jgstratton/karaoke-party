@@ -38,8 +38,9 @@ builder.Services.AddTransient<IPartyService, PartyService>();
 builder.Services.AddTransient<ISingerService, SingerService>();
 builder.Services.AddTransient<PlayerHub>();
 builder.Services.AddScoped<KPContext, KPContext>();
-builder.Services.AddSingleton<AwsSongService, AwsSongService>();
-builder.Services.AddSingleton<InternalSongService, InternalSongService>();
+builder.Services.AddScoped<AppLoggerService, AppLoggerService>();
+builder.Services.AddScoped<AwsSongService, AwsSongService>();
+builder.Services.AddScoped<InternalSongService, InternalSongService>();
 
 ServerSettingsStaticProvider.OpenAILambdaEndpoint = builder.Configuration["OpenAILambdaEndpoint"] ?? throw new Exception("Missing configuration: OpenAILambdaEndpoint");
 

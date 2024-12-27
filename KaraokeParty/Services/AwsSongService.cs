@@ -12,11 +12,11 @@ namespace KaraokeParty.Services {
 	public class AwsSongService {
 		private readonly AmazonLambdaClient lambdaClient;
 		private readonly AmazonS3Client s3Client;
-		private readonly ILogger<AwsSongService> logger;
+		private readonly AppLoggerService logger;
 		private readonly IMemoryCache memoryCache;
 		private readonly int presignedUrlDurationHours = 24;
 
-		public AwsSongService(IConfiguration config, ILogger<AwsSongService> logger, IMemoryCache memoryCache) {
+		public AwsSongService(IConfiguration config, AppLoggerService logger, IMemoryCache memoryCache) {
 			lambdaClient = new AmazonLambdaClient(
 				config["AwsAccessKey"] ?? throw new Exception("Missing configuration: AwsAccessKey"),
 				config["AwsSecretKey"] ?? throw new Exception("Missing configuration: LambdaApiSecret"),
@@ -43,7 +43,7 @@ namespace KaraokeParty.Services {
 				}, cancellationToken);
 
 				if (response.HttpStatusCode != HttpStatusCode.OK) {
-					logger.LogWarning("Failed to download song: {response}", response);
+					logger.LogWarning($"Failed to download song: {response}");
 					return Result.Fail<AwsSongResponse>("Failed to download song");
 				}
 
@@ -52,25 +52,27 @@ namespace KaraokeParty.Services {
 				var payload = JsonSerializer.Deserialize<AwsSongResponse>(textPayload);
 
 				if (payload is null) {
-					logger.LogWarning("Failed to parse payload: {textPayload}", textPayload);
+					logger.LogWarning($"Failed to parse payload: {textPayload}");
 					return Result.Fail<AwsSongResponse>("Failed to parse response");
 				}
 
 				if (payload.video_id.Length == 0 || payload.s3_key.Length == 0 || payload.url.Length == 0 || payload.title.Length == 0) {
-					logger.LogWarning("Failed to parse payload: {textPayload}", textPayload);
+					logger.LogWarning($"Failed to parse payload: {textPayload}");
 					return Result.Fail<AwsSongResponse>("Failed to parse response");
 				}
 
 				return Result.Ok(payload);
 			} catch (Exception e) {
-				logger.LogWarning("Exception downloading song: {e}", e.Message);
+				logger.LogError($"Exception downloading song: {e}", e);
 				return Result.Fail<AwsSongResponse>(e.Message);
 			}
 		}
 
 		public string GetSongUrl(string s3key) {
-			if (memoryCache.TryGetValue(s3key, out string? url)) {
-				return url!;
+			memoryCache.TryGetValue(s3key, out string? url);
+			if (!string.IsNullOrWhiteSpace(url)) {
+				logger.LogInfo($"Returning pre-signed s3 URL from cache for: {s3key}");
+				return url;
 			}
 
 			try {
@@ -80,11 +82,21 @@ namespace KaraokeParty.Services {
 					Expires = DateTime.UtcNow.AddHours(presignedUrlDurationHours),
 				};
 				var urlString = s3Client.GetPreSignedURL(request);
+				if (string.IsNullOrWhiteSpace(urlString)) {
+					logger.LogWarning($"AWS failed to generate presigned url for: {s3key}");
+				}
+				logger.LogInfo($"Caching new pre-signed s3 URL: {s3key}");
 				memoryCache.Set(s3key, urlString, TimeSpan.FromHours(presignedUrlDurationHours - 1));
+				url = urlString;
 			} catch (AmazonS3Exception ex) {
-				logger.LogError("Amazon S3 Error:'{Message}'", ex.Message);
+				logger.LogError($"Amazon S3 Error", ex);
 			}
-			return "";
+
+			if (string.IsNullOrWhiteSpace(url)) {
+				logger.LogWarning($"Returning empty string for presigned url: {s3key}");
+			}
+
+			return url ?? "";
 		}
 
 		public class AwsSongResponse {
