@@ -30,7 +30,7 @@ namespace KaraokeParty.Api.Party {
 				return BadRequest("You must provide a DJ password to create a new party");
 			}
 
-			if (context.Djs.Where(d => d.Password == postParty.Password).Count() == 0) {
+			if (!context.Djs.Where(d => d.Password == postParty.Password).Any()) {
 				return BadRequest("The provided password was invalid.");
 			}
 
@@ -40,7 +40,7 @@ namespace KaraokeParty.Api.Party {
 				DjKey = KeyGenerator.CreateAlphaKey(5)
 			};
 
-			User newUser = new User {
+			DataStore.User newUser = new DataStore.User {
 				Name = postParty.DJName,
 				IsDj = true
 			};

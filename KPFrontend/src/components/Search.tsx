@@ -80,15 +80,13 @@ const Search = () => {
 		// start the chatgpt api
 		setSubmittedSongTitle(submitSongDto.title);
 
-		if (downloadPromise != null) {
-			const downloadResult = await downloadPromise;
-			if (!downloadResult.ok) {
-				alert('error downloading file...');
-				setDownloadInProgress(false);
-				return;
-			}
-			submitSongDto = downloadResult.value;
+		const downloadResult = await downloadPromise;
+		if (!downloadResult.ok) {
+			alert('error downloading file...');
+			setDownloadInProgress(false);
+			return;
 		}
+		submitSongDto = downloadResult.value;
 
 		const totalWaitTime = new Date().valueOf() - downloadStart.valueOf();
 		const remainingWaitTime = totalWaitTime > minDownloadTime ? 1 : minDownloadTime - totalWaitTime;
@@ -103,7 +101,7 @@ const Search = () => {
 		setLoading(true);
 		const createNewSinger = (singerId ?? 0) === 0;
 		const newRequest: PerformanceRequestDTO = {
-			fileName: selectedSong.fileName,
+			videoId: selectedSong.id,
 			userId: user.userId ?? 0,
 			singerName: singerName,
 			singerId: singerId,

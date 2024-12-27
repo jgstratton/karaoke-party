@@ -33,7 +33,7 @@ const downloadSong = async (songDto: SongDTO): Promise<Result<SongDTO>> =>
 			},
 			body: JSON.stringify(songDto),
 		}),
-		(body) => body.fileName.length > 0,
+		(body) => body.id.length > 0,
 		'Something went wrong when trying to download the song'
 	);
 

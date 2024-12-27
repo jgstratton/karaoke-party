@@ -7,7 +7,7 @@ namespace KaraokeParty.ApiModels {
 		public int? SingerId { get; set; }
 		public string? UserName { get; set; }
 		public string? SingerName { get; set; }
-		public string? FileName { get; set; }
+		public string? VideoId { get; set; }
 		public string? SongTitle { get; set; }
 		public string? Url { get; set; }
 
@@ -24,8 +24,8 @@ namespace KaraokeParty.ApiModels {
 				throw new Exception($"Changing user is not supported");
 			}
 
-			if (FileName != null && FileName != performance.Song?.FileName) {
-				var newSong = context.Songs.Find(FileName);
+			if (VideoId != null && VideoId != performance.Song?.VideoId) {
+				var newSong = context.Songs.Find(VideoId);
 				if (newSong is null) {
 					throw new Exception($"Song not found");
 				} else {
@@ -51,7 +51,7 @@ namespace KaraokeParty.ApiModels {
 			return new PerformanceDTO {
 				PerformanceId = performance.PerformanceID,
 				SingerId = performance.Singer?.SingerId,
-				FileName = performance.Song?.FileName,
+				VideoId = performance.Song?.VideoId,
 				UserId = performance.User?.UserId,
 				UserName = performance.User?.Name,
 				SingerName = performance.SingerName,

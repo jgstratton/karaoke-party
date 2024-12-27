@@ -5,7 +5,6 @@ import SingerDashboard from './components/SingerDashboard';
 import NoParty from './components/NoParty';
 import DJDashboard from './components/dj/dashboard/DJDashboard';
 import Search from './components/Search';
-import Player from './components/player/Player';
 import Offline from './components/common/Offline';
 import MyRequests from './components/MyRequests/MyRequests';
 import TestApi from './components/dj/playground/TestApi';
@@ -59,14 +58,6 @@ const App = () => {
 							element={
 								<RequireSession>
 									<MyRequests />
-								</RequireSession>
-							}
-						/>
-						<Route
-							path="Player"
-							element={
-								<RequireSession>
-									<Player />
 								</RequireSession>
 							}
 						/>

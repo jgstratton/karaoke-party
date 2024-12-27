@@ -31,6 +31,12 @@ namespace KaraokeParty.Api.Song {
 				return BadRequest("Video ID is required to download file");
 			}
 
+			// if the song is already downloaded then skip all the rest of the stuff
+			DataStore.Song? dbSong = _findDbSong(dto);
+			if (dbSong is not null && _isSongComplete(dbSong)) {
+				return SongDTO.FromDb(dbSong);
+			}
+
 			// try to downlaod the song using cloud services
 			var cloudDownload = await _downloadSongFromCloud(dto.Url, cancellationToken);
 			if (cloudDownload.success) {
@@ -45,7 +51,7 @@ namespace KaraokeParty.Api.Song {
 			// ok, song hasn't been downloaded yet, let's download it
 			var ytClient = clientFactory.CreateClient("yt-dlp");
 			var request = new HttpRequestMessage(HttpMethod.Get, $"download?url={dto.Url}");
-			var response = await ytClient.SendAsync(request);
+			var response = await ytClient.SendAsync(request, cancellationToken);
 
 			if (!response.IsSuccessStatusCode) {
 				logger.LogError("Error downloading song: {response}", response);
@@ -71,6 +77,7 @@ namespace KaraokeParty.Api.Song {
 		}
 
 		private async Task<(bool success, SongDTO? dto)> _downloadSongFromCloud(string url, CancellationToken cancellationToken) {
+
 			// try to download song from the cloud if possible
 			var cloudResponse = await awsSongService.DownloadSong(url, cancellationToken);
 			if (cloudResponse.Success) {
@@ -105,6 +112,12 @@ namespace KaraokeParty.Api.Song {
 			dto.FileName.Length > 0 && s.FileName == dto.FileName
 		).FirstOrDefault();
 
+		// if we already have all the data we need, then skip downloading the song
+		private bool _isSongComplete(DataStore.Song dbSong) =>
+			dbSong.VideoId.Length > 0 &&
+			dbSong.Url.Length > 0 &&
+			dbSong.FileName.Length > 0 &&
+			dbSong.S3Key.Length > 0;
 
 		private class DownloadResult {
 			public string status { get; set; } = "";

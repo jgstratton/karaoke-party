@@ -3,7 +3,7 @@ export default interface PlayerDTO {
 	videoPosition: number;
 	volume: number;
 	videoLength: number;
-	fileName: string;
+	VideoId: string;
 	title: string;
 	showSplash?: boolean;
 }

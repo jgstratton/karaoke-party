@@ -1,6 +1,6 @@
 export interface PerformanceRequestDTO {
 	userId: number;
-	fileName: string;
+	videoId: string;
 	singerName: string;
 	singerId?: number;
 }

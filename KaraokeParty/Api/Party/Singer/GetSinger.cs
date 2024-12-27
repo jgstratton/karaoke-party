@@ -3,7 +3,7 @@ using KaraokeParty.DataStore;
 using KaraokeParty.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace KaraokeParty.Controllers {
+namespace KaraokeParty.Api.Party.Singer {
 	[ApiController]
 	public class ApiSingerGet : ControllerBase {
 		private readonly IPartyService partyService;
@@ -17,11 +17,11 @@ namespace KaraokeParty.Controllers {
 		[HttpGet]
 		[Route("party/{partyKey}/singer/{singerId}")]
 		public ActionResult<SingerDTO> Get(string partyKey, int singerId) {
-			Party? party = partyService.GetPartyByKey(partyKey);
+			DataStore.Party? party = partyService.GetPartyByKey(partyKey);
 			if (party == null) {
 				return NotFound();
 			}
-			Singer? singer = context.Singers.Find(singerId);
+			DataStore.Singer? singer = context.Singers.Find(singerId);
 			if (singer == null) {
 				return NotFound();
 			}
@@ -31,7 +31,7 @@ namespace KaraokeParty.Controllers {
 		[HttpGet]
 		[Route("party/{partyKey}/singers")]
 		public ActionResult<List<SingerDTO>> GetSingers(string partyKey) {
-			Party? party = partyService.GetPartyByKey(partyKey);
+			DataStore.Party? party = partyService.GetPartyByKey(partyKey);
 			if (party == null) {
 				return NotFound();
 			}

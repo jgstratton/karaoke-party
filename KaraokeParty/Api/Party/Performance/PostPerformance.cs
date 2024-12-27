@@ -19,8 +19,8 @@ namespace KaraokeParty.Api.Party.Performance {
 		[Route("party/{partyKey}/performance")]
 		public ActionResult<PerformanceDTO> PostPerformance(string partyKey, [FromBody] PerformanceRequestDTO dto) {
 			DataStore.Party? party = partyService.GetPartyByKey(partyKey);
-			User? user = context.Users.Find(dto.UserId);
-			DataStore.Song? song = context.Songs.Find(dto.FileName);
+			DataStore.User? user = context.Users.Find(dto.UserId);
+			DataStore.Song? song = context.Songs.Find(dto.VideoId);
 			DataStore.Singer? singer = context.Singers.Find(dto.SingerId);
 
 			if (party == null) return NotFound("404 - Party not found");

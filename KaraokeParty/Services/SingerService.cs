@@ -32,7 +32,7 @@ namespace KaraokeParty.Services {
 			var upcomingStatusList = new List<PerformanceStatus> { PerformanceStatus.Live, PerformanceStatus.Queued };
 
 			// this only applies to existing singers. If they have no requests then do nothing
-			if (!singerPerformances.Any()) {
+			if (singerPerformances.Count == 0) {
 				return (false, null);
 			}
 

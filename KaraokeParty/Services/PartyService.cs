@@ -44,7 +44,7 @@ namespace KaraokeParty.Services {
 				.FirstOrDefault();
 
 			int nextRotationNumber = 1;
-			int totalSingers = party.Singers.Count();
+			int totalSingers = party.Singers.Count;
 
 			if (currentPerformance != null) {
 				currentPerformance.Status = PerformanceStatus.Completed;

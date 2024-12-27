@@ -1,21 +1,36 @@
 ﻿using Amazon;
 using Amazon.Lambda;
 using Amazon.Lambda.Model;
+using Amazon.S3;
+using Amazon.S3.Model;
 using KaraokeParty.Helpers;
+using Microsoft.Extensions.Caching.Memory;
 using System.Net;
 using System.Text.Json;
 
 namespace KaraokeParty.Services {
 	public class AwsSongService {
 		private readonly AmazonLambdaClient lambdaClient;
+		private readonly AmazonS3Client s3Client;
 		private readonly ILogger<AwsSongService> logger;
+		private readonly IMemoryCache memoryCache;
+		private readonly int presignedUrlDurationHours = 24;
 
-		public AwsSongService(IConfiguration config, ILogger<AwsSongService> logger) {
+		public AwsSongService(IConfiguration config, ILogger<AwsSongService> logger, IMemoryCache memoryCache) {
 			lambdaClient = new AmazonLambdaClient(
-			config["LambdaApiKey"] ?? throw new Exception("Missing configuration: LambdaApiKey"),
-			config["LambdaApiSecret"] ?? throw new Exception("Missing configuration: LambdaApiSecret"),
-			RegionEndpoint.GetBySystemName(config["LambdaRegion"] ?? throw new Exception("Missing configuration: LambdaRegion")));
+				config["AwsAccessKey"] ?? throw new Exception("Missing configuration: AwsAccessKey"),
+				config["AwsSecretKey"] ?? throw new Exception("Missing configuration: LambdaApiSecret"),
+				RegionEndpoint.GetBySystemName(config["AwsRegion"] ?? throw new Exception("Missing configuration: AwsRegion"))
+			);
+
+			s3Client = new AmazonS3Client(
+				config["AwsAccessKey"] ?? throw new Exception("Missing configuration: AwsAccessKey"),
+				config["AwsSecretKey"] ?? throw new Exception("Missing configuration: AwsSecretKey"),
+				RegionEndpoint.GetBySystemName(config["AwsRegion"] ?? throw new Exception("Missing configuration: AwsRegion"))
+			);
+
 			this.logger = logger;
+			this.memoryCache = memoryCache;
 		}
 
 		public async Task<Result<AwsSongResponse>> DownloadSong(string url, CancellationToken cancellationToken) {
@@ -51,6 +66,25 @@ namespace KaraokeParty.Services {
 				logger.LogWarning("Exception downloading song: {e}", e.Message);
 				return Result.Fail<AwsSongResponse>(e.Message);
 			}
+		}
+
+		public string GetSongUrl(string s3key) {
+			if (memoryCache.TryGetValue(s3key, out string? url)) {
+				return url!;
+			}
+
+			try {
+				var request = new GetPreSignedUrlRequest() {
+					BucketName = "karaoke-files",
+					Key = s3key,
+					Expires = DateTime.UtcNow.AddHours(presignedUrlDurationHours),
+				};
+				var urlString = s3Client.GetPreSignedURL(request);
+				memoryCache.Set(s3key, urlString, TimeSpan.FromHours(presignedUrlDurationHours - 1));
+			} catch (AmazonS3Exception ex) {
+				logger.LogError("Amazon S3 Error:'{Message}'", ex.Message);
+			}
+			return "";
 		}
 
 		public class AwsSongResponse {

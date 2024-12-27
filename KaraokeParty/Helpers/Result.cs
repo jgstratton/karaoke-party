@@ -59,7 +59,7 @@ namespace KaraokeParty.Helpers {
 		protected internal Result([AllowNull] T value, bool success, string error)
 			: base(success, error) {
 			Contracts.Require(value != null || !success, "Value must be defined for successfull Result objects.");
-			Value = value!;
+			Value = value;
 		}
 	}
 

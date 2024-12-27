@@ -2,7 +2,7 @@ using KaraokeParty.ApiModels;
 using KaraokeParty.DataStore;
 using Microsoft.AspNetCore.Mvc;
 
-namespace KaraokeParty.Controllers {
+namespace KaraokeParty.Api.User {
 	[ApiController]
 	public class ApiUserGet : ControllerBase {
 		private readonly KPContext context;
@@ -14,7 +14,7 @@ namespace KaraokeParty.Controllers {
 		[HttpGet]
 		[Route("user/{userId}")]
 		public ActionResult<UserDTO> Get(int userId) {
-			User? user = context.Users.Find(userId);
+			DataStore.User? user = context.Users.Find(userId);
 			if (user is null) {
 				return NotFound();
 			}

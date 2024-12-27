@@ -14,8 +14,8 @@ namespace KaraokeParty.ApiModels {
 
 		public PartyDTO() {
 			Player = new PlayerDTO();
-			Performances = new List<PerformanceDTO>();
-			Singers = new List<SingerDTO>();
+			Performances = [];
+			Singers = [];
 			Settings = new ConfigurableSettingsDTO();
 			this.ServerSettings = ServerSettingsStaticProvider.GetServerSettings();
 		}
@@ -39,7 +39,7 @@ namespace KaraokeParty.ApiModels {
 				Player = new PlayerDTO {
 					VideoLength = party.VideoLength,
 					VideoPosition = party.VideoPosition,
-					FileName = currentPerformance?.FileName ?? "",
+					VideoId = currentPerformance?.VideoId ?? "",
 					PlayerState = party.PlayerState,
 					Title = currentPerformance?.SongTitle ?? "",
 					Volume = party.Volume,

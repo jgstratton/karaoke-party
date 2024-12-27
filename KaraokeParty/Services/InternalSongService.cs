@@ -26,15 +26,15 @@ namespace KaraokeParty.Services {
 		/// </summary>
 		public FileStreamResult GetFile(string fileName) {
 			var tik = Environment.TickCount;
-			logger.LogInformation($"Stream started: {fileName}");
+			logger.LogInformation("Stream started: {fileName}", fileName);
 			string videoPath = $"{VideoStoragePath}/{fileName}";
 			//var file = System.IO.File.ReadAllBytes(videoPath);
 			Stream str = System.IO.File.OpenRead(videoPath);
 			return new MyFileStreamResult(
 				str,
 				"video/mp4",
-				() => logger.LogInformation($"Stream completed in {Environment.TickCount - tik}ms: {fileName}"),
-				() => logger.LogInformation($"Stream ABORTED after {Environment.TickCount - tik}ms: {fileName}")
+				() => logger.LogInformation("Stream completed in {time}ms: {fileName}", Environment.TickCount - tik, fileName),
+				() => logger.LogInformation("Stream ABORTED after {time}ms: {fileName}", Environment.TickCount - tik, fileName)
 			);
 		}
 

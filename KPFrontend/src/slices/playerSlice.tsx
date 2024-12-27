@@ -7,7 +7,6 @@ const initialState = {
 	enabled: true,
 	playing: false,
 	showSplash: false,
-	url: '',
 	title: '',
 	position: 0,
 	volume: 80,
@@ -39,7 +38,6 @@ export const playerSlice = createSlice({
 			state.enabled = true;
 			state.playing = action.payload.playerState === 1;
 			state.showSplash = action.payload.showSplash ?? false;
-			state.url = `./song/${action.payload.fileName}`;
 			state.title = action.payload.title;
 			state.position = action.payload.videoPosition;
 			state.volume = action.payload.volume;

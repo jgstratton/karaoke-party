@@ -4,7 +4,7 @@ export default interface PerformanceDTO {
 	singerId: number;
 	userName: string;
 	singerName: string;
-	fileName: string;
+	videoId: string;
 	songTitle: string;
 	url: string;
 	status: number;

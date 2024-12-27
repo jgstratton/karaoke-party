@@ -16,6 +16,13 @@ dotnet_naming_rule.non_field_members_should_be_pascal_case.severity = suggestion
 dotnet_naming_rule.non_field_members_should_be_pascal_case.symbols = non_field_members
 dotnet_naming_rule.non_field_members_should_be_pascal_case.style = pascal_case
 
+dotnet_diagnostic.IDE0090.severity = none # IDE0090: Use 'new(...)'
+dotnet_diagnostic.IDE1006.severity = none # IDE1006: Naming rule violation
+dotnet_diagnostic.IDE0017.severity = none # IDE0017: Simplify object initialization
+dotnet_diagnostic.IDE0028.severity = none # IDE0028: Simplify collection initialization
+dotnet_diagnostic.IDE0270.severity = none # IDE0270: Prefer switch expression
+dotnet_diagnostic.IDE0305.severity = none # IDE0405: Use nameof
+
 # Symbol specifications
 
 dotnet_naming_symbols.interface.applicable_kinds = interface

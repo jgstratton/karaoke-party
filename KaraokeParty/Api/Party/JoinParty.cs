@@ -23,13 +23,13 @@ namespace KaraokeParty.Api.Party {
 				if (djParty == null) {
 					return NotFound();
 				}
-				User newDjUser = singer.ToDb();
+				DataStore.User newDjUser = singer.ToDb();
 				newDjUser.IsDj = true;
 				context.Users.Add(newDjUser);
 				context.SaveChanges();
 				return UserDTO.FromDb(newDjUser);
 			}
-			User newUser = singer.ToDb();
+			DataStore.User newUser = singer.ToDb();
 			context.Users.Add(newUser);
 			context.SaveChanges();
 			return UserDTO.FromDb(newUser);

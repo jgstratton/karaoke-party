@@ -22,6 +22,7 @@ const SearchResults = ({ results, loading, submitRequest, isKaraoke }: iProps) =
 		fileName: '',
 		title: '',
 		url: '',
+		S3Key: '',
 	});
 	const [karaokeWarning, setKaraokeWarning] = useState(false);
 	const [showRequestForm, setShowRequestForm] = useState(false);

@@ -110,8 +110,10 @@ namespace KaraokeParty.Tests {
 			};
 
 			var (shouldMove, rotationNumber) = _singerService.AutoMoveSinger(party, singer);
-			Assert.That(shouldMove, Is.True);
-			Assert.That(rotationNumber, Is.EqualTo(3));
+			Assert.Multiple(() => {
+				Assert.That(shouldMove, Is.True);
+				Assert.That(rotationNumber, Is.EqualTo(3));
+			});
 		}
 
 		[Test]
@@ -129,8 +131,10 @@ namespace KaraokeParty.Tests {
 			};
 
 			var (shouldMove, rotationNumber) = _singerService.AutoMoveSinger(party, singer);
-			Assert.That(shouldMove, Is.True);
-			Assert.That(rotationNumber, Is.EqualTo(3));
+			Assert.Multiple(() => {
+				Assert.That(shouldMove, Is.True);
+				Assert.That(rotationNumber, Is.EqualTo(3));
+			});
 		}
 
 		[Test]
@@ -168,8 +172,10 @@ namespace KaraokeParty.Tests {
 				]
 			};
 			var (shouldMove, rotationNumber) = _singerService.AutoMoveSinger(party, singer);
-			Assert.That(shouldMove, Is.True);
-			Assert.That(rotationNumber, Is.EqualTo(2));
+			Assert.Multiple(() => {
+				Assert.That(shouldMove, Is.True);
+				Assert.That(rotationNumber, Is.EqualTo(2));
+			});
 		}
 
 		[Test]
@@ -205,8 +211,10 @@ namespace KaraokeParty.Tests {
 				]
 			};
 			var (shouldMove, rotationNumber) = _singerService.AutoMoveSinger(party, singer);
-			Assert.That(shouldMove, Is.True);
-			Assert.That(rotationNumber, Is.EqualTo(7));
+			Assert.Multiple(() => {
+				Assert.That(shouldMove, Is.True);
+				Assert.That(rotationNumber, Is.EqualTo(7));
+			});
 		}
 
 		[Test]
@@ -225,8 +233,10 @@ namespace KaraokeParty.Tests {
 				]
 			};
 			var (shouldMove, rotationNumber) = _singerService.AutoMoveSinger(party, singer);
-			Assert.That(shouldMove, Is.True);
-			Assert.That(rotationNumber, Is.EqualTo(2));
+			Assert.Multiple(() => {
+				Assert.That(shouldMove, Is.True);
+				Assert.That(rotationNumber, Is.EqualTo(2));
+			});
 		}
 
 		[Test]
@@ -247,8 +257,10 @@ namespace KaraokeParty.Tests {
 				]
 			};
 			var (shouldMove, rotationNumber) = _singerService.AutoMoveSinger(party, singer);
-			Assert.That(shouldMove, Is.True);
-			Assert.That(rotationNumber, Is.EqualTo(5));
+			Assert.Multiple(() => {
+				Assert.That(shouldMove, Is.True);
+				Assert.That(rotationNumber, Is.EqualTo(5));
+			});
 		}
 
 		[Test]
@@ -276,8 +288,10 @@ namespace KaraokeParty.Tests {
 				]
 			};
 			var (shouldMove, rotationNumber) = _singerService.AutoMoveSinger(party, singer);
-			Assert.That(shouldMove, Is.True);
-			Assert.That(rotationNumber, Is.EqualTo(12));
+			Assert.Multiple(() => {
+				Assert.That(shouldMove, Is.True);
+				Assert.That(rotationNumber, Is.EqualTo(12));
+			});
 		}
 
 		[Test]
@@ -299,8 +313,10 @@ namespace KaraokeParty.Tests {
 				]
 			};
 			var (shouldMove, rotationNumber) = _singerService.AutoMoveSinger(party, singer);
-			Assert.That(shouldMove, Is.True);
-			Assert.That(rotationNumber, Is.EqualTo(3));
+			Assert.Multiple(() => {
+				Assert.That(shouldMove, Is.True);
+				Assert.That(rotationNumber, Is.EqualTo(3));
+			});
 		}
 	}
 }
