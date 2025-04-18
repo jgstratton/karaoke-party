@@ -1,3 +1,10 @@
+import Connection from "/StaticComponents/Connection.js";
+import InteractionOverlay from "/StaticComponents/InteractionOverlay.js";
+import SplashScreen from "/StaticComponents/SplashScreen.js";
+import Marquee from "/StaticComponents/Marquee.js";
+import PartyQR from "/StaticComponents/PartyQR.js";
+import Storage from "/StaticComponents/Storage.js";
+
 const Player = function (options) {
     const model = options.model;
     const video = options.video;
@@ -7,7 +14,7 @@ const Player = function (options) {
 
     const state = {
         playing: false,
-        videoStarted: false,
+        waitingForVideo: false, // use when song has ended and we're waiting for the next song to be sent
         settings: null,
         currentPerformance: null,
     };
@@ -40,8 +47,11 @@ const Player = function (options) {
         partyQR.Update(state.settings);
         console.log("setting initial volume", partyResponse.player.volume);
         video.volume = partyResponse.player.volume / 100;
-        if (state.playing) {
+        if (state.playing && state.currentPerformance) {
             _loadVideo();
+        } else {
+            state.waitingForVideo = true;
+            loadInBackground();
         }
         return partyResponse;
     };
@@ -79,7 +89,7 @@ const Player = function (options) {
                 const secondsVisible = splashScreen.GetSecondsVisible();
                 const percentTimeEllapsed = secondsVisible / state.settings.splashScreenSeconds;
                 const percentDownloaded = evt.loaded / evt.total;
-                percentComplete =
+                const percentComplete =
                     (percentTimeEllapsed < percentDownloaded ? percentTimeEllapsed : percentDownloaded) * 100;
                 splashScreen.SetProgressBar(percentComplete);
             }
@@ -219,6 +229,13 @@ const Player = function (options) {
         const queuedPerformancesResponse = await fetch(`../../party/${model.partyKey}/queued`);
         let queuedPerformances = await queuedPerformancesResponse.json();
         console.log(queuedPerformances);
+
+        // todo: this works but make this a setting that can be toggled before enabling it prod
+        // if (state.waitingForVideo && queuedPerformances.length > 0) {
+        //     console.log('Auto-checking for new songs, waiting for video to start');
+        //     connection.StartNewPerformance();
+        // }
+
         for (var i = 0; i < queuedPerformances.length; i++) {
             const videoId = queuedPerformances[i].videoId;
             const storedFile = await storage.get(videoId);
@@ -293,10 +310,12 @@ const Player = function (options) {
             partyKey: model.partyKey,
             ReceiveNewPerformanceStarted: (dto) => {
                 state.currentPerformance = dto;
+                state.waitingForVideo = false;
                 _loadVideo();
             },
             ReceivePreviousSong: (dto) => {
                 state.currentPerformance = dto;
+                state.waitingForVideo = false;
                 _loadVideo();
             },
             ReceivePause: () => {
@@ -338,6 +357,8 @@ const Player = function (options) {
         });
 
         video.addEventListener('ended', () => {
+            console.log('Video ended, waiting for next song');
+            state.waitingForVideo = true;
             connection.StartNewPerformance();
         });
         loadInBackground();
@@ -348,4 +369,10 @@ const Player = function (options) {
     };
 
     this.GetConnectionObject = () => connection;
+
+    this.GetState = () => state;
+
+    this.GetVideo = () => state;
 };
+
+export default Player;

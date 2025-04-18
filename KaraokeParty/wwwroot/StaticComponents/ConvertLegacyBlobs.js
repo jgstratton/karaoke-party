@@ -47,4 +47,4 @@ window.convertLegacyBlobs = async function () {
     };
 }
 
-console.log("%c ~~~ To convert legacy items in indexdb, use: window.convertLegacyBlobs() ~~~", 'padding:5px; background-color:#A020F0');
+console.log("%c ~~~ Note from karaoke dev: To convert legacy items in indexdb, use: window.convertLegacyBlobs() ~~~", 'padding:5px; background-color:#A020F0');

@@ -1,22 +1,14 @@
 ﻿@model KaraokeParty.Controllers.PlayerController.PlayerModel
 @{
 	Layout = "~/Views/Player/_Layout.cshtml";
-	var cacheVersion = Guid.NewGuid().ToString();
 }
 
-<script src="~/StaticComponents/Connection.js?v=@cacheVersion"></script>
-<script src="~/StaticComponents/Player.js?v=@cacheVersion"></script>
-<script src="~/StaticComponents/InteractionOverlay.js?v=@cacheVersion"></script>
-<script src="~/StaticComponents/SplashScreen.js?v=@cacheVersion"></script>
-<script src="~/StaticComponents/Marquee.js?v=@cacheVersion"></script>
-<script src="~/StaticComponents/PartyQR.js?v=@cacheVersion"></script>
-<script src="~/StaticComponents/Storage.js?v=@cacheVersion"></script>
-<script src="~/StaticComponents/ConvertLegacyBlobs.js?v=@cacheVersion"></script>
+<script src="~/StaticComponents/ConvertLegacyBlobs.js"></script>
 <script src="~/lib/signalr/signalr.js"></script>
 <script src="~/lib/qrcodejs/qrcode.min.js"></script>
 
-<link href="~/StaticComponents/SplashScreen.css?v=@cacheVersion" rel="stylesheet" type="text/css" />
-<link href="~/StaticComponents/Marquee.css?v=@cacheVersion" rel="stylesheet" type="text/css" />
+<link href="~/StaticComponents/SplashScreen.css" rel="stylesheet" type="text/css" />
+<link href="~/StaticComponents/Marquee.css" rel="stylesheet" type="text/css" />
 
 <style>
 	.hidden {
@@ -92,7 +84,8 @@
 	<video id="videoPlayer" preload="none" style="width: 100%; height: 100%"></video>
 </div>
 
-<script>
+<script type="module">
+	import Player from "/StaticComponents/Player.js";
 	window.onerror = (e) => {
 		console.error(e);
 	};
@@ -125,6 +118,7 @@
 		},
 		video: playerElement
 	});
+	window.player = player;
 
 	player.Run();
 

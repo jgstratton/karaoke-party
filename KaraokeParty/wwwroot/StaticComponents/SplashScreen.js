@@ -52,3 +52,5 @@ const SplashScreen = function (options) {
 
 	this.GetSecondsVisible = () => (this.IsVisible() ? (new Date() - showStart) / 1000 : 9999999);
 };
+
+export default SplashScreen;

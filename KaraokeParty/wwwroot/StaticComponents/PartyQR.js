@@ -24,3 +24,5 @@ const PartyQR = function (options) {
         });
     };
 };
+
+export default PartyQR;

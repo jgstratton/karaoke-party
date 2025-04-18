@@ -22,3 +22,5 @@ const InteractionOverlay = function (options) {
 		wrap.remove();
 	});
 };
+
+export default InteractionOverlay;

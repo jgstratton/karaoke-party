@@ -71,7 +71,7 @@ var fsOptions = new FileServerOptions {
 };
 
 fsOptions.StaticFileOptions.OnPrepareResponse = (ctx) => {
-	if (ctx.File.Name.Contains(".html") || ctx.File.Name.Contains("sw.js")) {
+	if (ctx.File.Name.Contains(".html") || ctx.File.Name.Contains(".js") || ctx.File.Name.Contains(".css")) {
 		ctx.Context.Response.Headers.Append("Cache-Control", "no-cache, no-store, must-revalidate");
 		ctx.Context.Response.Headers.Append("Pragma", "no-cache");
 		ctx.Context.Response.Headers.Append("Expires", "0");

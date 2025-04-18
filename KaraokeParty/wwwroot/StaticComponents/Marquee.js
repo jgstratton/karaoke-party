@@ -39,3 +39,5 @@ const Marquee = function (options) {
 		}, 10);
 	};
 };
+
+export default Marquee;

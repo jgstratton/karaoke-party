@@ -46,3 +46,5 @@ const Storage = function (name) {
 		window.indexedDB.deleteDatabase(location.origin);
 	};
 };
+
+export default Storage;

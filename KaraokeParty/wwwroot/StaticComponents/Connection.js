@@ -52,3 +52,5 @@ const Connection = function (options) {
     this.SendVolume = (payload) => connection.invoke('SendVolume', clientConnectionDetails, payload);
     this.GetConnectionObject = () => connection;
 };
+
+export default Connection;
