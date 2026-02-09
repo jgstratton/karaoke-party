@@ -8,10 +8,15 @@ RUN mkdir -p /function
 WORKDIR /function
 
 RUN apt-get -y update \
-	&& apt-get -y install ffmpeg --no-install-recommends \
+	&& apt-get -y install ffmpeg curl ca-certificates unzip --no-install-recommends \
 	&& apt-get clean
 
-RUN	pip3 install --force-reinstall https://github.com/yt-dlp/yt-dlp/archive/master.tar.gz
+ENV DENO_INSTALL=/usr/local
+ENV PATH="${DENO_INSTALL}/bin:${PATH}"
+
+RUN curl -fsSL https://deno.land/install.sh | sh 
+
+RUN pip install --upgrade "yt-dlp[default]"
 
 COPY . /function
 RUN pip3 install  awslambdaric
