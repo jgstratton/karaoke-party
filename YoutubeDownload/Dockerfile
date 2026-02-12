@@ -7,9 +7,7 @@ EXPOSE 5000
 COPY requirements.txt requirements.txt
 
 RUN pip3 install -r requirements.txt &&\
-
-	# install master
-	pip3 install --force-reinstall https://github.com/yt-dlp/yt-dlp/archive/master.tar.gz
+	pip3 install --upgrade "yt-dlp[default]"
 # pip3 install --upgrade yt-dlp
 
 # install ffmpeg and move to yt-dlp, needed for file merging
